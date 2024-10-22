@@ -1,0 +1,5 @@
+namespace: default
+resources:
+  - reactDeploy.yaml
+  - ingress.yaml
+  - service.yaml

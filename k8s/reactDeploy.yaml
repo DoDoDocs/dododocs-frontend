@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: react-deploy
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: react-deploy
+  template:
+    metadata:
+      labels:
+        app: react-deploy
+    spec:
+      containers:
+        - name: react-deploy
+          image: krmp-d2hub-idock.9rum.cc/dev-test/repo_9f7b7f7ab59f:latest
+          resources:
+            requests:
+              memory: "256Mi"  
+              cpu: "250m"     
+            limits:
+              memory: "512Mi" 
+              cpu: "500m"  
