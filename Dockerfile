@@ -1,4 +1,4 @@
-FROM krmp-d2hub-idock.9rum.cc/goorm/node:22
+FROM node:22.5.1
 
 WORKDIR /app
 
