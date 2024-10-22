@@ -1,5 +1,5 @@
-namespace: default
+namespace: krampoline
 resources:
-  - reactDeploy.yaml
-  - ingress.yaml
+  - deployment.yaml
   - service.yaml
+  - ingress.yaml
