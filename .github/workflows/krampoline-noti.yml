@@ -13,7 +13,7 @@ jobs:
       if: always()
       with:
         webhook: ${{ secrets.DISCORD_WEBHOOK_FULLSTACK }}
-        title: "❗️ Remind : 크램폴린 CI/CD  ❗️"
+        title: "❗️ Remind : 크램폴린 CI/CD ❗️"
         description: "크램폴린에서 D2Hub 빌드와 Kargo 배포를 진행해주세요."
         url: https://krampoline-ide.kakao.com/organization/org_ffYH4PrzrR6et39c2k/dashboard
         color: 0xff6d44
