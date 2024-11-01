@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import _ from '../../config/index.js';
-
 //SECTION - styledComponent
 
 export const SenHeader = styled.div`
@@ -87,6 +86,8 @@ export const VerticalDivider = styled.div`
 `;
 
 export const CategoryBox = styled.div`
+  transition: border 0.1s ease, color 0.2s ease;
+
   margin: 5px;
   display: flex;
   align-items: center;
@@ -98,11 +99,8 @@ export const CategoryBox = styled.div`
   font-family: 'Roboto';
   cursor: pointer;
   &:hover {
-    transition: color 100ms ease 0s;
-    border-left: ${({ theme }) => theme.colors.white} 2px solid;
-    font-weight: 500;
-    border-bottom: 1px solid #ffffff0d;
-    color: ${({ theme }) => theme.colors.white};
+    border-left: #ffffff 2px solid;
+    color: #ffffff;
   }
 `;
 export const LoginBtnBox = styled.div`

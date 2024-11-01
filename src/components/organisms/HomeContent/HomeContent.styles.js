@@ -34,7 +34,7 @@ export const HomeLayout = styled.div`
     left: 0;
     height: 100%;
     width: 100%;
-    z-index: 2;
+    z-index: 0;
   }
 `;
 
@@ -61,25 +61,6 @@ export const HomeWrapper = styled.div`
     rgba(228, 229, 213, 1) 55%,
     rgba(247, 247, 245, 1) 84%
   ); */
-`;
-
-export const ColWrapper = styled.div`
-  grid-row: 2;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  /* border: black 5px solid; */
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-`;
-
-export const FirstColItem = styled.div`
-  grid-column: 1; // 첫 번째 열에 위치
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: baseline;
 `;
 
 export const RowWrapper = styled.div`
@@ -109,7 +90,7 @@ const fadeIn = keyframes`
 
 export const TextContainer = styled.div`
   display: flex;
-  font-size: 70px;
+  font-size: ${({ theme }) => theme.layout.home.mainTextSize};
   flex-direction: column;
   align-items: center;
   color: ${({ theme }) => theme.colors.white};

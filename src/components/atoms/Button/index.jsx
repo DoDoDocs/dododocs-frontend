@@ -1,108 +1,155 @@
-import React from "react"
-import styled from "styled-components"
+import React from "react";
+import styled, { css } from "styled-components";
 
+// 사이즈 스타일 상수
+const SIZE_STYLES = {
+    small: css`
+    padding: 2px 8px;
+    font-size: 0.9rem;
+  `,
+    medium: css`
+    padding: 8px 16px;
+    font-size: 1.1rem;
+  `,
+    large: css`
+    padding: 12px 20px;
+    font-size: 1.2rem;
+  `
+};
+
+// 버튼 타입별 스타일 상수
+const BUTTON_VARIANTS = {
+    primary: css`
+    background-color: #0d7000;
+    border: #0d7000 1px solid;
+    border-radius: 3px;
+    color: #FFFFFF;
+    font-weight: bold;
+  `,
+    text: css`
+    background-color: rgba(255, 255, 255, 0);
+    border: #0d7000 1px solid;
+    border-radius: 3px;
+    outline: 0;
+    color: #063600;
+  `,
+    black: css`
+    background-color: #020202;
+    border: #020202 1px solid;
+    border-radius: 3px;
+    outline: 0;
+    color: #ffffff;
+  `,
+    gradient: css`
+    position: relative;
+    background: transparent;
+    border: none;
+    overflow: hidden;
+    z-index: 1;
+    border-radius: 5px;
+    color: #bcc3d7;
+    cursor: pointer;
+    transition: color 0.3s ease;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: inherit;
+        padding: 2px;
+        background:${({ theme }) => theme.gradients.values.primary};
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background:${({ theme }) => theme.gradients.values.primary};
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: -1;
+    }
+
+    &:hover {
+      color: #fff;
+
+      &::after {
+        opacity: 1;
+      }
+    }
+  `,
+    default: css`
+    background-color: #e9e9e9;
+    border: none;
+    border-radius: 3px;
+    color: #000000;
+    transition: all 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+  `
+};
 
 const ButtonComponent = styled.button`
-    ${props => {
-        switch (props.size) {
-            case "small":
-                return `
-                    padding : 2px 8px;
-                `
-            case "large":
-                return `
-                    padding : 12px 20px;
-                `
-            default:
-                return `
-                    padding : 8px 16px;
-                `
-        }
-    }}
-${props => {
-        switch (props.$btnType) {
-            case "primary":
-                return `
-                background-color: #0d7000;
-                border: #0d7000 1px solid;
-                border-radius : 3px;
-                color : #FFFFFF;
-                font-weight : bold;
-            `
-            case "text":
-                return `
-                background-color: rgba(255,255,255,0);
-                border: #0d7000 1px solid;
-                border-radius : 3px;
-                outline : 0;
-                color : #063600;
-            `
-            case "black": return `
-            background-color: #020202;
-            border: #020202 1px solid;
-            border-radius : 3px;
-            outline : 0;
-            color : #ffffff;
-        `
-            case "gradient": return `
-            position: relative;
-            background: transparent;
-            border: none !important; // 기존 border 제거
-            overflow: hidden; // 그라데이션이 삐져나가지 않도록
-            z-index: 1; // 내부 콘텐츠를 위한 z-index
-            border-radius : 5px;
-            color : #bcc3d7;
+  // 기본 스타일
+  font-family: 'Noto Sans KR';
+  text-align: center;
+  cursor: pointer;
+  
+  // 사이즈 스타일 적용
+  ${props => SIZE_STYLES[props.size || 'medium']}
+  
+  // 버튼 타입 스타일 적용
+  ${props => BUTTON_VARIANTS[props.$btnType || 'default']}
+  
+  // 추가 스타일 속성
+  ${props => props.block && css`width: 100%;`}
+  ${props => props.bold && css`font-weight: bold;`}
+  ${props => props.width && css`width: ${props.width};`}
+  
+  // 비활성화 상태 스타일
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+`;
 
-                &::before {
-                    content: '';
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    border-radius: inherit;
-                    padding: 2px;
-                    background: linear-gradient(to right, #a25cff, #d923ff);
-                    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-                    -webkit-mask-composite: xor;
-                    mask-composite: exclude;
-                    pointer-events: none;
-                    z-index: -1; // 내용 뒤에 위치하도록
-                }
-                &:hover {
-                        background: linear-gradient(to right, #8a40ff, #c910ff);
-                        color: #fff;
-                }
-            `
-            default:
-                return `
-                background-color: #e9e9e9;
-                border: none;
-                border-radius : 3px;
-                color : #000000;
-                transition : all .2s cubic-bezier(.645,.045,.355,1);
-              
-            `
-        }
-    }}
-    ${props => (props.block) ? `width : 100%;` : null}
-    ${props => props.bold ? `font-weight : bold` : null};
-    width : ${props => props.width ? props.width : null};
-    font-family : 'Noto Sans KR';
-    font-size: 1.1rem;
-    text-align: center;
-
-    cursor: pointer;
-`
-
-const Button = ({ children, href, size, btnType, block, onClick, bold, width, style }) => (
-    <>
-        <ButtonComponent style={style} width={width} href={href} size={size} $btnType={btnType} block={block} bold={bold} onClick={onClick}>
-            {children}
-        </ButtonComponent>
-    </>
-)
+const Button = ({
+    children,
+    size = 'medium',
+    btnType = 'default',
+    block = false,
+    bold = false,
+    width,
+    onClick,
+    style,
+    disabled = false,
+    type = 'button',
+    ...props
+}) => (
+    <ButtonComponent
+        type={type}
+        size={size}
+        $btnType={btnType}
+        block={block}
+        bold={bold}
+        width={width}
+        onClick={onClick}
+        style={style}
+        disabled={disabled}
+        {...props}
+    >
+        {children}
+    </ButtonComponent>
+);
 
 
-
-export default Button
+export default Button;

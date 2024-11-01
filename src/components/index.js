@@ -7,7 +7,7 @@ export { default as TextBox } from './atoms/TextBox/index';
 export { default as Divider } from './atoms/Divider';
 export { default as Typo } from './atoms/Typography';
 export { default as TextAreaBox } from './atoms/TextAreaBox';
-
+export { default as RotateTypo } from './atoms/RotateTypo/RotateTypo.jsx';
 //MOLECULE
 
 //ORGANiSM
