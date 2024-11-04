@@ -1,48 +1,51 @@
 import React, { useState } from 'react';
-import { Image, RotateTypo } from "../../index.js"
+import { Image, RotateTypo, Button } from "../../index.js"
 import { useNavigate } from 'react-router-dom';
-import { HomeLayout, HomePageWrapper, HomeWrapper, RowWrapper, FirstRowItem, TextContainer, MainText, SubText, Card, SearchBar, SearchInput, ButtonGroup, Button, SecondRowItem } from './HomeContent.styles.js';
+import {
+  HomeLayout, HomePageWrapper, FirstHomeWrapper, RowWrapper, FirstRowItem, TextContainer,
+  MainText, SubText, Card, SearchBar, SearchInput, ButtonGroup, SecondRowItem
+} from './HomeContent.styles.js';
 
 const HomeContent = () => {
   const navigate = useNavigate();
 
-  /**
-   * @type {Array<string>} 
-   * @description main Text에서 rotate되는 문자 배열로 나타낸것
-   */
-  const rotateText = ['AI Code Document', 'AI Chating', 'Read Me Editor']
 
 
 
-  //!SECTION - search
 
   return (
     <>
       <HomeLayout>
         {/* SECTION - Page1 */}
+
         <HomePageWrapper>
-          <HomeWrapper>
+          <FirstHomeWrapper>
             <RowWrapper>
               <FirstRowItem>
                 <TextContainer>
                   <MainText>Transform Your Code</MainText>
-                  <RotateTypo rotateText={rotateText}></RotateTypo>
+                  <RotateTypo></RotateTypo>
+                  <MainText>with AI-Powered Code Analysis!</MainText>
+
                 </TextContainer>
                 <SubText>Smart Docs for Smarter Development</SubText>
-
+                <Button btnType={"gradient"} size={'large'} >
+                  Repo 관리
+                </Button>
               </FirstRowItem>
               <SecondRowItem>
-
+                <Button btnType={"gradient"} size={'large'} >
+                  dfsdfsdfsdfdsfdsdf
+                </Button>
               </SecondRowItem>
             </RowWrapper>
-          </HomeWrapper >
+          </FirstHomeWrapper >
         </HomePageWrapper>
         {/* !SECTION - page1 */}
 
         {/* SECTION - page 2 */}
         <HomePageWrapper>
-          <HomeWrapper>
-          </HomeWrapper>
+
         </HomePageWrapper>
         {/* !SECTION - page 2 */}
 

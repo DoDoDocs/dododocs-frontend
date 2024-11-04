@@ -3,15 +3,15 @@ import styled, { css } from "styled-components";
 
 // 사이즈 스타일 상수
 const SIZE_STYLES = {
-    small: css`
+  small: css`
     padding: 2px 8px;
     font-size: 0.9rem;
   `,
-    medium: css`
+  medium: css`
     padding: 8px 16px;
     font-size: 1.1rem;
   `,
-    large: css`
+  large: css`
     padding: 12px 20px;
     font-size: 1.2rem;
   `
@@ -19,28 +19,31 @@ const SIZE_STYLES = {
 
 // 버튼 타입별 스타일 상수
 const BUTTON_VARIANTS = {
-    primary: css`
-    background-color: #0d7000;
-    border: #0d7000 1px solid;
-    border-radius: 3px;
+  gradient: css`
+    background:${({ theme }) => theme.gradients.values.primary};
+    border: 0 solid transparent;
+    border-radius: 8px;
     color: #FFFFFF;
-    font-weight: bold;
+    
+    text-decoration : none;
+    letter-spacing : .5px;
+
   `,
-    text: css`
+  text: css`
     background-color: rgba(255, 255, 255, 0);
     border: #0d7000 1px solid;
     border-radius: 3px;
     outline: 0;
     color: #063600;
   `,
-    black: css`
+  black: css`
     background-color: #020202;
     border: #020202 1px solid;
     border-radius: 3px;
     outline: 0;
     color: #ffffff;
   `,
-    gradient: css`
+  gradientLine: css`
     position: relative;
     background: transparent;
     border: none;
@@ -89,7 +92,7 @@ const BUTTON_VARIANTS = {
       }
     }
   `,
-    default: css`
+  default: css`
     background-color: #e9e9e9;
     border: none;
     border-radius: 3px;
@@ -123,32 +126,32 @@ const ButtonComponent = styled.button`
 `;
 
 const Button = ({
-    children,
-    size = 'medium',
-    btnType = 'default',
-    block = false,
-    bold = false,
-    width,
-    onClick,
-    style,
-    disabled = false,
-    type = 'button',
-    ...props
+  children,
+  size = 'medium',
+  btnType = 'default',
+  block = false,
+  bold = false,
+  width,
+  onClick,
+  style,
+  disabled = false,
+  type = 'button',
+  ...props
 }) => (
-    <ButtonComponent
-        type={type}
-        size={size}
-        $btnType={btnType}
-        block={block}
-        bold={bold}
-        width={width}
-        onClick={onClick}
-        style={style}
-        disabled={disabled}
-        {...props}
-    >
-        {children}
-    </ButtonComponent>
+  <ButtonComponent
+    type={type}
+    size={size}
+    $btnType={btnType}
+    block={block}
+    bold={bold}
+    width={width}
+    onClick={onClick}
+    style={style}
+    disabled={disabled}
+    {...props}
+  >
+    {children}
+  </ButtonComponent>
 );
 
 

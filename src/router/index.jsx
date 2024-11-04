@@ -5,7 +5,7 @@ import { Navigate, BrowserRouter as Router, Routes, Route } from 'react-router-d
 // import { selectUserRole } from '../entities/user/index.js';
 // import { notification } from 'antd';
 import Home from './HomeRouter.jsx';
-
+import Docs from './DocsRouter.jsx';
 // const ProtectedRoute = ({ children, allowedRoles }) => {
 //   const role = useSelector(selectUserRole);
 //   if (allowedRoles && !allowedRoles.includes(role)) {
@@ -25,7 +25,7 @@ function App() {
       {/* <Suspense fallback={<div>Loading...</div>}> */}
       <Routes>
         <Route path="/" element={<Home />} />
-
+        <Route path="/docs" element={<Docs />} />
 
         {/* <Route path="/mypage" element={
           <ProtectedRoute allowedRoles={['USER', "GUEST"]}>

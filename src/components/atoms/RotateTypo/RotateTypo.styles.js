@@ -1,4 +1,4 @@
-import styled, { css, keyframes } from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 const rotateIn = keyframes`
   0% {
@@ -68,9 +68,9 @@ export const RotateWords = styled.span`
   transform: rotateX(180deg);
   transform-origin: 50% 100%;
 
-  opacity: ${(props) => (props.isVisible ? 1 : 0)};
-  transform: ${(props) => (props.isVisible ? 'rotateX(0deg)' : 'rotateX(180deg)')};
-  animation: ${(props) => (props.isVisible ? rotateIn : rotateOut)} 1.2s;
-
+  opacity: ${(props) => (props.$isVisible ? 1 : 0)};
+  transform: ${(props) => (props.$isVisible ? 'rotateX(0deg)' : 'rotateX(180deg)')};
+  animation: ${(props) => (props.$isVisible ? rotateIn : rotateOut)} 1.5s;
+  display: ${(props) => (props.$isPrevVisible || props.$isVisible ? 'flex' : `none`)};
   line-height: 1.2; // 라인 높이 조정
 `;

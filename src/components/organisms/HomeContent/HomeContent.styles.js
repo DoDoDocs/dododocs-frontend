@@ -47,20 +47,14 @@ export const HomePageWrapper = styled.div`
   /* border: 1px solid red; */
 `;
 
-export const HomeWrapper = styled.div`
+export const FirstHomeWrapper = styled.div`
   position: relative;
   width: 95dvw;
-  height: 93dvh;
+  height: calc(100dvh - ${_.HEADER.TOTAL_DVH}dvh);
   border-radius: 50px;
 
   display: grid;
-  grid-template-rows: ${_.HEADER.HEIGHT_DVH} auto;
-  /* background: linear-gradient(
-    338deg,
-    rgba(215, 222, 214, 1) 38%,
-    rgba(228, 229, 213, 1) 55%,
-    rgba(247, 247, 245, 1) 84%
-  ); */
+  grid-template-rows: ${_.HEADER.TOTAL_DVH}dvh auto;
 `;
 
 export const RowWrapper = styled.div`
@@ -98,14 +92,14 @@ export const TextContainer = styled.div`
   font-weight: bold;
   gap: 1rem;
   text-align: center;
-  position: relative;
-
+  /* position: relative; */
+  /* 
   &::after {
     content: 'with AI-Powered Code Analysis!';
     display: block;
     font-size: 0.8em;
     animation: ${fadeIn} 1s ease-out forwards;
-  }
+  } */
 `;
 
 export const MainText = styled.span`
@@ -130,19 +124,8 @@ export const SubText = styled.span`
   letter-spacing: 2px;
 `;
 
-export const Title = styled.h1`
-  margin: 0;
-  position: relative;
-`;
-
-export const Subtitle = styled.h1`
-  margin: 0;
-  position: relative;
-  left: 100px; /* Adjust this value to move "아가씨" to the right */
-`;
-
 export const SecondRowItem = styled.div`
-  grid-row: 2; // 첫 번째 열에 위치
+  grid-row: 2; // 두 번째 열에 위치
   width: 100%;
   height: 100%;
   display: flex;

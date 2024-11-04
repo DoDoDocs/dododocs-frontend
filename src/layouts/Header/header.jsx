@@ -5,15 +5,13 @@ import { Row, Col } from "../index.js"
 import headerIcon from "../../assets/icons/dododocs_Icon.png"
 import { ReactComponent as SearchIcon } from '../../assets/svg/searchIcon.svg';
 
-import Modal from '@mui/material/Modal';
-import Box from '@mui/material/Box';
 
 import { SenHeader, LayoutHeaderWrapper, HeaderWrapper, IconHeader, SearchWrapper, IconHeaderButton, VerticalDivider, CategoryBox, LoginBtnBox, LoginValueBtn, LoginButton } from "./header.styles.js"
 import { useDispatch, useSelector } from "react-redux";
 // import { selectIsUserInitialized } from "../../entities/session/index.js";
 
 
-const HomeHeader = ({ role, isEnded = true, onFlashClick }) => {
+const HomeHeader = ({ role }) => {
   const location = useLocation();
   // const logined = useSelector(selectIsUserInitialized);
   const name = '채은';
@@ -22,13 +20,6 @@ const HomeHeader = ({ role, isEnded = true, onFlashClick }) => {
   const sentinelRef = useRef(null);
 
   useEffect(() => {
-
-    // 홈 페이지가 아닐 경우 scrolled를 true로 설정
-    if (location.pathname !== '/') {
-      setScrolled(true);
-      return; // 홈이 아니면 observer를 설정하지 않음
-    }
-
     const sentinel = sentinelRef.current;
 
     const observer = new IntersectionObserver(
@@ -52,7 +43,7 @@ const HomeHeader = ({ role, isEnded = true, onFlashClick }) => {
     };
   }, [location.pathname]);
 
-  console.log(isEnded, scrolled)
+  console.log(scrolled)
 
 
   //!SECTION
@@ -245,7 +236,7 @@ const HomeHeader = ({ role, isEnded = true, onFlashClick }) => {
                   <Typo fontFamily={'Roboto'} weight={100} size={'32px'} isGradient>Dododocs</Typo>
                 </Col>
                 <Col xs={8} sm={8} md={8} lg={8} xl={8} xxl={8} span={8} justify={"space-evenly"} align={"center"}>
-                  <CategoryBox onClick={() => navigate("/collections")}>AI Code document</CategoryBox>
+                  <CategoryBox onClick={() => navigate("/docs")}>AI Code document</CategoryBox>
                   <CategoryBox onClick={() => navigate("/collections/signature")} >AI chatting</CategoryBox>
                   <CategoryBox onClick={() => navigate("/collections/signature")} >Read Me Editor</CategoryBox>
 
@@ -257,23 +248,16 @@ const HomeHeader = ({ role, isEnded = true, onFlashClick }) => {
 
 
                 {
-                  !isEnded && name ?
+                  name ?
                     <Col md={9} span={9} justify={"flex-end"} align={"center"} style={{ paddingRight: "2rem" }}>
                       <Typo size={'1.2rem'} color={"#545454"}>환영합니다. {name}님 </Typo>
                     </Col>
                     :
-                    <Col md={9} span={10}>
-
-                      <SearchWrapper $isEnded={isEnded}>
-                        <TextBox value={''} onChange={searchIconOnChange} onKeyPress={onKeyPressSearch} placeholder={"검색어를 입력해 주세요"}></TextBox>
-                        {/* <SearchOutlinedIcon style={{ fontSize: "2rem", marginRight: "1rem", color: "#0d7000", cursor: "pointer" }} /> */}
-                        <SearchIcon onClick={searchSubmitOnClick} cursor={"pointer"} color={"#0d7000"} width={"2rem"} height={"2rem"} style={{ marginRight: "1rem" }} ></SearchIcon>
-                      </SearchWrapper>
-                    </Col>
+                    null
                 }
                 <Col md={3} span={2}>
                   <Button onClick={doingLogin}
-                    btnType={"gradient"} size={'large'} $bold
+                    btnType={"gradientLine"} size={'large'} $bold
                   >Repo 관리
                   </Button>
                 </Col>

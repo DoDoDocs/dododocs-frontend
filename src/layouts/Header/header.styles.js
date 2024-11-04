@@ -5,7 +5,7 @@ import _ from '../../config/index.js';
 export const SenHeader = styled.div`
   position: fixed;
   top: 0;
-  height: 3.5dvh;
+  height: ${_.HEADER.T_DVH}dvh;
   width: calc(100dvw - (100dvw - 100%));
   z-index: 22;
   transition: all 0.3s ease;
@@ -21,10 +21,10 @@ export const LayoutHeaderWrapper = styled.div`
   justify-content: center;
   display: flex;
   align-items: center;
-  height: ${_.HEADER.HEIGHT_DVH};
+  height: ${_.HEADER.HEIGHT_DVH}dvh;
   box-sizing: border-box;
   position: fixed;
-  top: 3.5dvh;
+  top: ${_.HEADER.T_DVH}dvh;
   z-index: 20;
   transition: background-color 0.3s ease;
   ${(props) =>
