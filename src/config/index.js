@@ -1,4 +1,4 @@
-import { LAYOUT } from './constants.js';
+import { LAYOUT, QUERY_KEYS } from './constants.js';
 
 const environmentConfig = {
   development: {
@@ -15,6 +15,7 @@ const environmentConfig = {
 
 export const config = {
   ...LAYOUT,
+  ...QUERY_KEYS,
   ...environmentConfig[process.env.NODE_ENV || 'development'],
 };
 

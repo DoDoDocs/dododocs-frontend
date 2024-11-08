@@ -9,3 +9,22 @@ export const LAYOUT = {
     Z_INDEX: 100,
   },
 };
+
+// 쿼리 키 상수
+export const QUERY_KEYS = {
+  AUTH: {
+    ROOT: ['auth'],
+    USER: ['auth', 'user'],
+    TOKEN: ['auth', 'token'],
+  },
+  USERS: {
+    ROOT: ['users'],
+    PROFILE: (userId) => ['users', userId, 'profile'],
+    PREFERENCES: (userId) => ['users', userId, 'preferences'],
+  },
+  POSTS: {
+    ROOT: ['posts'],
+    DETAIL: (postId) => ['posts', postId],
+    COMMENTS: (postId) => ['posts', postId, 'comments'],
+  },
+};

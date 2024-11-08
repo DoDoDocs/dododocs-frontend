@@ -1,16 +1,16 @@
 
 import React from "react";
 import { Header } from "../../layouts/index.js"
-import { HomeContent } from "../../components/index.js"
-const Home = () => {
+import { LoginContent } from "../../components/index.js"
+const Login = () => {
 
   return (
     <>
       <Header></Header>
-      <HomeContent />
+      <LoginContent />
 
     </>
   );
 };
 
-export default Home;
+export default Login;
