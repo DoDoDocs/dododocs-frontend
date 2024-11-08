@@ -4,7 +4,7 @@ import useAuthStore from '../store/authStore.js';
 // Axios 인스턴스 생성
 const api = axios.create({
   // API 기본 URL 설정 (환경 변수 사용)
-  baseURL: 'https://kcfaa61d53ebba.user-app.krampoline.com/',
+  baseURL: process.env.REACT_APP_API_BASE_URL,
 });
 
 // 요청 인터셉터 설정 (인증 토큰 추가)
