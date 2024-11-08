@@ -15,9 +15,7 @@ const useAuthStore = create(
         //초기상태정의
         token: null, // JWT토큰
         user: null, // 사용자 정보
-        isAuthenticated: false, // 로그인 여부
-        isInitialized: false, // 앱 초기화 여부
-        error: null, // 에러 상태
+        isAuthenticated: false, // 앱 초기화 상태
       },
 
       //액션 정의

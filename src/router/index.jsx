@@ -1,11 +1,10 @@
 //TODO ProtectedRoute by role 
 import React, { Suspense, lazy } from 'react';
 import { Navigate, BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-// import { useSelector } from 'react-redux';
-// import { selectUserRole } from '../entities/user/index.js';
 // import { notification } from 'antd';
 import Home from './HomeRouter.jsx';
 import Docs from './DocsRouter.jsx';
+import Login from "./LoginRouter.jsx"
 // const ProtectedRoute = ({ children, allowedRoles }) => {
 //   const role = useSelector(selectUserRole);
 //   if (allowedRoles && !allowedRoles.includes(role)) {
@@ -26,6 +25,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/docs" element={<Docs />} />
+        <Route path="/login" element={<Login />} />
 
         {/* <Route path="/mypage" element={
           <ProtectedRoute allowedRoles={['USER', "GUEST"]}>

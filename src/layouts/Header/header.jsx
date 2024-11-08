@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom"
 import { Image, Typo, TextBox, Button } from "../../components/index.js";
 import { Row, Col } from "../index.js"
 import headerIcon from "../../assets/icons/dododocs_Icon.png"
-import { useAuthStore } from "../../store/authStore.js"
+import useAuthStore from "../../store/authStore.js"
 
 import {
   SenHeader, LayoutHeaderWrapper, HeaderWrapper, IconHeader, SearchWrapper, IconHeaderButton,
@@ -14,10 +14,7 @@ import {
 
 const HomeHeader = ({ role }) => {
   // 여러 상태 한번에 가져오기
-  const { user, isInitialized } = useAuthStore(state => ({
-    user: state.user,
-    isAuthenticated: state.isAuthenticated
-  }));
+  const { user } = useAuthStore()
 
   const location = useLocation();
   // const logined = useSelector(selectIsUserInitialized);
