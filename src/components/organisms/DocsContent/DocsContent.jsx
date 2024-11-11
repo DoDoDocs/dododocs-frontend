@@ -1,40 +1,93 @@
 import React, { useState } from 'react';
 import { Typo, Button } from "../../index.js"
-import { Check } from "lucide-react"
-import api from "../../../api/axios.js"
+import FlexSplitter from './FlexSplitter.jsx';
 import {
-  HomeWrapper, MainSectionWrapper, HomeLayout,
-  TextSectionWrapper, TextContainer, MainText, SubText,
-  MainImageSectionWrapper, BgShape, MainImageFrame,
-  MainFeatureSectionWrapper, MainFeatureSection, FeatureContentText, FeatureContentImage
-} from "../HomeContent/HomeContent.styles.js"
+  ContentStyle,
+  LeftPanelContent, RightPanelContent,
+  Item,
+  Title,
+  Content,
+  RightTitle, RightContent, RightContentWrapper
+} from "./DocsContent.styles.js"
+
+import ReactMarkdown from 'react-markdown'
+
+
+const markdownText = `
+# 안녕하세요!
+저는 현재 리액트에서 \`react-markdown\`를 이용하여 **마크다운**을 랜더링하고 있습니다.
+`;
+
 const DocsContent = () => {
-
-  const [testText, setTestText] = useState([])
-
-  const apiHandler = async () => {
-    const response = await api.get('/api/dbfind');
-    return response.data;
-  }
-
-  const handleTestClick = async () => {
-    const data = await apiHandler();
-    console.log(data)
-  }
-
 
   return (
     <>
+      <ContentStyle>
+        <div style={{ height: '98%', width: '98% ', paddingTop: '1.5dvh', display: 'flex', justifyContent: "space-between", gap: '1rem' }}>
+          <FlexSplitter>
+            <LeftPanelContent>
+              <RightTitle>왼쪽 패널</RightTitle>
+              <RightContentWrapper>
+                <RightContent>
+                  {Array.from({ length: 25 }).map((_, i) => (
+                    <Item key={i}>
+                      항목 {i + 1}
+                    </Item>
+                  ))}
+                </RightContent>
+              </RightContentWrapper>
+            </LeftPanelContent>
 
-      <TextContainer style={{ width: '100%', marginTop: '15rem' }}>
-        <Typo fontFamily={'Roboto'} weight={500} size={'3rem'} isGradient>of the 꼬</Typo>
-        <Typo fontFamily={'Roboto'} weight={500} size={'3rem'} isGradient> by the  꼬 </Typo>
-        <Typo fontFamily={'Roboto'} weight={500} size={'3rem'} isGradient> for the 꼬</Typo>
-        <Button onClick={handleTestClick} btnType={"gradientLine"} size={'large'} style={{ fontWeight: '400', width: "50%", padding: "1.2rem 1.2rem" }}>
-          시작하기
-        </Button>
-      </TextContainer>
+            <RightPanelContent>
+              <RightTitle>오른쪽 패널</RightTitle>
+              <RightContentWrapper>
+                <RightContent>
+                  {/* {Array.from({ length: 25 }).map((_, i) => (
+                    <Content key={i}>
+                      콘텐츠 {i + 1}
+                    </Content>
+                  ))} */}
+                  <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+                    <div style={{ maxWidth: "768px", width: "100%" }}>
+                      <ReactMarkdown>
+                        {markdownText}
+                      </ReactMarkdown>
+                    </div>
+                  </div>
+                </RightContent>
+              </RightContentWrapper>
+            </RightPanelContent>
+          </FlexSplitter>
 
+          <FlexSplitter position={'right'}>
+            <LeftPanelContent>
+              <RightTitle>왼쪽 패널</RightTitle>
+              <RightContentWrapper>
+                <RightContent>
+                  {Array.from({ length: 25 }).map((_, i) => (
+                    <Item key={i}>
+                      항목 {i + 1}
+                    </Item>
+                  ))}
+                </RightContent>
+              </RightContentWrapper>
+            </LeftPanelContent>
+
+            <RightPanelContent>
+              <RightTitle>오른쪽 패널</RightTitle>
+              <RightContentWrapper>
+                <RightContent>
+                  {Array.from({ length: 25 }).map((_, i) => (
+                    <Content key={i}>
+                      콘텐츠 {i + 1}
+                    </Content>
+                  ))}
+                </RightContent>
+              </RightContentWrapper>
+            </RightPanelContent>
+          </FlexSplitter>
+        </div>
+      </ContentStyle>
     </>
   )
 }

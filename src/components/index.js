@@ -14,3 +14,4 @@ export { default as RotateTypo } from './atoms/RotateTypo/RotateTypo.jsx';
 export { default as HomeContent } from './organisms/HomeContent/HomeContent.jsx';
 export { default as DocsContent } from './organisms//DocsContent/DocsContent.jsx';
 export { default as LoginContent } from './organisms/LoginContent/LoginContent.jsx';
+export { default as ChattingContent } from './organisms/ChattingContent/ChattingContent.jsx';
