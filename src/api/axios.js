@@ -5,6 +5,10 @@ import useAuthStore from '../store/authStore.js';
 const api = axios.create({
   // API 기본 URL 설정 (환경 변수 사용)
   baseURL: process.env.REACT_APP_API_BASE_URL,
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
 // 요청 인터셉터 설정 (인증 토큰 추가)
@@ -26,9 +30,9 @@ api.interceptors.request.use(
     }
     return config;
   },
-  // (error) => {
-  //   return Promise.reject(error);
-  // },
+  (error) => {
+    return Promise.reject(error);
+  },
 );
 
 // 응답 인터셉터: 에러 처리

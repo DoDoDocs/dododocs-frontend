@@ -28,9 +28,9 @@ const DocsContent = () => {
     <>
 
       <TextContainer style={{ width: '100%', marginTop: '15rem' }}>
-        <Typo fontFamily={'Roboto'} weight={500} size={'3rem'} isGradient>of the 꼬</Typo>
-        <Typo fontFamily={'Roboto'} weight={500} size={'3rem'} isGradient> by the  꼬 </Typo>
-        <Typo fontFamily={'Roboto'} weight={500} size={'3rem'} isGradient> for the 꼬</Typo>
+        <Typo fontFamily={'Roboto'} weight={500} size={'3rem'} $isGradient>of the 꼬</Typo>
+        <Typo fontFamily={'Roboto'} weight={500} size={'3rem'} $isGradient> by the  꼬 </Typo>
+        <Typo fontFamily={'Roboto'} weight={500} size={'3rem'} $isGradient> for the 꼬</Typo>
         <Button onClick={handleTestClick} btnType={"gradientLine"} size={'large'} style={{ fontWeight: '400', width: "50%", padding: "1.2rem 1.2rem" }}>
           시작하기
         </Button>

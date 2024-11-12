@@ -1,3 +1,4 @@
+// src/components/organisms/HomeContent/HomeContent.jsx
 import React, { useState } from 'react';
 import { Image, RotateTypo, Button, Typo } from "../../index.js"
 import { useNavigate } from 'react-router-dom';
@@ -16,9 +17,12 @@ import {
 } from "./HomeContent.styles.js"
 
 const DocsContent = () => {
+  const navigate = useNavigate();
 
-
-
+  const handleStartClick = () => {
+    console.log("dkjdkd")
+    return navigate('/login')
+  }
 
 
   return (
@@ -42,7 +46,9 @@ const DocsContent = () => {
 
                 </Col>
                 <Col span={12} justify={'center'} style={{ marginTop: "4rem" }}>
-                  <Button btnType={"gradient"} size={'large'} style={{ width: "30%", padding: "20px 0" }}>
+                  <Button btnType={"gradient"} size={'large'} style={{ width: "30%", padding: "20px 0", zIndex: "1000" }}
+                    onClick={handleStartClick}
+                  >
                     Dododocs 시작하기
                   </Button>
                 </Col>
@@ -71,7 +77,7 @@ const DocsContent = () => {
 
           {/* SECTION - main 기능 소개*/}
           <MainFeatureSectionWrapper>
-            <Typo fontFamily={'Roboto'} weight={300} size={'1.5rem'} isGradient>Save hours of manually writing code documentation</Typo>
+            <Typo fontFamily={'Roboto'} weight={300} size={'1.5rem'} $isGradient>Save hours of manually writing code documentation</Typo>
             <Typo fontFamily={'Roboto'} color={'#ffffff'} weight={500} size={'clamp(2rem, 1.8rem + 1.5vw, 3rem)'} style={{ textAlign: 'center' }} >Elevate your code <br /> with AI </Typo>
             <MainFeatureSection>
               <FeatureContentText>
@@ -149,7 +155,7 @@ const DocsContent = () => {
         </HomeLayout>
 
         <MainFeatureSectionWrapper>
-          <Typo fontFamily={'Roboto'} weight={100} size={'32px'} isGradient>Dododocs</Typo>
+          <Typo fontFamily={'Roboto'} weight={100} size={'32px'} $isGradient>Dododocs</Typo>
         </MainFeatureSectionWrapper>
 
       </HomeWrapper>

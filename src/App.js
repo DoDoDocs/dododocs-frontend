@@ -23,22 +23,26 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-  const { token, isInitialized, checkInitialAuth, error } = useAuthStore();
+  const {
+    isInitialized, // 앱 초기화 상태
+    checkInitialAuth, // 초기화 함수
+    error, // 에러 상태
+  } = useAuthStore();
 
   useEffect(() => {
     const initializeAuth = async () => {
       // 토큰이 있고 아직 초기화되지 않았을 때만 실행
-      if (token && !isInitialized) {
+      if (!isInitialized) {
         try {
           await checkInitialAuth();
         } catch (error) {
-          console.error('인증 초기화 실패:', error);
+          console.error('토큰은 있으나 인증 초기화 실패:', error);
         }
       }
     };
 
     initializeAuth();
-  }, [token, isInitialized, checkInitialAuth]);
+  }, [isInitialized, checkInitialAuth]);
 
   // 앱이 초기화되지 않았을 때 로딩 표시
   if (!isInitialized) {
@@ -49,7 +53,7 @@ function App() {
   //TODO notification으로 변경
   // 인증 관련 에러가 있을 때 에러 메시지 표시
   if (error) {
-    return <div>Error: {error}</div>;
+    console.log(`❌ ${error}`);
   }
 
   return (

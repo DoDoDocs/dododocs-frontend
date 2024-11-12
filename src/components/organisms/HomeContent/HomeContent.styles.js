@@ -1,3 +1,4 @@
+//  src/components/organisms/HomeContent/HomeContent.styles.js
 import styled from 'styled-components';
 import bgBannerImg from '../../../assets/images/main-banner-bg.cb7bf167.png';
 import bgSliderBgImg from '../../../assets/images/slider-main-bg.png';

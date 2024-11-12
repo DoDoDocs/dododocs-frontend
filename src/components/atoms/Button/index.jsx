@@ -129,12 +129,12 @@ const Button = ({
   children,
   size = 'medium',
   btnType = 'default',
-  block = false,
-  bold = false,
+  block,
+  bold,
   width,
   onClick,
   style,
-  disabled = false,
+  disabled,
   type = 'button',
   ...props
 }) => (

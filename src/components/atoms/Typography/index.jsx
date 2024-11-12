@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 const getGradientStyles = (props) => {
-    if (!props.isGradient) return null;
+    if (!props.$isGradient) return null;
 
     return `
       background: ${props.theme.gradients.values.primary};
@@ -45,7 +45,7 @@ const Typography = ({ size, color, onClick, radius, fontFamily, full, width, tex
             <Typo size={size} color={color} onClick={onClick} fontFamily={fontFamily} width={width} style={style}
                 radius={radius} backColor={backColor} $weight={weight} full={full} $textAlign={textAlign}
                 children={children} opacity={opacity} cursor={cursor} border={border} $padding={padding}
-                isGradient={isGradient} gradientStart={gradientStart} gradientEnd={gradientEnd}>
+                $isGradient={isGradient} gradientStart={gradientStart} gradientEnd={gradientEnd}>
             </Typo>
         </>
     )

@@ -47,13 +47,10 @@ const DocsContent = () => {
                       콘텐츠 {i + 1}
                     </Content>
                   ))} */}
-                  <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-                    <div style={{ maxWidth: "768px", width: "100%" }}>
-                      <ReactMarkdown>
-                        {markdownText}
-                      </ReactMarkdown>
-                    </div>
-                  </div>
+                  <ReactMarkdown>
+                    {markdownText}
+                  </ReactMarkdown>
+
                 </RightContent>
               </RightContentWrapper>
             </RightPanelContent>

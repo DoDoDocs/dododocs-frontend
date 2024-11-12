@@ -159,7 +159,7 @@ const HomeHeader = ({ role }) => {
     <>
 
       <div ref={sentinelRef} style={{ position: 'absolute', top: '2.5dvh', height: '1px', width: '100%' }} />
-      <SenHeader data-scrolled={scrolled} isHome={location.pathname !== '/'}>
+      <SenHeader data-scrolled={scrolled} $isHome={location.pathname !== '/'}>
         {
           false ?
 
@@ -200,7 +200,7 @@ const HomeHeader = ({ role }) => {
             <Col span={7} align={"center"}>
               <Row align={"center"}>
                 <Col xs={4} sm={3} span={3} align={"center"}>
-                  <Typo fontFamily={'Roboto'} weight={100} size={'32px'} isGradient>Dododocs</Typo>
+                  <Typo fontFamily={'Roboto'} weight={100} size={'32px'} $isGradient>Dododocs</Typo>
                 </Col>
                 <Col xs={8} sm={8} md={8} lg={8} xl={8} xxl={8} span={8} justify={"space-evenly"} align={"center"}>
                   <CategoryBox onClick={() => navigate("/docs")}>AI Code document</CategoryBox>
