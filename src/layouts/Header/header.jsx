@@ -102,7 +102,6 @@ const HomeHeader = ({ role }) => {
 
   const doingLogin = () => {
     console.log('repo')
-    userAPI.getPreferences();
   }
 
 
