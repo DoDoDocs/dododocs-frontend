@@ -12,15 +12,15 @@ const OAuthCallback = () => {
     const processCallback = async () => {
       const params = new URLSearchParams(window.location.search);
       const code = params.get('code');
-      console.log(code);
+      console.log(`⭐️ 코드 가져오기 성공 code : `, code);
       if (code) {
         const success = await handleCallback(code);
         if (success) {
           const returnUrl = localStorage.getItem('returnUrl') || '/';
           localStorage.removeItem('returnUrl');
-          navigate(returnUrl, { replace: true });
+          navigate('/', { replace: true });
         } else {
-          navigate('/login', { replace: true });
+          navigate('/', { replace: true });
         }
       }
     };

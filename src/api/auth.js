@@ -15,6 +15,7 @@ export const authAPI = {
    */
   getOAuthLink: async () => {
     try {
+      console.log('🏃 로그인 링크 가져오기,,,api요청 보냄,,,');
       const response = await api.get(AUTH_ENDPOINTS.GET_OAUTH_LINK);
       return response.data;
     } catch (error) {
@@ -26,7 +27,8 @@ export const authAPI = {
   // OAuth 로그인 처리
   login: async (code) => {
     try {
-      const response = await api.post(AUTH_ENDPOINTS.LOGIN, { code }, { timeout: 30000 });
+      console.log('🏃 로그인 처리,,,api요청 /api/auth/login 보냄,,,');
+      const response = await api.post(AUTH_ENDPOINTS.LOGIN, { code });
       return response.data;
     } catch (error) {
       console.error('Login failed:', error);

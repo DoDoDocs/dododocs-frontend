@@ -9,7 +9,7 @@ import {
   VerticalDivider, CategoryBox, LoginBtnBox, LoginValueBtn, LoginButton
 } from "./header.styles.js"
 // import { selectIsUserInitialized } from "../../entities/session/index.js";
-
+import { userAPI } from "../../api/index.js"
 
 const HomeHeader = ({ role }) => {
   // 여러 상태 한번에 가져오기
@@ -101,7 +101,8 @@ const HomeHeader = ({ role }) => {
   };
 
   const doingLogin = () => {
-    handleLoginModalOpen();
+    console.log('repo')
+    userAPI.getPreferences();
   }
 
 

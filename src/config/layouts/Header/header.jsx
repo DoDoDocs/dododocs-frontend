@@ -4,7 +4,7 @@ import { Image, Typo, TextBox, Button } from "../../components/index.js";
 import { Row, Col } from "../index.js"
 import headerIcon from "../../assets/icons/dododocs_Icon.png"
 import { ReactComponent as SearchIcon } from '../../assets/svg/searchIcon.svg';
-
+import { userAPI } from "../../api/index.js"
 
 import {
   SenHeader, LayoutHeaderWrapper, HeaderWrapper, IconHeader, SearchWrapper, IconHeaderButton,
@@ -100,7 +100,8 @@ const HomeHeader = ({ role }) => {
   };
 
   const doingLogin = () => {
-    handleLoginModalOpen();
+    console.log("repo")
+    userAPI.getPreferences();
   }
 
 
@@ -224,7 +225,7 @@ const HomeHeader = ({ role }) => {
                 <Col md={3} span={2}>
                   <Button onClick={doingLogin}
                     btnType={"gradientLine"} size={'large'} $bold
-                  >Repo 관리
+                  >Repo 관리!
                   </Button>
                 </Col>
               </Row>

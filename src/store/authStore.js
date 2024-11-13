@@ -64,15 +64,16 @@ const useAuthStore = create(
 
             //토큰이 있는 경우
             // 토큰으로 사용자 정보 가져오기
-            const userData = await userAPI.getProfile();
+            //TODO
+            // const userData = await userAPI.getProfile();
 
-            set({
-              token,
-              user: userData,
-              isAuthenticated: true, // 유효한 토큰으로 인증됨
-              isInitialized: true, // 앱 초기화 완료
-              error: null,
-            });
+            // set({
+            //   token,
+            //   user: userData,
+            //   isAuthenticated: true, // 유효한 토큰으로 인증됨
+            //   isInitialized: true, // 앱 초기화 완료
+            //   error: null,
+            // });
           } catch (error) {
             console.error('Auth initialization failed:', error);
             // 에러 발생시 인증 정보 초기화

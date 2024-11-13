@@ -13,7 +13,7 @@ const queryClient = new QueryClient({
       // staleTime: 1000 * 60 * 5,
 
       // API 호출 실패시 1번만 재시도
-      retry: 1,
+      retry: 0,
       // 브라우저 창이 다시 포커스될 때 자동으로 데이터를 다시 불러오지 않음
       refetchOnWindowFocus: false,
       // 네트워크가 다시 연결될 때 자동으로 재시도
