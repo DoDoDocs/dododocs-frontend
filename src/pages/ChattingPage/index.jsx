@@ -1,14 +1,13 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { Header } from "../../layouts/index.js"
-import { DocsContent } from "../../components/index.js"
-import _ from '../../config/index.js';
+import { ChattingContent } from "../../components/index.js"
 const Home = () => {
 
   return (
     <>
       <Header />
-      <DocsContent />
+      <ChattingContent />
 
     </>
   );

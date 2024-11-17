@@ -6,7 +6,6 @@ const Login = () => {
 
   return (
     <>
-      <Header></Header>
       <LoginContent />
 
     </>

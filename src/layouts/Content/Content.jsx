@@ -1,5 +1,6 @@
 import React, { memo } from "react"
 import styled from "styled-components"
+import _ from "../../config/index.js"
 
 const ContentStyle = styled.div`
     width: 100%;
@@ -9,17 +10,12 @@ const ContentStyle = styled.div`
     justify-content : center;
     margin : 0 auto;
     flex-wrap : wrap;
-    padding : 6vh 6.2vw;
     flex-direction: column;
     box-sizing: border-box;
-    background-color: inherit;
-  @media screen and (max-width: 1024px){
-    padding : 2.6vh 2.6vw;
-  }
-  @media screen and (max-width: 768px){
-    padding : 2.6vh 2vw;
-  }
-
+    padding: ${_.HEADER.TOTAL_DVH}dvh 
+         clamp(2vw, 6.2dvw, 6.2dvw) 
+         clamp(2.6vh, 6dvh, 6dvh) 
+         clamp(2vw, 6.2dvw, 6.2dvw);
 `
 
 const Content = ({ children, style }) => {

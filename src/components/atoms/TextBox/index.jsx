@@ -1,7 +1,24 @@
 import React, { useRef, useEffect } from "react"
-import styled from "styled-components"
+import styled, { css } from "styled-components"
 
-export const Text = styled.input.attrs(props => ({ type: (props.$type) || "text" }))`
+const planeStyle = css`
+ display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 30%;
+  height: 2.5rem;
+  padding-left: 1rem;
+  border: 1px solid rgba(63, 63, 70, 0.7);
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border 0.3s ease;
+  &:focus {
+    border: 1px solid #a25cff;
+}
+`
+
+
+const Text = styled.input.attrs(props => ({ type: (props.$type) || "text" }))`
 display : flex;
 width: 95%;
   border: none;
@@ -9,7 +26,7 @@ width: 95%;
   /* padding-left: 1rem; */
   background: none;
   font-family: inherit;
-  color : ${props => (props.color) || ` #333`};
+  color : ${props => (props.color) || ` #bcc3d7`};
   outline: 0;
 ::placeholder {
     color : #999;
@@ -27,36 +44,9 @@ text-align : ${props => (props.align) || null};
 ${props => (props.disabled) ? `background-color: rgba(0,0,0,0)` : null};
 
 
-${props => (props.plane) ? `
-padding: 4px 11px;
-color: #000000d9;
-background-color: #fff;
-    background-image: none;
-    border: 1px solid #d9d9d9;
-    border-radius: 2px;
-    outline: 0;
-    transition: all .3s;
-    box-shadow: 0 0 0 2px #E4EBF5;
-    &:selection {
-    color: #fff;
-    background: #1890ff;;
-};
-    &:hover{
-        box-shadow: 0 0 0 1px #c8d0e7;
-        border-color: #bec8e4;
-    border-right-width: 1px!important;
-    };
-    &:focus{
-        border-color: #bec8e4;
-    box-shadow: 0 0 0 2px #E4EBF5;
-    border-right-width: 1px!important;
-    outline: 0;
-    box-shadow: inset 0.2rem 0.2rem 0.5rem #c8d0e7, inset -0.2rem -0.2rem 0.5rem #FFFFFF;
-  
-    }
-    
-`: null};
+
 ${props => (props.block) ? `width : 90%;` : null};
+${props => (props.plane) ? planeStyle : null};
 `
 
 /**
@@ -68,9 +58,8 @@ ${props => (props.block) ? `width : 90%;` : null};
  * @param placeholder 값입력 전 입력을 돕기위한 힌트
  * @param disabled textbox 비활성화
  * @param align 텍스트 정렬
- * @param plane plane style
  */
-const TextBox = ({ onKeyPress, type, autofocus, block, plane, value, onChange, placeholder, disabled, align, color }) => {
+const TextBox = ({ onKeyPress, type, plane, autofocus, block, value, onChange, placeholder, disabled, align, color }) => {
     const textRef = useRef();
 
     useEffect(() => {
@@ -85,10 +74,10 @@ const TextBox = ({ onKeyPress, type, autofocus, block, plane, value, onChange, p
             <Text $type={type}
                 $align={align}
                 $color={color}
-                $plane={plane}
                 $block={block}
                 $disabled={disabled}
                 ref={textRef}
+                plane={plane}
                 onKeyPress={onKeyPress}
                 value={value}
                 onChange={onChange}

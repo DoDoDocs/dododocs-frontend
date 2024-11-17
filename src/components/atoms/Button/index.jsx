@@ -29,6 +29,13 @@ const BUTTON_VARIANTS = {
     letter-spacing : .5px;
 
   `,
+  primary: css`
+  background-color: #470070;
+    border: #470070 1px solid;
+    border-radius: 3px;
+    outline: 0;
+    color: #ffffff;
+  `,
   text: css`
     background-color: rgba(255, 255, 255, 0);
     border: #0d7000 1px solid;
@@ -129,12 +136,12 @@ const Button = ({
   children,
   size = 'medium',
   btnType = 'default',
-  block = false,
-  bold = false,
+  block,
+  bold,
   width,
   onClick,
   style,
-  disabled = false,
+  disabled,
   type = 'button',
   ...props
 }) => (

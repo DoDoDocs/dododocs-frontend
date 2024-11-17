@@ -13,7 +13,7 @@ export const userAPI = {
   },
 
   getPreferences: async () => {
-    const response = await api.get('/users/preferences');
+    const response = await api.get('/api/member/repos');
     return response.data;
   },
 };

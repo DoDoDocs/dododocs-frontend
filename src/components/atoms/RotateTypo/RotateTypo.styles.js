@@ -1,3 +1,4 @@
+// src/components/atoms/RotateTypo/RotateTypo.styles.js
 import styled, { keyframes } from 'styled-components';
 
 const rotateIn = keyframes`

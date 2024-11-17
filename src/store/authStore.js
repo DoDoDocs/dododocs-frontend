@@ -1,6 +1,19 @@
+// src/store/authStore.js
 import { create } from 'zustand';
 import { combine, persist, createJSONStorage } from 'zustand/middleware';
 import { userAPI } from '../api';
+
+/**
+ * 초기 상태 정의
+ */
+const initialState = {
+  token: null, // JWT 토큰
+  user: null, // 사용자 정보
+  isAuthenticated: false, // 로그인 여부
+  isInitialized: false, // 앱 초기화 상태
+  error: null, // 에러 상태
+};
+
 /**
  * Zustand Store for Authentication
  * @returns {useAuthStore}
@@ -11,65 +24,69 @@ const useAuthStore = create(
   persist(
     //새로고침시에도 상태 유지.
     combine(
-      {
-        //초기상태정의
-        token: null, // JWT토큰
-        user: null, // 사용자 정보
-        isAuthenticated: false, // 앱 초기화 상태
-      },
+      initialState,
 
       //액션 정의
-      (set) => ({
+      (set, get) => ({
         // 로그인 성공시 호출되는 액션
-        setAuth: (token, user) => {
+        setAuth: (accessToken) => {
           set({
-            token,
-            user,
-            isAuthenticated: true,
+            token: accessToken,
+            user: null,
+            isAuthenticated: true, // 인증 상태를 true로
+            isInitialized: true, // 앱도 초기화 완료
+            error: null,
           });
         },
         // 로그아웃 성공시 호출되는 액션
         clearAuth: () => {
           set({
-            token: null,
-            user: null,
-            isAuthenticated: false,
+            ...initialState,
+            isInitialized: true, // 로그아웃해도 앱 초기화 상태는 유지
           });
         },
-
-        // 에러 상태 설정
-        setError: (error) => set({ error }),
 
         // 초기 인증 상태 체크
         checkInitialAuth: async () => {
           try {
             // 현재 저장된 토큰 가져오기
-            const token = useAuthStore.getState().token;
+            const token = get().token;
 
+            // 토큰이 없는 경우
             if (!token) {
-              set({ isInitialized: true });
+              set({
+                ...initialState,
+                isInitialized: true, // 초기화는 완료 처리
+                error: '토큰이 없습니다.',
+              });
               return;
             }
 
+            //토큰이 있는 경우
             // 토큰으로 사용자 정보 가져오기
-            const userData = await userAPI.getProfile();
+            //TODO
+            // const userData = await userAPI.getProfile();
 
-            set({
-              user: userData,
-              isInitialized: true,
-              error: null,
-            });
+            // set({
+            //   token,
+            //   user: userData,
+            //   isAuthenticated: true, // 유효한 토큰으로 인증됨
+            //   isInitialized: true, // 앱 초기화 완료
+            //   error: null,
+            // });
           } catch (error) {
-            console.error('Auth check failed:', error);
+            console.error('Auth initialization failed:', error);
             // 에러 발생시 인증 정보 초기화
             set({
-              token: null,
-              user: null,
-              isInitialized: true,
-              error: '인증에 실패했습니다.',
+              ...initialState,
+              isInitialized: true, // 초기화는 완료 처리
+              error: '인증에 실패했습니다.(토큰 존재 , 초기화완료)',
             });
           }
         },
+
+        // 에러 상태 설정
+        setError: (error) => set({ error }),
       }),
     ),
     {

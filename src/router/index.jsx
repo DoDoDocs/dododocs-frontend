@@ -5,6 +5,10 @@ import { Navigate, BrowserRouter as Router, Routes, Route } from 'react-router-d
 import Home from './HomeRouter.jsx';
 import Docs from './DocsRouter.jsx';
 import Login from "./LoginRouter.jsx"
+import Chatting from "./ChattingRouter.jsx";
+import OAuthCallback from "./OAuthCallbackRouter.jsx"
+import Repo from "./RepoRouter.jsx"
+
 // const ProtectedRoute = ({ children, allowedRoles }) => {
 //   const role = useSelector(selectUserRole);
 //   if (allowedRoles && !allowedRoles.includes(role)) {
@@ -26,6 +30,9 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/docs" element={<Docs />} />
         <Route path="/login" element={<Login />} />
+        <Route path='/callback/github' element={<OAuthCallback />} />
+        <Route path="/chatting" element={<Chatting />} />
+        <Route path="/repositories" element={<Repo />} />
 
         {/* <Route path="/mypage" element={
           <ProtectedRoute allowedRoles={['USER', "GUEST"]}>

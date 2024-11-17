@@ -11,7 +11,7 @@ export const SenHeader = styled.div`
   transition: all 0.3s ease;
   background-color: #14152133;
   backdrop-filter: blur(40px);
-  opacity: ${(props) => (props['data-scrolled'] ? 1 : 0)};
+  opacity: ${(props) => (props['data-scrolled'] || props.isHome ? 1 : 0)};
 `;
 
 export const LayoutHeaderWrapper = styled.div`
