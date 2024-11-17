@@ -28,7 +28,9 @@ export const authAPI = {
   login: async (code) => {
     try {
       console.log('🏃 로그인 처리,,,api요청 /api/auth/login 보냄,,,');
-      const response = await api.post(AUTH_ENDPOINTS.LOGIN, { code });
+      const response = await api.post(AUTH_ENDPOINTS.LOGIN, {
+        code: code.toString().trim(), // 코드 정제해서 전송
+      });
       return response.data;
     } catch (error) {
       console.error('Login failed:', error);

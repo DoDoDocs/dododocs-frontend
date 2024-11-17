@@ -49,7 +49,7 @@ export function useAuth() {
       console.log(`⭐️ 토큰 가져오기 성공 token : `, accessToken);
 
       // 토큰 저장 및 인증 상태 업데이트
-      // setAuth(accessToken);
+      setAuth(accessToken);
 
       return true;
     } catch (error) {

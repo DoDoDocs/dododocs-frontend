@@ -39,13 +39,13 @@ ${props => getGradientStyles(props)}
 
 const Typography = ({ size, color, onClick, radius, fontFamily, full, width, textAlign, style,
     backColor, children, opacity, weight, cursor, border, padding,
-    isGradient, gradientStart, gradientEnd }) => {
+    $isGradient, gradientStart, gradientEnd }) => {
     return (
         <>
             <Typo size={size} color={color} onClick={onClick} fontFamily={fontFamily} width={width} style={style}
                 radius={radius} backColor={backColor} $weight={weight} full={full} $textAlign={textAlign}
                 children={children} opacity={opacity} cursor={cursor} border={border} $padding={padding}
-                $isGradient={isGradient} gradientStart={gradientStart} gradientEnd={gradientEnd}>
+                $isGradient={$isGradient} gradientStart={gradientStart} gradientEnd={gradientEnd}>
             </Typo>
         </>
     )

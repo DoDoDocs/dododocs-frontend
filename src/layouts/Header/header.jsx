@@ -100,8 +100,10 @@ const HomeHeader = ({ role }) => {
     setOpenLoginModal(false)
   };
 
-  const doingLogin = () => {
-    console.log('repo')
+  const doingLogin = async () => {
+    console.log('repoo')
+    const res = await userAPI.getPreferences();
+    console.log(res)
   }
 
 
@@ -204,7 +206,7 @@ const HomeHeader = ({ role }) => {
                 </Col>
                 <Col xs={8} sm={8} md={8} lg={8} xl={8} xxl={8} span={8} justify={"space-evenly"} align={"center"}>
                   <CategoryBox onClick={() => navigate("/docs")}>AI Code document</CategoryBox>
-                  <CategoryBox onClick={() => navigate("/collections/signature")} >AI chatting</CategoryBox>
+                  <CategoryBox onClick={() => navigate("/chatting")} >AI chatting</CategoryBox>
                   <CategoryBox onClick={() => navigate("/collections/signature")} >Read Me Editor</CategoryBox>
 
                 </Col>
@@ -223,7 +225,7 @@ const HomeHeader = ({ role }) => {
                     null
                 }
                 <Col md={3} span={2}>
-                  <Button onClick={doingLogin}
+                  <Button onClick={() => { navigate("/repositories") }}
                     btnType={"gradientLine"} size={'large'} $bold
                   >Repo 관리
                   </Button>

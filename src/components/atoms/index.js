@@ -6,3 +6,4 @@ export { default as Divider } from './Divider/index.jsx';
 export { default as NumberField } from './NumberField/index.jsx';
 export { default as FileBox } from './FileBox/index.jsx';
 export { default as TextAreaBox } from './TextAreaBox/index.jsx';
+export { default as Table } from './Table/index.jsx';

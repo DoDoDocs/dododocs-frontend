@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Typo, Button } from "../../index.js"
 import FlexSplitter from './FlexSplitter.jsx';
+import MarkdownFile from "./test.md"
 import {
   ContentStyle,
   LeftPanelContent, RightPanelContent,
@@ -14,9 +15,63 @@ import ReactMarkdown from 'react-markdown'
 
 
 const markdownText = `
-# 안녕하세요!
-저는 현재 리액트에서 \`react-markdown\`를 이용하여 **마크다운**을 랜더링하고 있습니다.
+## 2. Strategy Pattern Implementation
+
+### Strategy Pattern Overview
+
+The strategy pattern is implemented through the use of interfaces for OAuth clients and URI providers, allowing for different implementations based on the OAuth provider.
+
+### Strategy Interface and Concrete Classes
+
+- **OAuthClient**: Interface for OAuth clients that defines methods for retrieving OAuth member information.
+- **OAuthMember**: Interface representing an OAuth member with methods to get social login ID, email, and profile image URL.
+- **OAuthProvider**: Interface that provides methods to get specific OAuth clients and URI providers based on the provider name.
+- **OAuthUriProvider**: Interface for generating OAuth URIs.
+
+### Context Class
+
+- **AuthService**: Acts as the context that uses the strategy interfaces to perform authentication tasks.
+
+### Class Diagram
+
+\`\`\`mermaid
+classDiagram
+    class OAuthClient {
+        +getOAuthMember(code: String): OAuthMember
+        +isSame(oAuthProviderName: String): boolean
+    }
+
+    class OAuthMember {
+        +getSocialLoginId(): String
+        +getEmail(): String
+        +getProfileImageUrl(): String
+    }
+
+    class OAuthProvider {
+        +getOauthClient(providerName: String): OAuthClient
+        +getOAuthUriProvider(providerName: String): OAuthUriProvider
+        +getSocialType(provider: String): SocialType
+    }
+
+    class OAuthUriProvider {
+        +generateUri(): String
+        +isSame(provider: String): boolean
+    }
+
+    class AuthService {
+        +generateTokenWithCode(code: String, providerName: String): MemberToken
+        +generateUri(providerName: String): String
+    }
+
+    AuthService --> OAuthProvider
+    OAuthProvider --> OAuthClient
+    OAuthProvider --> OAuthUriProvider
+    OAuthClient --> OAuthMember
+\`\`\`
 `;
+
+
+
 
 const DocsContent = () => {
 

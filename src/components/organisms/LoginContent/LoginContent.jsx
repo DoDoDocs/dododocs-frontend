@@ -12,7 +12,6 @@ const LoginContent = () => {
     } catch (error) {
       console.error('❌ Login failed:', error);
     }
-
   };
   return (
     <>

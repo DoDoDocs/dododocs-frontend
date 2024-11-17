@@ -32,7 +32,7 @@ const GlobalStyle = createGlobalStyle`
       height : auto;
       margin : 0px;
       padding : 0px;
-      min-height: 100vh;
+      /* min-height: 100vh; */
 
     }
 

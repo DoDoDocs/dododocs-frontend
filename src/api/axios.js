@@ -5,7 +5,7 @@ import useAuthStore from '../store/authStore.js';
 const api = axios.create({
   // API 기본 URL 설정 (환경 변수 사용)
   baseURL: process.env.REACT_APP_API_BASE_URL,
-  timeout: 10000,
+  // timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },

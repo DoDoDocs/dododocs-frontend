@@ -1,3 +1,4 @@
+// src/components/atoms/RotateTypo/RotateTypo.jsx
 import React, { useState, useEffect } from 'react';
 import { RotateWrapper, RotateWords } from "./RotateTypo.styles.js"
 
