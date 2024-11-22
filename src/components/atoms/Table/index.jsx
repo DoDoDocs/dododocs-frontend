@@ -67,10 +67,11 @@ export const StyledTable = styled.table`
   .tag {
     background: #2a2d3d;
     color: #8b5cf6;
-    padding: 0.25rem 0.75rem;
-    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    border-radius: 5px;
     font-size: 0.875rem;
     display: inline-block;
+
   }
 
 
@@ -96,7 +97,6 @@ const Table = ({
   onRowClick,
   selectedRow, // 선택된 단일 행의 key
   onSelectionChange, // 선택 변경 핸들러
-  tagKeysArr = ['tag']
 }) => {
   // 체크박스 컬럼 추가
   const allColumns = useMemo(() => [
@@ -153,3 +153,4 @@ const Table = ({
 };
 
 export default React.memo(Table);
+

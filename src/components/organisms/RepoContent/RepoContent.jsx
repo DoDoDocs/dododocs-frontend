@@ -1,27 +1,31 @@
-import React, { useState } from 'react';
-import { Image, Typo, Button, TextBox, Table, Pagination } from "../../index.js"
-import DododocsIcon from "../../../assets/icons/dododocs_Icon.png"
+import React, { useState, useCallback } from 'react';
+import { Image, Typo, Button, TextBox, Table, Pagination, Select } from "../../index.js";
+import bgShapeFive from "../../../assets/images/bg-shape-five.png";
+import bgShapeFour from "../../../assets/images/bg-shape-four.png";
+import { Search, Trash2, Plus, Trash } from 'lucide-react';
 import {
-  ContentStyle, TitleWrapper, ContentWrapper, RepoBoxWrapper, Divider, ButtonWrapper,
+  BgShape,
+  ContentStyle,
+  TitleWrapper,
+  ContentWrapper,
+  RepoBoxWrapper,
+  Divider,
+  ButtonWrapper,
   SearchTextWrapper,
+  SearchInput,
   DeleteBtn,
-} from "./RepoContent.style.js"
+  PaginationWrapper,
+} from "./RepoContent.style.js";
 
-import styled, { css } from "styled-components"
-import { Trash2 } from 'lucide-react';
+import AddRepo from './AddRepo.jsx';
 
 
 
 const RepoContent = () => {
-
-  const [searchValue, setSearchValue] = useState();
-
-  const searchOnChange = (e) => {
-    setSearchValue(e.target.value);
-  }
-
-
+  const [searchValue, setSearchValue] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedRow, setSelectedRow] = useState(null);
+
   const totalItems = 100;
   const itemsPerPage = 10;
 
@@ -39,7 +43,6 @@ const RepoContent = () => {
       Status: 'Code Imported',
       Branch: 'main',
       Action: 'Delete'
-
     },
     {
       key: '3',
@@ -47,12 +50,27 @@ const RepoContent = () => {
       Status: 'Code Imported',
       Branch: ['main', 'develop'],
       Action: 'Delete'
-
     },
   ];
 
+  const handleSearchChange = useCallback((e) => {
+    setSearchValue(e.target.value);
+  }, []);
 
-  // 태그 렌더링 핸들러
+  const handleSelectionChange = useCallback((key) => {
+    setSelectedRow(key);
+  }, []);
+
+  const handleRowClick = useCallback((row) => {
+    console.log('Row clicked:', row);
+    setSelectedRow(row.key);
+  }, []);
+
+  const handleDeleteClick = useCallback((e) => {
+    e.stopPropagation(); // 이벤트 버블링 방지
+    console.log('Delete clicked');
+  }, []);
+
   const renderTags = (tags, colors) => {
     if (!tags) return null;
     if (typeof tags === 'string') {
@@ -72,7 +90,7 @@ const RepoContent = () => {
     if (actions === 'Delete') {
       return (
         <>
-          <DeleteBtn>
+          <DeleteBtn onClick={handleDeleteClick}>
             <Trash2 style={{ width: '0.875rem', height: '0.875rem', verticalAlign: 'middle' }} />
             <span >Delete</span>
           </DeleteBtn>
@@ -93,6 +111,7 @@ const RepoContent = () => {
       )
     }
   }
+
 
   const columns = [
     {
@@ -118,52 +137,92 @@ const RepoContent = () => {
   ];
 
 
+  const [selectedRepo, setSelectedRepo] = useState('');
 
-  /**SECTION 체크박스상태관리 
-   * @체크박스상태관리 
-   */
-  // 단일 선택 상태 관리
-  const [selectedRow, setSelectedRow] = useState(null);
-
-  // 선택 핸들러
-  const handleSelectionChange = (key) => {
-    setSelectedRow(key);
-  };
-
-  const handleRowClick = (row) => {
-    setSelectedRow(row.key); // 행 클릭시에도 선택 처리
-    console.log('Selected row:', row);
-  };
-
-
+  const repositories = [
+    'euncherry/0526_signup',
+    'euncherry/airbnb_clone',
+    'euncherry/ant-design',
+    'euncherry/0526_signup',
+    'euncherry/airbnb_clone',
+    'euncherry/ant-design',
+    'euncherry/0526_signup',
+    'euncherry/airbnb_clone',
+    'euncherry/ant-design',
+    // ...
+  ];
 
 
   return (
     <>
       <ContentStyle>
-
         <RepoBoxWrapper>
+
+          <AddRepo></AddRepo>
+          {/* <Select
+          options={repositories}
+          value={selectedRepo}
+          onChange={setSelectedRepo}
+        /> */}
           <TitleWrapper>
-            <Typo color={'#ffffff'} weight={600} size={"3rem"}>User Name</Typo>
+            <Typo
+              color="#ffffff"
+              weight={600}
+              size="3rem"
+              style={{ letterSpacing: '-0.025em' }}
+            >
+              User Name
+            </Typo>
           </TitleWrapper>
 
           <TitleWrapper>
-            <Typo color={'#ffffff'} weight={600} size={"1.3rem"}>Import from your GitHub organizations</Typo>
-            <Typo color={'##a1a1aa'} size={"1.1rem"}>Earn 1 month for free for each 3 new paid subscribers</Typo>
+            <Typo
+              color="#ffffff"
+              weight={600}
+              size="1.3rem"
+            >
+              Import from your GitHub organizations
+            </Typo>
+            <Typo
+              color="#a1a1aa"
+              size="1.1rem"
+            >
+              Earn 1 month for free for each 3 new paid subscribers
+            </Typo>
           </TitleWrapper>
 
           <ContentWrapper>
             <ButtonWrapper>
-              <Button btnType={'gradient'} style={{ padding: "1rem 1.6rem ", fontSize: "1.1rem", color: "#000000" }} >Add Repository</Button>
+              <Button
+                btnType="gradient"
+                style={{
+                  padding: "0.875rem 1.5rem",
+                  fontSize: "1.1rem",
+                  color: "#000000",
+                  fontWeight: 600,
+                  borderRadius: "0.5rem",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.5rem"
+                }}
+              >
+                <Plus size={20} />
+                Add Repository
+              </Button>
             </ButtonWrapper>
+
             <Divider />
+
             <SearchTextWrapper>
-              {/* <SearchTextBox> */}
-              <TextBox value={searchValue} onChange={searchOnChange}
-                placeholder={"Search Here..."}
-                plane={true}
-              ></TextBox>
-              {/* </SearchTextBox> */}
+              <SearchInput>
+                <TextBox
+                  value={searchValue}
+                  onChange={handleSearchChange}
+                  placeholder="Search repositories..."
+                  plane={true}
+                />
+                <Search />
+              </SearchInput>
             </SearchTextWrapper>
 
             <Table
@@ -172,25 +231,32 @@ const RepoContent = () => {
               onRowClick={handleRowClick}
               selectedRow={selectedRow}
               onSelectionChange={handleSelectionChange}
-              tagKeysArr={['tag', 'Branch', 'Status']}
             />
 
-            <Pagination
-              itemsPerPage={itemsPerPage}
-              totalItems={totalItems}
-              currentPage={currentPage}
-              onPageChange={setCurrentPage}
-              showQuickJumper
-              maxPageButtons={5}
-            />
+            <PaginationWrapper>
+              <Pagination
+                itemsPerPage={itemsPerPage}
+                totalItems={totalItems}
+                currentPage={currentPage}
+                onPageChange={setCurrentPage}
+                showQuickJumper
+                maxPageButtons={5}
+              />
+            </PaginationWrapper>
           </ContentWrapper>
 
 
-        </RepoBoxWrapper>
-      </ContentStyle >
 
+        </RepoBoxWrapper>
+
+      </ContentStyle>
+      <BgShape>
+        <Image src={bgShapeFour} width={'640px'} height={'949px'} style={{ position: 'absolute', top: '5dvh', left: '0', loading: 'lazy', filter: 'brightness(0.4) opacity(90%)', pointerEvents: "none" }} />
+        <Image src={bgShapeFive} width={'626px'} height={'1004px'} style={{ position: 'absolute', top: '5dvh', right: '0', loading: 'lazy', filter: 'brightness(0.7)', pointerEvents: "none" }} />
+      </BgShape>
     </>
-  )
-}
+  );
+};
 
 export default RepoContent;
+

@@ -46,7 +46,7 @@ const DocsContent = () => {
 
                 </Col>
                 <Col span={12} justify={'center'} style={{ marginTop: "4rem" }}>
-                  <Button btnType={"gradient"} size={'large'} style={{ width: "30%", padding: "20px 0", zIndex: "1000" }}
+                  <Button btnType={"gradient"} size={'large'} style={{ width: "30%", padding: "20px 0" }}
                     onClick={handleStartClick}
                   >
                     Dododocs 시작하기
@@ -67,8 +67,8 @@ const DocsContent = () => {
             {/* !SECTION - main Image section */}
 
             <BgShape>
-              <Image src={bgShapeFour} width={'640px'} height={'949px'} style={{ position: 'absolute', top: '5dvh', left: '0', loading: 'lazy', filter: 'brightness(0.4) opacity(90%)' }} />
-              <Image src={bgShapeFive} width={'626px'} height={'1004px'} style={{ position: 'absolute', top: '5dvh', right: '0', loading: 'lazy', filter: 'brightness(0.7)' }} />
+              <Image src={bgShapeFour} width={'640px'} height={'949px'} style={{ position: 'absolute', top: '5dvh', left: '0', loading: 'lazy', filter: 'brightness(0.4) opacity(90%)', pointerEvents: "none" }} />
+              <Image src={bgShapeFive} width={'626px'} height={'1004px'} style={{ position: 'absolute', top: '5dvh', right: '0', loading: 'lazy', filter: 'brightness(0.7)', pointerEvents: "none" }} />
 
 
             </BgShape>

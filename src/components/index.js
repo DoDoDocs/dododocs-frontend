@@ -10,6 +10,7 @@ export { default as TextAreaBox } from './atoms/TextAreaBox';
 export { default as RotateTypo } from './atoms/RotateTypo/RotateTypo.jsx';
 export { default as Table } from './atoms/Table';
 export { default as Pagination } from './atoms/Pagination';
+export { default as Select } from './atoms/Select';
 //MOLECULE
 
 //ORGANiSM
@@ -19,3 +20,4 @@ export { default as LoginContent } from './organisms/LoginContent/LoginContent.j
 export { default as OAuthCallback } from './organisms/OAuthCallback/OAuthCallback.jsx';
 export { default as ChattingContent } from './organisms/ChattingContent/ChattingContent.jsx';
 export { default as RepoContent } from './organisms/RepoContent/RepoContent.jsx';
+export { default as DashboardContent } from './organisms/DashboardContent/DashboardContent.jsx';
