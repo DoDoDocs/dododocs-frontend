@@ -19,7 +19,7 @@ import {
 
 
 import ParticleBackground from './ParticleBackground.jsx';
-
+import Particle from "./particle.jsx";
 const DashboardContent = () => {
   const navigate = useNavigate();
 
@@ -32,7 +32,8 @@ const DashboardContent = () => {
   return (
     <>
       <HomeWrapper>
-        <ParticleBackground></ParticleBackground>
+        <Particle></Particle>
+        {/* <ParticleBackground></ParticleBackground> */}
 
         {/* <BgShape>
           <Image src={bgShapeFour} width={'640px'} height={'949px'} style={{ position: 'absolute', top: '5dvh', left: '0', loading: 'lazy', filter: 'brightness(0.4) opacity(90%)' }} />

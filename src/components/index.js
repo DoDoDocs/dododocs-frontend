@@ -11,6 +11,14 @@ export { default as RotateTypo } from './atoms/RotateTypo/RotateTypo.jsx';
 export { default as Table } from './atoms/Table';
 export { default as Pagination } from './atoms/Pagination';
 export { default as Select } from './atoms/Select';
+export {
+  Modal,
+  ModalHeader,
+  ModalTitle,
+  ModalDescription,
+  ModalContent,
+  ModalFooter,
+} from './atoms/Modal';
 //MOLECULE
 
 //ORGANiSM

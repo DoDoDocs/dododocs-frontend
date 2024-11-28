@@ -1,83 +1,12 @@
+// src/components/organisms/RepoContent/AddRepo.test.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { Image, Typo, Button, TextBox, Select } from "../../index.js";
+import {
+  Image, Typo, Button, TextBox, Select,
+  Modal, ModalHeader, ModalTitle, ModalDescription, ModalContent, ModalFooter,
+} from "../../index.js";
 import useClickAway from '../../../hooks/useClickAway.js';
 // Styled Components
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-`;
-
-const ModalWrapper = styled.div`
-  background-color: rgba(24,24,27,1);
-  border-radius: 8px;
-  padding: 0;
-  width: 100%;
-  max-width: 45dvw;
-  margin: 20px;
-  position: relative;
-  height : 40dvh;
-  max-height: calc(100vh - 40px);
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  animation: modalFadeIn 0.3s ease-out;
-
-  outline: 2px solid transparent;
-  outline-offset: 2px;
-  box-shadow:0 4px 6px rgba(0, 0, 0, 0.3);
-  
-
-  @keyframes modalFadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-`;
-
-const ModalHeader = styled.div`
-  padding: 20px 24px;
-  border-bottom: 1px solid #eee;
-`;
-
-const ModalTitle = styled.h2`
-  margin: 0;
-  font-size: 20px;
-  font-weight: 600;
-  color: #333;
-`;
-
-const ModalDescription = styled.p`
-  margin: 8px 0 0;
-  font-size: 14px;
-  color: #666;
-`;
-
-const ModalContent = styled.div`
-  padding: 20px 24px;
-  overflow-y: auto;
-`;
-
-const ModalFooter = styled.div`
-  padding: 16px 24px;
-  border-top: 1px solid #eee;
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-`;
 
 const FormGroup = styled.div`
   display: grid;
@@ -93,46 +22,29 @@ const FormGroup = styled.div`
 
 const Label = styled.label`
   font-size: 14px;
-  color: #333;
+  color: #fafafa;
   font-weight: 500;
   text-align: right;
 `;
 
-// Modal.jsx
-const Modal = ({ isOpen, onClose, children }) => {
-  const modalRef = useRef(null);
-
-  useClickAway(modalRef, onClose);
-
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen]);
-
-  if (!isOpen) return null;
-
-  return (
-    <ModalOverlay>
-      <ModalWrapper ref={modalRef}>
-        {children}
-      </ModalWrapper>
-    </ModalOverlay>
-  );
-};
+const StyledButton = styled(Button)`
+  width : 100%;
+  padding: 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+  word-break: keep-all;
+`;
 
 
 // 사용 예시 컴포넌트
-export default function AddRepo() {
-  const [isOpen, setIsOpen] = useState(false);
+const AddRepo = ({ isOpen, onOpen, onClose }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // 제출 로직
-    setIsOpen(false);
+    onClose();
   };
 
   const [selectedRepo, setSelectedRepo] = useState('');
@@ -141,23 +53,19 @@ export default function AddRepo() {
     'euncherry/0526_signup',
     'euncherry/airbnb_clone',
     'euncherry/ant-design',
-    'euncherry/0526_signup',
-    'euncherry/airbnb_clone',
-    'euncherry/ant-design',
-    'euncherry/0526_signup',
-    'euncherry/airbnb_clone',
-    'euncherry/ant-design',
+    'euncherry/0526_signupdfdfd',
+    'euncherry/airbnb_clon',
+    'euncherry/ant-desn',
+    'euncherry/0526_sign',
+    'euncherry/airbnb_cle',
+    'euncherry/ant-',
     // ...
   ];
 
 
   return (
     <>
-      <Button onClick={() => setIsOpen(true)}>
-        Edit Profile
-      </Button>
-
-      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+      <Modal isOpen={isOpen} onClose={onClose}>
         <ModalHeader>
           <ModalTitle>Add Repository</ModalTitle>
           <ModalDescription>
@@ -168,33 +76,34 @@ export default function AddRepo() {
         <ModalContent>
           <form onSubmit={handleSubmit}>
             <FormGroup>
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="Repository">Repository</Label>
               <Select
+                selectTitle={'Select Repository'}
                 options={repositories}
-                value={selectedRepo}
+                selectedValue={selectedRepo}
                 onChange={setSelectedRepo}
               />
             </FormGroup>
             <FormGroup>
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="Branch">Branch</Label>
               <TextBox
                 id="username"
-                placeholder="Enter your username"
+                placeholder="Enter your branch name"
                 plane={true}
+                style={{ width: '100%' }}
               />
             </FormGroup>
           </form>
         </ModalContent>
 
         <ModalFooter>
-          <Button variant="outline" onClick={() => setIsOpen(false)}>
-            Cancel
-          </Button>
-          <Button type="submit" onClick={handleSubmit}>
-            Save changes
-          </Button>
+          <StyledButton btnType="primary" onClick={handleSubmit}>
+            추가하기
+          </StyledButton>
         </ModalFooter>
       </Modal>
     </>
   );
 }
+
+export default AddRepo;

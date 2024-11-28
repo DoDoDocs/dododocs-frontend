@@ -49,7 +49,7 @@ const AppWrapper = styled.div`
 
     &:before {
       content: "";
-      opacity: 0.1;
+      /* opacity: 0.1; */
       background-image: url(${bg_img});
     background-size: cover;
     background-position: center; 

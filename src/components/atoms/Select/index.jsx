@@ -1,109 +1,187 @@
+// src/components/atoms/Select/index.jsx
 import styled from 'styled-components';
-import React, { useState, useRef } from 'react';
-import { ChevronDown, Search } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { ChevronDown, Check } from 'lucide-react';
 import useClickAway from '../../../hooks/useClickAway.js';
 
-export const SelectContainer = styled.div.attrs({ className: 'select-container' })`
- position: relative;
- width: 100%;
+
+
+const SelectContainer = styled.div`
+  position: relative;
+  width: 100%;
 `;
 
-export const SelectButton = styled.div`
- width: 100%;
- padding: 12px 16px;
- border: 1px solid #e5e7eb;
- border-radius: 8px;
- background: white;
- display: flex;
- align-items: center;
- justify-content: space-between;
- cursor: pointer;
+const SelectButton = styled.div`
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #27272a;
+  border-radius: 8px;
+  background: #18181b;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  color: ${props => props.hasValue ? '#fafafa' : '#71717a'};
 
- &:hover {
-   border-color: #8b5cf6;
- }
+  &:hover {
+    border-color: #8b5cf6;
+  }
 
- &:focus {
-   outline: none;
-   border-color: #8b5cf6;
-   box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
- }
+  &:focus {
+    outline: none;
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+  }
 `;
 
-export const Dropdown = styled.div`
- position: absolute;
- top: calc(100% + 4px);
- left: 0;
- right: 0;
- background: white;
- border: 1px solid #e5e7eb;
- border-radius: 8px;
- max-height: 300px;
- overflow-y: auto;
- box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
- z-index: 10;
+const Dropdown = styled.div`
+  position: fixed;
+  background: #18181b;
+  border: 1px solid #27272a;
+  border-radius: 8px;
+  overflow-y: auto;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  z-index: 1100;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #27272a;
+    border-radius: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #4b4b4b;
+    border-radius: 8px;
+    
+    &:hover {
+      background: #666;
+    }
+  }
 `;
 
-export const SearchInput = styled.input`
- width: 100%;
- padding: 12px 16px;
- border: none;
- border-bottom: 1px solid #e5e7eb;
-
- &:focus {
-   outline: none;
-   background: #f9fafb;
- }
+const SearchInput = styled.div`
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  border-bottom: 1px solid #27272a;
+  background: #1f1f23;
+    color: #71717a;
 `;
 
-export const Option = styled.div`
- padding: 12px 16px;
- cursor: pointer;
+const Option = styled.div`
+  padding: 12px 16px;
+  color: #fafafa;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+  background: ${props => props.isSelected ? '#27272a' : 'transparent'};
+  color: ${props => props.isSelected ? '#8b5cf6' : '#fafafa'};
 
- &:hover {
-   background: #f3f4f6;
- }
+  &:hover {
+    background: #27272a;
+  }
+
+  svg {
+    width: 1rem;
+    height: 1rem;
+    color: #8b5cf6;
+    opacity: ${props => props.isSelected ? 1 : 0};
+  }
 `;
 
-
-
-const Select = ({ options, value, onChange }) => {
+const Select = ({ selectTitle = 'Select option', options, selectedValue, onChange, placeholder = '선택하세요' }) => {
   const [isSelectOpen, setIsSelectOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [dropdownStyle, setDropdownStyle] = useState({});
   const containerRef = useRef(null);
+  const buttonRef = useRef(null);
+  const dropdownRef = useRef(null);
 
-  useClickAway(containerRef, () => setIsSelectOpen(false));
+  const handleClickAway = (event) => {
+    if (
+      dropdownRef.current?.contains(event.target) ||
+      buttonRef.current?.contains(event.target)
+    ) {
+      return;
+    }
+    setIsSelectOpen(false);
+  };
 
-  const filteredOptions = options.filter(option =>
-    option.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  useClickAway(containerRef, handleClickAway);
+
+  useEffect(() => {
+    if (isSelectOpen && buttonRef.current) {
+      const buttonRect = buttonRef.current.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - buttonRect.bottom;
+      const spaceAbove = buttonRect.top;
+      const dropdownHeight = Math.min(300, options.length * 40);
+
+      let newStyle = {
+        width: buttonRect.width,
+        left: buttonRect.left,
+      };
+
+      if (spaceBelow >= dropdownHeight) {
+        newStyle.top = buttonRect.bottom + 4;
+        newStyle.maxHeight = Math.min(dropdownHeight, spaceBelow - 10);
+      } else if (spaceAbove > spaceBelow) {
+        newStyle.bottom = window.innerHeight - buttonRect.top + 4;
+        newStyle.maxHeight = Math.min(dropdownHeight, spaceAbove - 10);
+      } else {
+        newStyle.top = buttonRect.bottom + 4;
+        newStyle.maxHeight = Math.max(100, spaceBelow - 10);
+      }
+
+      setDropdownStyle(newStyle);
+    }
+  }, [isSelectOpen, options.length]);
+
+
 
   return (
-    <SelectContainer ref={containerRef}>
-      <SelectButton onClick={() => setIsSelectOpen(!isSelectOpen)}>
-        <span>{value || '레포지토리'}</span>
-        <ChevronDown size={20} />
+    <SelectContainer ref={containerRef} className="select-container">
+      <SelectButton
+        ref={buttonRef}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setIsSelectOpen(!isSelectOpen);
+        }}
+        hasValue={!!selectedValue}
+      >
+        <span>{selectedValue || placeholder}</span>
+        <ChevronDown
+          size={20}
+          style={{
+            transform: isSelectOpen ? 'rotate(180deg)' : 'rotate(0)',
+            transition: 'transform 0.2s ease'
+          }}
+        />
       </SelectButton>
 
       {isSelectOpen && (
-        <Dropdown>
-          <SearchInput
-            placeholder="레포지토리 이름으로 검색"
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-            autoFocus
-          />
-          {filteredOptions.map(option => (
-            <Option
-              key={option}
-              onClick={() => {
-                onChange(option);
-                setIsSelectOpen(false);
-              }}
-            >
-              {option}
-            </Option>
-          ))}
+        <Dropdown ref={dropdownRef} style={dropdownStyle}>
+          <SearchInput> {selectTitle}</SearchInput>
+          {
+            options.map((option, index) => (
+              <Option
+                key={option.id}
+                onClick={() => {
+                  onChange(option);
+                  setIsSelectOpen(false);
+                }}
+                isSelected={selectedValue === option}
+              >
+                {option}
+                <Check />
+              </Option>
+            ))
+          }
         </Dropdown>
       )}
     </SelectContainer>
@@ -112,96 +190,119 @@ const Select = ({ options, value, onChange }) => {
 
 export default Select;
 
-
-
-// import React, { useState } from 'react';
-// import { ChevronDown } from 'lucide-react';
-// import styled from '@emotion/styled';
-
-// const SelectWrapper = styled.div`
-//   position: relative;
-//   width: 100%;
-//   max-width: 300px;
+// export const SelectContainer = styled.div.attrs({ className: 'select-container' })`
+//  position: relative;
+//  width: 100%;
 // `;
 
-// const SelectButton = styled.div`
-//   width: 100%;
-//   padding: 0.75rem 1rem;
-//   background: white;
-//   border: 1px solid #e2e8f0;
-//   border-radius: 0.5rem;
-//   display: flex;
-//   align-items: center;
-//   justify-content: space-between;
-//   cursor: pointer;
-//   transition: all 0.2s;
+// export const SelectButton = styled.div`
+//  width: 100%;
+//  padding: 12px 16px;
+//  border: 1px solid #e5e7eb;
+//  border-radius: 8px;
+//  background: white;
+//  display: flex;
+//  align-items: center;
+//  justify-content: space-between;
+//  cursor: pointer;
 
-//   &:hover {
-//     border-color: #cbd5e0;
-//   }
+//  &:hover {
+//    border-color: #8b5cf6;
+//  }
 
-//   &:focus {
-//     outline: none;
-//     border-color: #3b82f6;
-//     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-//   }
+//  &:focus {
+//    outline: none;
+//    border-color: #8b5cf6;
+//    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+//  }
 // `;
 
-// const OptionsContainer = styled.div`
-//   position: absolute;
-//   top: calc(100% + 0.5rem);
-//   left: 0;
-//   right: 0;
-//   background: white;
-//   border: 1px solid #e2e8f0;
-//   border-radius: 0.5rem;
-//   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-//   max-height: 200px;
-//   overflow-y: auto;
-//   z-index: 10;
+// export const Dropdown = styled.div`
+//  position: absolute;
+//  top: calc(100% + 4px);
+//  left: 0;
+//  right: 0;
+//  background: white;
+//  border: 1px solid #e5e7eb;
+//  border-radius: 8px;
+//  max-height: 300px;
+//  overflow-y: auto;
+//  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+//  z-index: 10;
 // `;
 
-// const Option = styled.div`
-//   padding: 0.75rem 1rem;
-//   cursor: pointer;
-//   transition: background 0.2s;
+// export const SearchInput = styled.input`
+//  width: 100%;
+//  padding: 12px 16px;
+//  border: none;
+//  border-bottom: 1px solid #e5e7eb;
 
-//   &:hover {
-//     background: #f7fafc;
-//   }
+//  &:focus {
+//    outline: none;
+//    background: #f9fafb;
+//  }
 // `;
+
+// export const Option = styled.div`
+//  padding: 12px 16px;
+//  cursor: pointer;
+
+//  &:hover {
+//    background: #f3f4f6;
+//  }
+// `;
+
+
 
 // const Select = ({ options, value, onChange }) => {
-//   const [isOpen, setIsOpen] = useState(false);
+//   const [isSelectOpen, setIsSelectOpen] = useState(false);
+//   const [searchTerm, setSearchTerm] = useState('');
+//   const containerRef = useRef(null);
 
-//   const handleSelect = (option) => {
-//     onChange(option);
-//     setIsOpen(false);
+//   useClickAway(containerRef, () => setIsSelectOpen(false));
+
+//   const filteredOptions = options.filter(option =>
+//     option.toLowerCase().includes(searchTerm.toLowerCase())
+//   );
+
+
+//   const selectButtonOnClick = (e) => {
+//     e.preventDefault(); // 기본 동작 방지
+//     e.stopPropagation(); // 이벤트 전파 방지
+//     setIsSelectOpen(!isSelectOpen);
 //   };
 
 //   return (
-//     <SelectWrapper>
-//       <SelectButton onClick={() => setIsOpen(!isOpen)}>
-//         <span>{value?.label || '선택하세요'}</span>
-//         <ChevronDown
-//           className={`transform transition-transform ${isOpen ? 'rotate-180' : ''}`}
-//           size={20}
-//         />
+//     <SelectContainer ref={containerRef}>
+//       <SelectButton onClick={selectButtonOnClick}>
+//         <span>{value || '레포지토리'}</span>
+//         <ChevronDown size={20} />
 //       </SelectButton>
 
-//       {isOpen && (
-//         <OptionsContainer>
-//           {options.map((option) => (
+//       {isSelectOpen && (
+//         <Dropdown>
+//           <SearchInput
+//             placeholder="레포지토리 이름으로 검색"
+//             value={searchTerm}
+//             onChange={e => setSearchTerm(e.target.value)}
+//             autoFocus
+//           />
+//           {filteredOptions.map(option => (
 //             <Option
-//               key={option.value}
-//               onClick={() => handleSelect(option)}
+//               key={option}
+//               onClick={() => {
+//                 onChange(option);
+//                 setIsSelectOpen(false);
+//               }}
 //             >
-//               {option.label}
+//               {option}
 //             </Option>
 //           ))}
-//         </OptionsContainer>
+//         </Dropdown>
 //       )}
-//     </SelectWrapper>
+//     </SelectContainer>
 //   );
 // };
+
 // export default Select;
+

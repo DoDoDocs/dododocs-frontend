@@ -1,8 +1,12 @@
+// src/components/organisms/RepoContent/RepoContent.jsx
 import React, { useState, useCallback } from 'react';
-import { Image, Typo, Button, TextBox, Table, Pagination, Select } from "../../index.js";
+import { Image, Typo, Button, TextBox, Table, Pagination, Select, } from "../../index.js";
 import bgShapeFive from "../../../assets/images/bg-shape-five.png";
 import bgShapeFour from "../../../assets/images/bg-shape-four.png";
 import { Search, Trash2, Plus, Trash } from 'lucide-react';
+import useModal from "../../../hooks/useModal.js";
+
+import Board from './Board.jsx';
 import {
   BgShape,
   ContentStyle,
@@ -18,13 +22,21 @@ import {
 } from "./RepoContent.style.js";
 
 import AddRepo from './AddRepo.jsx';
-
+import DeleteRepo from './DeleteRepo.jsx';
 
 
 const RepoContent = () => {
   const [searchValue, setSearchValue] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedRow, setSelectedRow] = useState(null);
+  const [selectedCard, setSelectedCard] = useState(null);
+  const [repoToDelete, setRepoToDelete] = useState(null);
+
+  /**
+   * @description 모달 hooks
+   */
+  const { isOpen: isAddRepoModal, openModal: openAddRepoModal, closeModal: closeAddRepoModal } = useModal();
+  const { isOpen: isDeleteRepoModal, openModal: openDeleteRepoModal, closeModal: closeDeleteRepoModal } = useModal();
+
 
   const totalItems = 100;
   const itemsPerPage = 10;
@@ -33,14 +45,14 @@ const RepoContent = () => {
     {
       key: '1',
       Repository: 'spring-boot_test',
-      Status: 'Code Imported',
+      Status: 'In Progress',
       Branch: 'main',
       Action: 'Delete'
     },
     {
       key: '2',
       Repository: 'Deploy_DiscordBot',
-      Status: 'Code Imported',
+      Status: 'Upcoming',
       Branch: 'main',
       Action: 'Delete'
     },
@@ -57,100 +69,43 @@ const RepoContent = () => {
     setSearchValue(e.target.value);
   }, []);
 
-  const handleSelectionChange = useCallback((key) => {
-    setSelectedRow(key);
+  const handleCardClick = useCallback((card) => {
+    console.log('Card clicked:', card);
+    setSelectedCard(card.key);
   }, []);
 
-  const handleRowClick = useCallback((row) => {
-    console.log('Row clicked:', row);
-    setSelectedRow(row.key);
-  }, []);
-
-  const handleDeleteClick = useCallback((e) => {
+  const handleDeleteClick = useCallback((e, repo) => {
     e.stopPropagation(); // 이벤트 버블링 방지
-    console.log('Delete clicked');
-  }, []);
+    setRepoToDelete(repo); // 삭제할 레포지토리 정보 저장
+    console.log('Delete clicked Repo : ', repo);
+    openDeleteRepoModal();
+  }, [openDeleteRepoModal]);
 
-  const renderTags = (tags, colors) => {
-    if (!tags) return null;
-    if (typeof tags === 'string') {
-      return <span className="tag" style={{ color: `${colors}` }}>{tags}</span>;
+  const handleConfirmDelete = useCallback(async () => {
+    try {
+      // API 호출 로직
+      // await deleteRepository(repoToDelete.key);
+
+      // 성공적으로 삭제된 후의 처리
+      closeDeleteRepoModal();
+      setRepoToDelete(null);
+
+      // 필요한 경우 데이터 리로드 또는 상태 업데이트
+      // reloadData();
+
+    } catch (error) {
+      console.error('Failed to delete repository:', error);
+      // 에러 처리 로직
     }
-    if (Array.isArray(tags)) {
-      return tags.map((tag, index) => (
-        <span key={index} className="tag" style={{ marginRight: '0.5rem' }}>
-          {tag}
-        </span>
-      ));
-    }
-    return tags;
-  };
-
-  const renderAction = (actions) => {
-    if (actions === 'Delete') {
-      return (
-        <>
-          <DeleteBtn onClick={handleDeleteClick}>
-            <Trash2 style={{ width: '0.875rem', height: '0.875rem', verticalAlign: 'middle' }} />
-            <span >Delete</span>
-          </DeleteBtn>
-        </>
-      );
-    } else if (actions === 'Import') {
-      return (
-        <div>
-          <Button
-            style={{
-              backgroundColor: '#8B5CF6',
-              color: '#FFFFFF',
-              border: '1px solid #D9D9D9',
-              borderRadius: '4px',
-
-            }} />
-        </div>
-      )
-    }
-  }
+  }, [closeDeleteRepoModal]);
 
 
-  const columns = [
-    {
-      key: 'Repository',
-      title: 'Repository'
-    },
-    {
-      key: 'Branch',
-      title: 'Branch',
-      render: (value) => renderTags(value, '#8b5cf6')
-    },
-    {
-      key: 'Status',
-      title: 'Status',
-      render: (value) => renderTags(value, '#d923ff')
-
-    },
-    {
-      key: 'Action',
-      title: ' ',
-      render: (value) => renderAction(value)
-    },
-  ];
+  const handleCancelDelete = useCallback(() => {
+    closeDeleteRepoModal();
+    setRepoToDelete(null);
+  }, [closeDeleteRepoModal]);
 
 
-  const [selectedRepo, setSelectedRepo] = useState('');
-
-  const repositories = [
-    'euncherry/0526_signup',
-    'euncherry/airbnb_clone',
-    'euncherry/ant-design',
-    'euncherry/0526_signup',
-    'euncherry/airbnb_clone',
-    'euncherry/ant-design',
-    'euncherry/0526_signup',
-    'euncherry/airbnb_clone',
-    'euncherry/ant-design',
-    // ...
-  ];
 
 
   return (
@@ -158,12 +113,11 @@ const RepoContent = () => {
       <ContentStyle>
         <RepoBoxWrapper>
 
-          <AddRepo></AddRepo>
-          {/* <Select
-          options={repositories}
-          value={selectedRepo}
-          onChange={setSelectedRepo}
-        /> */}
+          <AddRepo isOpen={isAddRepoModal} onClose={closeAddRepoModal}></AddRepo>
+          <DeleteRepo isOpen={isDeleteRepoModal}
+            onClose={handleCancelDelete}
+            onConfirm={handleConfirmDelete}
+            repository={repoToDelete}></DeleteRepo>
           <TitleWrapper>
             <Typo
               color="#ffffff"
@@ -205,6 +159,7 @@ const RepoContent = () => {
                   alignItems: "center",
                   gap: "0.5rem"
                 }}
+                onClick={openAddRepoModal}
               >
                 <Plus size={20} />
                 Add Repository
@@ -225,12 +180,20 @@ const RepoContent = () => {
               </SearchInput>
             </SearchTextWrapper>
 
-            <Table
+            {/* <Table
               dataSource={data}
               columns={columns}
               onRowClick={handleRowClick}
               selectedRow={selectedRow}
               onSelectionChange={handleSelectionChange}
+            /> */}
+
+            <Board
+              dataSource={data}
+              onCardClick={handleCardClick}
+              selectedCard={selectedCard}
+              handleDeleteClick={handleDeleteClick}
+
             />
 
             <PaginationWrapper>
