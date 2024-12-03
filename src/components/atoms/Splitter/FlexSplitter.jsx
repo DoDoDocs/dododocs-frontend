@@ -1,3 +1,4 @@
+// src/components/atoms/Splitter/FlexSplitter.jsx
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   Container, LeftPanel,

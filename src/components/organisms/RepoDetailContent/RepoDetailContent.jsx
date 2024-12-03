@@ -2,7 +2,14 @@ import React, { useState, useEffect } from 'react';
 import styled, { createGlobalStyle, css } from 'styled-components';
 import bg_img from "../../../assets/images/bg_img.jpg"
 import { Bell, Search, Grid, RefreshCw, Camera, Layout, PlayCircle, Pen, Box, MessageSquare, Sun } from 'lucide-react';
+import {
+  Image, Typo, Button, TextBox, Select,
+  Modal, ModalHeader, ModalTitle, ModalDescription, ModalContent, ModalFooter,
+} from "../../index.js";
 
+import Chatting from "./Chatting.jsx"
+import Document from "./Document.jsx"
+import ReadMe from "./ReadMe.jsx"
 // Global Styles
 const GlobalStyle = createGlobalStyle`
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
@@ -48,11 +55,12 @@ const AppWrapper = styled.div`
   border-radius: 14px;
   width : 95dvw;
   height : 95dvh;
+  background-color : #2d2d2d;
     &:before {
       content: "";
       /* opacity: 0.5; */
       opacity: 1;
-      background-image: url(${bg_img});
+       ${props => props.isImgMode ? `background-image: url(${bg_img});` : null} 
       background-size: cover;
       background-position: center; 
       position: absolute;
@@ -67,7 +75,6 @@ const AppWrapper = styled.div`
 `
 
 const AppContainer = styled.div`
-
   background-color: rgba(16 18 27 / 40%);
   height: 100%;
   display: flex;
@@ -93,15 +100,42 @@ const Header = styled.div`
   white-space: nowrap;
 `;
 
-const MenuCircle = styled.div`
+const MenuCircleWrapper = styled.div`
+width : auto;
+height : auto;
+flex : 1 ;
+display: flex;
+gap : 0.5rem;
+  `
+
+
+
+const MenuCircle = styled.button`
+  width: 15px;
+  height: 15px;
+  background-color: ${({ type }) => {
+    switch (type) {
+      case 'red':
+        return '#f96057';
+      case 'yellow':
+        return '#f8ce52';
+      case 'green':
+        return '#5fcf65';
+      default:
+        return '#f96057'; // 기본값
+    }
+  }};  border-radius: 50%;
+  flex-shrink: 0;
+/* 
   width: 15px;
   height: 15px;
   background-color: #f96057;
   border-radius: 50%;
   box-shadow: 24px 0 0 0 #f8ce52, 48px 0 0 0 #5fcf65;
   margin-right: 195px;
-  flex-shrink: 0;
+  flex-shrink: 0; */
 `;
+
 
 const HeaderMenu = styled.div`
   display: flex;
@@ -120,6 +154,34 @@ const HeaderMenu = styled.div`
     }
   }
 `;
+
+const MainHeader = styled.div`
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  height: auto;
+  flex-shrink: 0;
+`;
+
+
+const MainHeaderTitle = styled.div`
+display : flex;
+justify-content : flex-end;
+padding : 0 1rem 0 0 ;
+  width: 240px;
+`
+const MainHeaderContent = styled.div`
+  padding : 1.25rem 1.5rem;
+  text-decoration: none;
+  color: var(--inactive-color);
+  border-bottom: 2px solid transparent;
+  transition: 0.3s;
+    
+  &.active, &:hover {
+      color: var(--theme-color);
+      border-bottom: 2px solid var(--theme-color);
+    }
+`
 
 const SearchBar = styled.div`
   height: 40px;
@@ -196,6 +258,12 @@ const Wrapper = styled.div`
   overflow: hidden;
 `;
 
+const ChattingContainer = styled.div`
+width : 100%;
+height : 100%;
+background-color : #10121b66;
+`
+
 // Sidebar Components
 const LeftSide = styled.div`
   flex-basis: 240px;
@@ -254,14 +322,7 @@ const MainContainer = styled.div`
   flex-grow: 1;
 `;
 
-const MainHeader = styled.div`
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid var(--border-color);
-  height: 58px;
-  flex-shrink: 0;
-  padding: 0 30px;
-`;
+
 
 const ContentWrapper = styled.div`
   display: flex;
@@ -330,118 +391,129 @@ const AppCard = styled.div`
 `;
 
 // Main App Component
-const App = () => {
-  const [isLightMode, setIsLightMode] = useState(false);
+const App = ({ isOpen, onOpen, onClose }) => {
+  const [isImgMode, setIsImgMode] = useState(false);
   const [activeMenu, setActiveMenu] = useState('Apps');
 
   return (
-    <>
-      <GlobalStyle />
-      <AppWrapper>
-        <AppContainer>
-          <Header>
-            <MenuCircle />
+    <Modal isOpen={isOpen} onClose={onClose}
+      modalWidth={'100%'}
+      overlayStyles={`
+          background-color: rgba(0, 0, 0, 0);
+        `}
+      wrapperStyles={`
+      height : auto;
+      width : auto;
+      margin : 0;
+    `}>
+      <ModalContent style={{ padding: '0' }}>
+        <GlobalStyle />
+        <AppWrapper isImgMode={isImgMode}>
+          <AppContainer>
+            <Header>
+              <MenuCircleWrapper>
+                <MenuCircle type={'red'}></MenuCircle>
+                <MenuCircle type={'yellow'}></MenuCircle>
+                <MenuCircle type={'green'}></MenuCircle>
+              </MenuCircleWrapper>
 
-            <HeaderProfile>
-              <NotificationIcon>
-                <Bell size={22} />
-                <span>3</span>
-              </NotificationIcon>
-              <ProfileImage
-                src="https://images.unsplash.com/photo-1600353068440-6361ef3a86e8?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
-                alt="Profile"
-              />
-            </HeaderProfile>
-          </Header>
-          {/* Add remaining content components here */}
-          <MainHeader>
-            <span className="menu-link-main">All Apps</span>
-            <HeaderMenu>
-              {['Desktop', 'Mobile', 'Web'].map(menu => (
-                <span
-                  key={menu}
-                  className={activeMenu === menu ? 'active' : ''}
-                  onClick={() => setActiveMenu(menu)}
-                >
-                  {menu}
-                </span>
-              ))}
-            </HeaderMenu>
-          </MainHeader>
+              <HeaderProfile>
+                <NotificationIcon>
+                  <Bell size={22} />
+                  <span>3</span>
+                </NotificationIcon>
+                <ProfileImage
+                  src="https://images.unsplash.com/photo-1600353068440-6361ef3a86e8?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                  alt="Profile"
+                  onClick={() => { setIsImgMode((prevImgMode) => !prevImgMode) }}
+                />
+              </HeaderProfile>
+            </Header>
+            {/* Add remaining content components here */}
+            <MainHeader>
+              <MainHeaderTitle >All Apps</MainHeaderTitle>
+              {
+                ['AI Code Document', 'AI Chatting', 'Read Me Maker'].map(menu => (
+                  <MainHeaderContent
+                    key={menu}
+                    className={activeMenu === menu ? 'active' : ''}
+                    onClick={() => setActiveMenu(menu)}
+                  >
+                    {menu}
+                  </MainHeaderContent>
+                ))
+              }
+            </MainHeader>
 
-          <Wrapper>
+            <Wrapper>
+              {(
+                //  Chatting 
+                activeMenu === 'AI Chatting' ?
+                  <ChattingContainer>
+                    <Chatting></Chatting>
+                  </ChattingContainer> :
+                  activeMenu === 'AI Code Document' ?
+                    <Document></Document>
+                    :
+                    activeMenu === 'Read Me Maker' ?
+                      <ReadMe></ReadMe>
+                      :
+                      null
+              )}
 
-            <LeftSide>
-              <SideWrapper>
-                <SideTitle>Apps</SideTitle>
-                <SideMenu>
-                  <span href="#"><Grid size={16} /> All Apps</span>
-                  <span ><RefreshCw size={16} /> Updates <span className="notification-number updates">3</span></span>
-                </SideMenu>
-              </SideWrapper>
+              {/* 
+               <LeftSide>
+                <SideWrapper>
+                  <SideTitle>Apps</SideTitle>
+                  <SideMenu>
+                    <span href="#"><Grid size={16} /> All Apps</span>
+                    <span ><RefreshCw size={16} /> Updates <span className="notification-number updates">3</span></span>
+                  </SideMenu>
+                </SideWrapper>
 
-              <SideWrapper>
-                <SideTitle>Categories</SideTitle>
-                <SideMenu>
-                  <span ><Camera size={16} /> Photography</span>
-                  <span ><Pen size={16} /> Graphic Design</span>
-                  <span ><PlayCircle size={16} /> Video</span>
-                  <span ><Layout size={16} /> Illustrations</span>
-                  <span ><Box size={16} /> UI/UX</span>
-                  <span ><MessageSquare size={16} /> 3D/AR</span>
-                </SideMenu>
-              </SideWrapper>
-            </LeftSide>
+                <SideWrapper>
+                  <SideTitle>Categories</SideTitle>
+                  <SideMenu>
+                    <span ><Camera size={16} /> Photography</span>
+                    <span ><Pen size={16} /> Graphic Design</span>
+                    <span ><PlayCircle size={16} /> Video</span>
+                    <span ><Layout size={16} /> Illustrations</span>
+                    <span ><Box size={16} /> UI/UX</span>
+                    <span ><MessageSquare size={16} /> 3D/AR</span>
+                  </SideMenu>
+                </SideWrapper>
+              </LeftSide> 
 
-            <MainContainer>
-              <ContentWrapper>
-                <HeaderMenu>
-                  {['Desktop', 'Mobile', 'Web'].map(menu => (
-                    <span
-                      key={menu}
-                      className={activeMenu === menu ? 'active' : ''}
-                      onClick={() => setActiveMenu(menu)}
-                    >
-                      {menu}
-                    </span>
-                  ))}
-                </HeaderMenu>
-                {/*
-                  <ContentHeader>
-                  <div className="content-wrapper-context">
-                    <h3>Adobe Stock</h3>
-                    <div>Grab yourself 10 free images from Adobe Stock in a 30-day free trial plan.</div>
-                    <button className="content-button">Start free trial</button>
-                  </div>
-                  <img className="content-wrapper-img" src="/api/placeholder/400/320" alt="Adobe Stock" />
-                </ContentHeader> 
-                */}
+              <MainContainer>
+                <ContentWrapper>
+                  <ContentSection>
+                    
+                    <h3>Installed</h3>
+                    <AppsCard>
+                      <AppCard>
+                        <div className="app-card__title">
+                          <Camera size={28} />
+                          <span>Photoshop</span>
+                        </div>
+                        <div className="app-card__subtext">
+                          Edit, master and create powerful images
+                        </div>
+                        <div className="app-card-buttons">
+                          <button className="content-button status-button">Update</button>
+                        </div>
+                      </AppCard>
+                    </AppsCard> 
 
-                <ContentSection>
-                  <h3>Installed</h3>
-                  <AppsCard>
-                    <AppCard>
-                      <div className="app-card__title">
-                        <Camera size={28} />
-                        <span>Photoshop</span>
-                      </div>
-                      <div className="app-card__subtext">
-                        Edit, master and create powerful images
-                      </div>
-                      <div className="app-card-buttons">
-                        <button className="content-button status-button">Update</button>
-                      </div>
-                    </AppCard>
 
-                    {/* Add more AppCards as needed */}
-                  </AppsCard>
-                </ContentSection>
-              </ContentWrapper>
-            </MainContainer>
-          </Wrapper>
-        </AppContainer>
-      </AppWrapper>
-    </>
+                  </ContentSection>
+                </ContentWrapper>
+              </MainContainer> */}
+            </Wrapper>
+          </AppContainer>
+        </AppWrapper>
+      </ModalContent>
+    </Modal>
+
   );
 };
 

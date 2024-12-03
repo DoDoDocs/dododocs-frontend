@@ -11,7 +11,7 @@ import {
   BgShape,
   ContentStyle,
   TitleWrapper,
-  ContentWrapper,
+  RepoContentWrapper,
   RepoBoxWrapper,
   Divider,
   ButtonWrapper,
@@ -21,9 +21,11 @@ import {
   PaginationWrapper,
 } from "./RepoContent.style.js";
 
-import AddRepo from './AddRepo.jsx';
-import DeleteRepo from './DeleteRepo.jsx';
+import AddRepo from './AddRepoModal.jsx';
+import DeleteRepo from './DeleteRepoModal.jsx';
 
+
+import { RepoDetailContent } from "../../index.js";;
 
 const RepoContent = () => {
   const [searchValue, setSearchValue] = useState('');
@@ -36,6 +38,7 @@ const RepoContent = () => {
    */
   const { isOpen: isAddRepoModal, openModal: openAddRepoModal, closeModal: closeAddRepoModal } = useModal();
   const { isOpen: isDeleteRepoModal, openModal: openDeleteRepoModal, closeModal: closeDeleteRepoModal } = useModal();
+  const { isOpen: isDetailRepoModal, openModal: openDetailRepoModal, closeModal: closeDetailRepoModal } = useModal();
 
 
   const totalItems = 100;
@@ -110,14 +113,44 @@ const RepoContent = () => {
 
   return (
     <>
+
       <ContentStyle>
         <RepoBoxWrapper>
 
-          <AddRepo isOpen={isAddRepoModal} onClose={closeAddRepoModal}></AddRepo>
-          <DeleteRepo isOpen={isDeleteRepoModal}
+          <AddRepo
+            isOpen={isAddRepoModal} onClose={closeAddRepoModal}>
+          </AddRepo>
+
+          <DeleteRepo
+            isOpen={isDeleteRepoModal}
             onClose={handleCancelDelete}
             onConfirm={handleConfirmDelete}
-            repository={repoToDelete}></DeleteRepo>
+            repository={repoToDelete}
+          />
+
+          <RepoDetailContent
+            isOpen={isDetailRepoModal}
+            onClose={closeDetailRepoModal}
+          ></RepoDetailContent>
+
+          <Button
+            btnType="gradient"
+            style={{
+              padding: "0.875rem 1.5rem",
+              fontSize: "1.1rem",
+              color: "#000000",
+              fontWeight: 600,
+              borderRadius: "0.5rem",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem"
+            }}
+            onClick={openDetailRepoModal}
+          >
+            <Plus size={20} />
+            Add Repository
+          </Button>
+
           <TitleWrapper>
             <Typo
               color="#ffffff"
@@ -145,7 +178,7 @@ const RepoContent = () => {
             </Typo>
           </TitleWrapper>
 
-          <ContentWrapper>
+          <RepoContentWrapper>
             <ButtonWrapper>
               <Button
                 btnType="gradient"
@@ -180,20 +213,13 @@ const RepoContent = () => {
               </SearchInput>
             </SearchTextWrapper>
 
-            {/* <Table
-              dataSource={data}
-              columns={columns}
-              onRowClick={handleRowClick}
-              selectedRow={selectedRow}
-              onSelectionChange={handleSelectionChange}
-            /> */}
+
 
             <Board
               dataSource={data}
               onCardClick={handleCardClick}
               selectedCard={selectedCard}
               handleDeleteClick={handleDeleteClick}
-
             />
 
             <PaginationWrapper>
@@ -206,13 +232,14 @@ const RepoContent = () => {
                 maxPageButtons={5}
               />
             </PaginationWrapper>
-          </ContentWrapper>
+          </RepoContentWrapper >
 
 
 
-        </RepoBoxWrapper>
+        </RepoBoxWrapper >
 
-      </ContentStyle>
+      </ContentStyle >
+
       <BgShape>
         <Image src={bgShapeFour} width={'640px'} height={'949px'} style={{ position: 'absolute', top: '5dvh', left: '0', loading: 'lazy', filter: 'brightness(0.4) opacity(90%)', pointerEvents: "none" }} />
         <Image src={bgShapeFive} width={'626px'} height={'1004px'} style={{ position: 'absolute', top: '5dvh', right: '0', loading: 'lazy', filter: 'brightness(0.7)', pointerEvents: "none" }} />
@@ -223,3 +250,11 @@ const RepoContent = () => {
 
 export default RepoContent;
 
+
+//  <Table
+// dataSource={data}
+// columns={columns}
+// onRowClick={handleRowClick}
+// selectedRow={selectedRow}
+// onSelectionChange={handleSelectionChange}
+// />  

@@ -54,7 +54,7 @@ export const TitleWrapper = styled.div`
   animation-fill-mode: backwards;
 `;
 
-export const ContentWrapper = styled.div`
+export const RepoContentWrapper = styled.div`
   width: 100%;
   border: 1px solid rgba(63, 63, 70, 0.7);
   border-radius: 1rem;

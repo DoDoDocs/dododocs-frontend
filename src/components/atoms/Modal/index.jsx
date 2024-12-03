@@ -1,6 +1,6 @@
 // src/components/atoms/Modal/index.jsx
 import React, { useRef, useEffect } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import useClickAway from '../../../hooks/useClickAway.js';
 
 const ModalOverlay = styled.div`
@@ -14,6 +14,12 @@ const ModalOverlay = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 1000;
+
+  ${({ overlayStyles }) =>
+    overlayStyles &&
+    css`
+      ${overlayStyles}
+    `}
 `;
 
 const ModalWrapper = styled.div`
@@ -29,6 +35,13 @@ const ModalWrapper = styled.div`
   flex-direction: column;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   animation: modalFadeIn 0.3s ease-out;
+
+  ${({ wrapperStyles }) =>
+    wrapperStyles &&
+    css`
+      ${wrapperStyles}
+    `}
+
 
   @keyframes modalFadeIn {
     from {
@@ -83,7 +96,7 @@ const ModalFooter = styled.div`
   }
 `;
 
-const Modal = ({ modalWidth, isOpen, onClose, children }) => {
+const Modal = ({ modalWidth, isOpen, onClose, children, overlayStyles, wrapperStyles }) => {
   const modalRef = useRef(null);
 
   const handleClickAway = (event) => {
@@ -107,8 +120,10 @@ const Modal = ({ modalWidth, isOpen, onClose, children }) => {
   if (!isOpen) return null;
 
   return (
-    <ModalOverlay>
-      <ModalWrapper modalWidth={modalWidth} ref={modalRef}>
+    <ModalOverlay overlayStyles={overlayStyles}>
+      <ModalWrapper
+        modalWidth={modalWidth}
+        ref={modalRef} wrapperStyles={wrapperStyles}>
         {children}
       </ModalWrapper>
     </ModalOverlay>

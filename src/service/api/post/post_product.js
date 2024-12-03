@@ -1,27 +1,14 @@
-import _ from '../../../config/config.js';
 import { notification } from 'antd';
 
-/**
- * @description 상품 등록
- * @method POST
- * @request @headers youngdong token
- * @param {FormData}
- * @property {object} dto
- * @property {string} dto.title
- * @property {number} dto.cost
- * @property {number} dto.discount
- * @property {number} dto.amount
- * @property {string} dto.description
- * @property {Image} thumbnailImg
- * @property {Image} infoImg
- */
-const PostProduct = (productFormData) => {
-  return fetch(`${_.SERVER_URL}/api/product/v1/products`, {
-    method: 'POST',
+const PostProduct = () => {
+  return fetch(`${process.env.REACT_APP_API_BASE_URL}/api/analyze/result`, {
+    method: 'GET',
     headers: {
       Authorization: 'Bearer ' + localStorage.getItem('young-dong'),
     },
-    body: productFormData,
+    body: JSON.stringify({
+      repositoryName: 'Gatsby-Starter-Haon',
+    }),
   })
     .then((res) => {
       if (res.status === 500)
@@ -33,7 +20,7 @@ const PostProduct = (productFormData) => {
     })
     .catch(async (error) => {
       notification['error']({
-        message: `상품 등록 실패 ❌`,
+        message: `왜  ❌`,
       });
       let err = await error.then();
 
@@ -43,7 +30,7 @@ const PostProduct = (productFormData) => {
           description: err.error.code,
         });
       }
-      console.log('상품 등록 실패 ❌\n' + err.error);
+      console.log('왜  ❌\n' + err.error);
       console.log(err.error.code);
       //에러처리
       throw err;

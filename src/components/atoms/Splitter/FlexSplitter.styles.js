@@ -1,21 +1,20 @@
+// src/components/atoms/Splitter/FlexSplitter.styles.js
 import styled from 'styled-components';
 // Divider에서 Container 참조
 
 export const Container = styled.div`
   display: flex;
   height: 100%;
-  width: ${(props) => props.splitterWidth};
   /* width: 50%; */
-  background-color: rgb(39 39 42);
-  border-radius: 0.75rem;
+  width: ${(props) => props.splitterWidth};
+  /* background-color: rgb(39 39 42); */
   transition: background-color 0.2s ease;
 `;
 
 export const Panel = styled.div`
   height: 100%;
   overflow: hidden;
-  background-color: rgb(39 39 42);
-  border-radius: 0.75rem;
+  /* background-color: rgb(39 39 42); */
 `;
 
 export const NarrowPanel = styled(Panel)`
@@ -35,15 +34,15 @@ export const Divider = styled.div`
   justify-content: center;
   cursor: col-resize;
   user-select: none;
-  background-color: rgb(39 39 42);
+  background: rgba(39, 39, 42, 0.3);
   transition: background-color 0.2s ease;
 
-  border-left: 1px solid rgb(63 63 70 / 70%);
-  border-right: 1px solid rgb(63 63 70 / 70%);
+  border-left: 1px solid rgba(39, 39, 42, 0.5);
+  border-right: 1px solid rgba(39, 39, 42, 0.5);
 
   &:hover {
     color: white;
-    background-color: #0e0c15;
+    background: transparent;
   }
 `;
 
