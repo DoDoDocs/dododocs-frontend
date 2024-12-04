@@ -215,18 +215,18 @@ const ReadMe = () => {
       >
         <SideBar >
           <Section mb={2}>
-            <SectionTitle>Apps</SectionTitle>
-            <NavItem icon={Box}>All Apps</NavItem>
-            <NavItem icon={Box} active badge="3">Updates</NavItem>
+            <SectionTitle>시스템 아키텍쳐 문서</SectionTitle>
+            <NavItem icon={Box}>전체구조</NavItem>
+            <NavItem icon={Box} active badge="3">시스템 흐름</NavItem>
           </Section>
           <Section>
-            <SectionTitle>Categories</SectionTitle>
-            <NavItem icon={Camera}>Photography</NavItem>
-            <NavItem icon={Pencil}>Graphic Design</NavItem>
-            <NavItem icon={Video}>Video</NavItem>
+            <SectionTitle>컴포넌트 설명</SectionTitle>
+            <NavItem icon={Pencil}>KeywordController.md</NavItem>
+            <NavItem icon={Pencil}>PlannerController.md</NavItem>
+            {/* <NavItem icon={Video}>Video</NavItem>
             <NavItem icon={Palette}>Illustrations</NavItem>
             <NavItem icon={Layout}>UI/UX</NavItem>
-            <NavItem icon={Box}>3D/AR</NavItem>
+            <NavItem icon={Box}>3D/AR</NavItem> */}
           </Section>
         </SideBar>
 
@@ -238,7 +238,10 @@ const ReadMe = () => {
                 <div className="text-red-500 p-4">
                   Error: {error.message}
                 </div>
-                : <MarkdownRenderer content={content[0]} />
+                : content.map((content) => (
+                  <MarkdownRenderer content={content} />
+                ))
+
           }
         </MainContent>
       </Splitter>

@@ -32,7 +32,7 @@ const modalStyles = {
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
     backgroundColor: 'var(--bg-color)', // 테마 색상 사용
-    border: '1px solid #fff  '
+    border: '1px solid #fff  ',
   },
   overlay: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)'

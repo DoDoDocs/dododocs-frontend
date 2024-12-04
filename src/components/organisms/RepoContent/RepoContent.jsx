@@ -53,13 +53,6 @@ const RepoContent = () => {
       Action: 'Delete'
     },
     {
-      key: '2',
-      Repository: 'Deploy_DiscordBot',
-      Status: 'Upcoming',
-      Branch: 'main',
-      Action: 'Delete'
-    },
-    {
       key: '3',
       Repository: 'moheng',
       Status: 'Code Imported',
@@ -220,6 +213,8 @@ const RepoContent = () => {
               onCardClick={handleCardClick}
               selectedCard={selectedCard}
               handleDeleteClick={handleDeleteClick}
+              MAX_PROJECTS={3}
+              onAddClick={openAddRepoModal}
             />
 
             <PaginationWrapper>

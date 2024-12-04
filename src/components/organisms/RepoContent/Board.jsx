@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { CalendarIcon, X, GitBranch } from 'lucide-react';
+import { CalendarIcon, X, GitBranch, Plus } from 'lucide-react';
 
 // Styled Components
 const BoardGrid = styled.div`
@@ -178,10 +178,69 @@ const BranchTag = styled.div`
   }
 `;
 
+const EmptySlot = styled.div`
+  border: 2px dashed #27272a;
+  border-radius: 0.5rem;
+  height: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: rgba(139, 92, 246, 0.6);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+
+  }
+`;
+
+const EmptySlotIcon = styled.div`
+  width: 3rem;
+  height: 3rem;
+  border: 2px dashed #27272a;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #71717a;
+
+  ${EmptySlot}:hover & {
+    background: rgba(139, 92, 246, 0.1);
+    color: #8b5cf6;
+    border : 2px solid rgba(138, 92, 246, 0.05);
+  }
+`;
+
+const EmptySlotText = styled.p`
+  color: #71717a;
+  font-size: 0.875rem;
+  font-weight: 500;
+  ${EmptySlot}:hover & {
+    color: #ffffff;
+  }
+`;
+
+const SlotCounter = styled.p`
+  color: #52525b;
+  font-size: 0.75rem;
+  ${EmptySlot}:hover & {
+    color: #71717a;
+  }
+`;
 
 const ProjectBoard = ({
-  dataSource = [], onCardClick, handleDeleteClick, selectedCard
+  dataSource = [],
+  onCardClick,
+  handleDeleteClick,
+  selectedCard,
+  onAddClick,
+  MAX_PROJECTS
 }) => {
+  const emptySlots = Math.max(0, MAX_PROJECTS - dataSource.length);
+
   return (
     <BoardGrid>
       {dataSource.map((project) => (
@@ -214,10 +273,7 @@ const ProjectBoard = ({
               <CalendarIcon size={16} />
               <span>Dec 2024</span>
             </Timeline>
-
           </CardContent>
-
-
 
           <ProgressSection>
             <ProgressBarContainer>
@@ -231,6 +287,28 @@ const ProjectBoard = ({
           </ProgressSection>
         </ProjectCard>
       ))}
+
+      {/* Empty Slots */}
+      {emptySlots > 0 && Array(emptySlots)
+        .fill(null)
+        .map((_, index) => (
+          <EmptySlot
+            key={`empty-${index}`}
+            onClick={() => {
+              if (dataSource.length < MAX_PROJECTS) {
+                onAddClick?.();
+              }
+            }}
+          >
+            <EmptySlotIcon>
+              <Plus size={24} />
+            </EmptySlotIcon>
+            <EmptySlotText>Add New Project</EmptySlotText>
+            <SlotCounter>
+              {dataSource.length + 1} of {MAX_PROJECTS} Projects
+            </SlotCounter>
+          </EmptySlot>
+        ))}
     </BoardGrid>
   );
 };

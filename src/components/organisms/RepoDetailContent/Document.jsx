@@ -1,9 +1,11 @@
+// src/components/organisms/RepoDetailContent/ReadMe.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { Camera, Pencil, Video, Palette, Layout, Box, MoreVertical } from 'lucide-react';
 import api from "../../../api/axios.js";
-
-
+import { Splitter } from "../../index.js"
+import { useMarkdown } from '../../../hooks/useAppReadMe.js';
+import { MarkdownRenderer, LoadingSpinner } from '../../index.js';
 const Container = styled.div`
   display: flex;
   height: 100%;
@@ -11,13 +13,11 @@ const Container = styled.div`
   background: #10121b66;
 `;
 
-const Sidebar = styled.div`
+const SideBar = styled.div`
   background: rgba(24, 24, 27, 0.5);
   padding: 1.5rem 0;
   overflow-y: auto;
-  width: ${props => props.width}px;
-  min-width: 200px;
-  max-width: 400px;
+  height : 100%;
 
   &::-webkit-scrollbar {
     width: 0.25rem;
@@ -86,31 +86,9 @@ const Badge = styled.span`
   border-radius: 9999px;
 `;
 
-const Splitter = styled.div`
-  cursor: col-resize;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 0.75rem;
-  position: relative;
-  background: rgba(39, 39, 42, 0.3);
-
-  &:hover {
-    background : transparent;
-  }
-`;
-
-const SplitterBorder = styled.div`
-  position: absolute;
-  top: 0;
-  height: 100%;
-  width: 1px;
-  background: rgba(39, 39, 42, 0.5);
-  ${props => props.side}: 0;
-`;
-
 const MainContent = styled.div`
   flex: 1;
+  height : 100%;
   background: #10121b66;
   overflow-y: auto;
 `;
@@ -118,6 +96,63 @@ const MainContent = styled.div`
 const ContentArea = styled.div`
   padding: 2rem;
   color: #a1a1aa;
+`;
+
+
+const markdownText = `
+## 2. Strategy Pattern Implementation
+
+### Strategy Pattern Overview
+
+The strategy pattern is implemented through the use of interfaces for OAuth clients and URI providers, allowing for different implementations based on the OAuth provider.
+
+### Strategy Interface and Concrete Classes
+
+- **OAuthClient**: Interface for OAuth clients that defines methods for retrieving OAuth member information.
+- **OAuthMember**: Interface representing an OAuth member with methods to get social login ID, email, and profile image URL.
+- **OAuthProvider**: Interface that provides methods to get specific OAuth clients and URI providers based on the provider name.
+- **OAuthUriProvider**: Interface for generating OAuth URIs.
+
+### Context Class
+
+- **AuthService**: Acts as the context that uses the strategy interfaces to perform authentication tasks.
+
+### Class Diagram
+
+\`\`\`mermaid
+classDiagram
+    class OAuthClient {
+        +getOAuthMember(code: String): OAuthMember
+        +isSame(oAuthProviderName: String): boolean
+    }
+
+    class OAuthMember {
+        +getSocialLoginId(): String
+        +getEmail(): String
+        +getProfileImageUrl(): String
+    }
+
+    class OAuthProvider {
+        +getOauthClient(providerName: String): OAuthClient
+        +getOAuthUriProvider(providerName: String): OAuthUriProvider
+        +getSocialType(provider: String): SocialType
+    }
+
+    class OAuthUriProvider {
+        +generateUri(): String
+        +isSame(provider: String): boolean
+    }
+
+    class AuthService {
+        +generateTokenWithCode(code: String, providerName: String): MemberToken
+        +generateUri(providerName: String): String
+    }
+
+    AuthService --> OAuthProvider
+    OAuthProvider --> OAuthClient
+    OAuthProvider --> OAuthUriProvider
+    OAuthClient --> OAuthMember
+\`\`\`
 `;
 
 
@@ -131,68 +166,87 @@ const NavItem = ({ icon: Icon, children, active, badge }) => (
   </NavItemWrapper>
 );
 
-const Document = () => {
-  const [sidebarWidth, setSidebarWidth] = useState(280);
-  const [isDragging, setIsDragging] = useState(false);
-  const containerRef = useRef(null);
+const ReadMe = () => {
+  // const [mdText, setMdText] = useState([]);
 
-  const startResizing = (e) => {
-    setIsDragging(true);
-  };
+  // useEffect(() => {
+  //   const apiHandler = async () => {
+  //     try {
+  //       const response = await api.get('api/analyze/result', {
+  //         params: {
+  //           repositoryName: "Gatsby-Starter-Haon"
+  //         }
+  //       });
+  //       // regularFiles 배열만 추출하여 저장
+  //       if (response.data && response.data.regularFiles) {
+  //         const regularFiles = response.data.regularFiles;
+  //         const valuesArray = Object.values(regularFiles).map(obj => Object.values(obj)[0]);
+  //         setMdText(valuesArray);
 
-  const stopResizing = () => {
-    setIsDragging(false);
-  };
+  //         console.log(response.data.regularFiles);
+  //       } console.log(response.data);
+  //     } catch (error) {
+  //       console.error('API 호출 중 에러 발생:', error);
+  //     }
+  //   };
+  //   apiHandler();
+  // }, []);
 
-  const resize = (e) => {
-    if (isDragging && containerRef.current) {
-      const containerRect = containerRef.current.getBoundingClientRect();
-      const newWidth = e.clientX - containerRect.left;
-      if (newWidth >= 200 && newWidth <= 400) {
-        setSidebarWidth(newWidth);
-      }
-    }
-  };
+  // useEffect(() => {
+  //   console.log('mdText', mdText);
+  // }, [mdText]);
 
-  useEffect(() => {
-    if (isDragging) {
-      window.addEventListener('mousemove', resize);
-      window.addEventListener('mouseup', stopResizing);
-    }
-    return () => {
-      window.removeEventListener('mousemove', resize);
-      window.removeEventListener('mouseup', stopResizing);
-    };
-  }, [isDragging]);
+  const {
+    data: content,
+    isLoading,
+    isError,
+    error
+  } = useMarkdown('readMeId');
+
+  if (isLoading) return <LoadingSpinner />;
 
   return (
-    <Container ref={containerRef}>
-      <Sidebar width={sidebarWidth}>
-        <Section mb={2}>
-          <SectionTitle>Apps</SectionTitle>
-          <NavItem icon={Box}>All Apps</NavItem>
-          <NavItem icon={Box} active badge="3">Updates</NavItem>
-        </Section>
-        <Section>
-          <SectionTitle>Categories</SectionTitle>
-          <NavItem icon={Camera}>Photography</NavItem>
-          <NavItem icon={Pencil}>Graphic Design</NavItem>
-          <NavItem icon={Video}>Video</NavItem>
-          <NavItem icon={Palette}>Illustrations</NavItem>
-          <NavItem icon={Layout}>UI/UX</NavItem>
-          <NavItem icon={Box}>3D/AR</NavItem>
-        </Section>
-      </Sidebar>
-      <Splitter onMouseDown={startResizing}>
-        <SplitterBorder side="left" />
-        <SplitterBorder side="right" />
-        <MoreVertical size={12} color="#52525b" />
+    <Container >
+      <Splitter
+        splitterWidth={'100%'}
+        initialLeftWidth={250}
+        minWidth={200}
+        maxWidth={400}
+      >
+        <SideBar >
+          <Section mb={2}>
+            <SectionTitle>시스템 아키텍쳐 문서</SectionTitle>
+            <NavItem icon={Box}>전체구조</NavItem>
+            <NavItem icon={Box} active badge="3">시스템 흐름</NavItem>
+          </Section>
+          <Section>
+            <SectionTitle>컴포넌트 설명</SectionTitle>
+            <NavItem icon={Pencil}>KeywordController.md</NavItem>
+            <NavItem icon={Pencil}>PlannerController.md</NavItem>
+            {/* <NavItem icon={Video}>Video</NavItem>
+            <NavItem icon={Palette}>Illustrations</NavItem>
+            <NavItem icon={Layout}>UI/UX</NavItem>
+            <NavItem icon={Box}>3D/AR</NavItem> */}
+          </Section>
+        </SideBar>
+
+        <MainContent>
+          <ContentArea>Main Content Area</ContentArea>
+          {
+            isLoading ? <LoadingSpinner /> :
+              isError ?
+                <div className="text-red-500 p-4">
+                  Error: {error.message}
+                </div>
+                : content.map((content) => (
+                  <MarkdownRenderer content={content} />
+                ))
+
+          }
+        </MainContent>
       </Splitter>
-      <MainContent>
-        <ContentArea>Main Content Area</ContentArea>
-      </MainContent>
     </Container>
   );
 };
 
-export default Document;
+export default ReadMe;
