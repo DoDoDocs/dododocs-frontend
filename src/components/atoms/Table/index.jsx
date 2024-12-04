@@ -154,3 +154,12 @@ const Table = ({
 
 export default React.memo(Table);
 
+
+
+//  <Table
+// dataSource={data}
+// columns={columns}
+// onRowClick={handleRowClick}
+// selectedRow={selectedRow}
+// onSelectionChange={handleSelectionChange}
+// />  

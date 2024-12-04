@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import {
   Image, Typo, Button, TextBox, Select,
   Modal, ModalHeader, ModalTitle, ModalDescription, ModalContent, ModalFooter,
-} from "../../index.js";
+} from "../../../index.js";
 import { X } from 'lucide-react';
 
 

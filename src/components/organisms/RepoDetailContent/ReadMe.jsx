@@ -91,6 +91,28 @@ const MainContent = styled.div`
   height : 100%;
   background: #10121b66;
   overflow-y: auto;
+
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgb(1 2 3 / 40%);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.5);
+    }
+  
+}
 `;
 
 const ContentArea = styled.div`

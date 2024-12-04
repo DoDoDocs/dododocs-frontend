@@ -191,3 +191,16 @@ const Pagination = ({
 };
 
 export default React.memo(Pagination);
+
+
+
+//  <PaginationWrapper>
+// <Pagination
+//   itemsPerPage={itemsPerPage}
+//   totalItems={totalItems}
+//   currentPage={currentPage}
+//   onPageChange={setCurrentPage}
+//   showQuickJumper
+//   maxPageButtons={5}
+// />
+// </PaginationWrapper> 

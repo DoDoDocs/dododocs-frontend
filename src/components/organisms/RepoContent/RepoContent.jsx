@@ -5,6 +5,7 @@ import bgShapeFive from "../../../assets/images/bg-shape-five.png";
 import bgShapeFour from "../../../assets/images/bg-shape-four.png";
 import { Search, Trash2, Plus, Trash } from 'lucide-react';
 import useModal from "../../../hooks/useModal.js";
+import { useParams, useNavigate } from 'react-router-dom';
 
 import Board from './Board.jsx';
 import {
@@ -21,12 +22,20 @@ import {
   PaginationWrapper,
 } from "./RepoContent.style.js";
 
-import AddRepo from './AddRepoModal.jsx';
-import DeleteRepo from './DeleteRepoModal.jsx';
+import AddRepo from './RepoContentModal/AddRepoModal.jsx';
+import DeleteRepo from './RepoContentModal/DeleteRepoModal.jsx';
 
 
 import { RepoDetailContent } from "../../index.js";;
 
+
+/**
+ * 레포지토리 목록 및 관리 컴포넌트
+ * 
+ * @component
+ * @description 레포지토리 목록을 표시하고 관리하는 메인 컴포넌트
+ * 검색, 추가, 삭제, 상세보기 등의 기능을 제공
+ */
 const RepoContent = () => {
   const [searchValue, setSearchValue] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -38,11 +47,27 @@ const RepoContent = () => {
    */
   const { isOpen: isAddRepoModal, openModal: openAddRepoModal, closeModal: closeAddRepoModal } = useModal();
   const { isOpen: isDeleteRepoModal, openModal: openDeleteRepoModal, closeModal: closeDeleteRepoModal } = useModal();
-  const { isOpen: isDetailRepoModal, openModal: openDetailRepoModal, closeModal: closeDetailRepoModal } = useModal();
+  // const { isOpen: isDetailRepoModal, openModal: openDetailRepoModal, closeModal: closeDetailRepoModal } = useModal();
 
+  /**
+   * @description App 관련 함수
+   */
+  const navigate = useNavigate();
 
-  const totalItems = 100;
-  const itemsPerPage = 10;
+  const { repoTitle } = useParams();
+
+  const [isAppModalOpen, setIsAppModalOpen] = useState(!!repoTitle);
+
+  const openAppModal = (card) => {
+    navigate(`/repositories/${card.Repository}`);
+    setIsAppModalOpen(true);
+  };
+
+  const closeAppModal = () => {
+    navigate(-1);
+    setIsAppModalOpen(false);
+  };
+
 
   const data = [
     {
@@ -65,10 +90,11 @@ const RepoContent = () => {
     setSearchValue(e.target.value);
   }, []);
 
-  const handleCardClick = useCallback((card) => {
+  const handleCardClick = ((card) => {
     console.log('Card clicked:', card);
-    setSelectedCard(card.key);
-  }, []);
+    setSelectedCard(card);
+    openAppModal(card);
+  });
 
   const handleDeleteClick = useCallback((e, repo) => {
     e.stopPropagation(); // 이벤트 버블링 방지
@@ -122,27 +148,9 @@ const RepoContent = () => {
           />
 
           <RepoDetailContent
-            isOpen={isDetailRepoModal}
-            onClose={closeDetailRepoModal}
+            isOpen={isAppModalOpen}
+            onClose={closeAppModal}
           ></RepoDetailContent>
-
-          <Button
-            btnType="gradient"
-            style={{
-              padding: "0.875rem 1.5rem",
-              fontSize: "1.1rem",
-              color: "#000000",
-              fontWeight: 600,
-              borderRadius: "0.5rem",
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem"
-            }}
-            onClick={openDetailRepoModal}
-          >
-            <Plus size={20} />
-            Add Repository
-          </Button>
 
           <TitleWrapper>
             <Typo
@@ -218,14 +226,6 @@ const RepoContent = () => {
             />
 
             <PaginationWrapper>
-              <Pagination
-                itemsPerPage={itemsPerPage}
-                totalItems={totalItems}
-                currentPage={currentPage}
-                onPageChange={setCurrentPage}
-                showQuickJumper
-                maxPageButtons={5}
-              />
             </PaginationWrapper>
           </RepoContentWrapper >
 
@@ -245,11 +245,3 @@ const RepoContent = () => {
 
 export default RepoContent;
 
-
-//  <Table
-// dataSource={data}
-// columns={columns}
-// onRowClick={handleRowClick}
-// selectedRow={selectedRow}
-// onSelectionChange={handleSelectionChange}
-// />  

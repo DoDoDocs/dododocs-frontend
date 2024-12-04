@@ -4,8 +4,7 @@ import styled from 'styled-components';
 import {
   Image, Typo, Button, TextBox, Select,
   Modal, ModalHeader, ModalTitle, ModalDescription, ModalContent, ModalFooter,
-} from "../../index.js";
-import useClickAway from '../../../hooks/useClickAway.js';
+} from "../../../index.js";
 // Styled Components
 
 const FormGroup = styled.div`

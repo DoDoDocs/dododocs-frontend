@@ -28,6 +28,7 @@ const ProjectCard = styled.div`
 
   &:hover {
     border-color: #3f3f46;
+    box-shadow: 0 0 0 2px #8b5cf6;
   }
 
   ${props => props.isSelected && `

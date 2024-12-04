@@ -37,7 +37,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path='/callback/github' element={<OAuthCallback />} />
         <Route path="/repositories" element={<Repo />} />
-        <Route path="/repositories/:repoId" element={<Repo />} />
+        <Route path="/repositories/:repoTitle" element={<Repo />} />
 
         <Route path="/chatting" element={<Chatting />} />
         <Route path="/chatting/:chattingId" element={<Chatting />} />

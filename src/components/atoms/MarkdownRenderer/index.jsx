@@ -129,33 +129,36 @@ const MermaidRenderer = ({ content }) => {
   const elementRef = useRef();
 
   useEffect(() => {
-    if (elementRef.current) {
-      const renderDiagram = async () => {
-        try {
-          const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
-          // Mermaid 렌더링 전에 DOM 요소 초기화
-          elementRef.current.innerHTML = "";
-          // Mermaid 렌더링
-          const { svg } = await mermaid.render(id, content);
-          elementRef.current.innerHTML = svg;
-        } catch (error) {
-          console.error("Mermaid rendering failed:", error);
-          elementRef.current.innerHTML = "Failed to render diagram";
-        }
-      };
+    let mounted = true;
 
-      // DOM이 준비된 후 렌더링
-      if (document.readyState === "complete") {
-        renderDiagram();
-      } else {
-        window.addEventListener("load", renderDiagram);
-        return () => window.removeEventListener("load", renderDiagram);
+    const renderDiagram = async () => {
+      if (!elementRef.current || !mounted) return;
+
+      try {
+        const id = `mermaid-${Math.random().toString(36).slice(2)}`;
+        elementRef.current.innerHTML = '';
+        const { svg } = await mermaid.render(id, content);
+        if (mounted && elementRef.current) {
+          elementRef.current.innerHTML = svg;
+        }
+      } catch (error) {
+        console.error('Mermaid rendering failed:', error);
+        if (mounted && elementRef.current) {
+          elementRef.current.innerHTML = 'Failed to render diagram';
+        }
       }
-    }
+    };
+
+    renderDiagram();
+
+    return () => {
+      mounted = false;
+    };
   }, [content]);
 
-  return <div className="mermaid" ref={elementRef}></div>;
+  return <div className="mermaid" ref={elementRef} />;
 };
+
 
 const MarkdownRenderer = ({ content }) => {
   useEffect(() => {
