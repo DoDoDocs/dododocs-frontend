@@ -64,12 +64,10 @@ const DocsContent = () => {
 
   const openModal = (id) => {
     navigate(`/chatting/${id}`);
-    setIsModalOpen(true);
   };
 
   const closeModal = () => {
     navigate('/chatting');
-    setIsModalOpen(false);
   };
 
 

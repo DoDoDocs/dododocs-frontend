@@ -4,7 +4,8 @@ import { Image, Typo, Button, TextBox, Table, Pagination, Select, } from "../../
 import bgShapeFive from "../../../assets/images/bg-shape-five.png";
 import bgShapeFour from "../../../assets/images/bg-shape-four.png";
 import { Search, Trash2, Plus, Trash } from 'lucide-react';
-import useModal from "../../../hooks/useModal.js";
+import useRepoStore from '../../../store/useRepoStore'
+import { useRepoManagement } from '../../../hooks/useRepoManagement'
 import { useParams, useNavigate } from 'react-router-dom';
 
 import Board from './Board.jsx';
@@ -37,36 +38,36 @@ import { RepoDetailContent } from "../../index.js";;
  * 검색, 추가, 삭제, 상세보기 등의 기능을 제공
  */
 const RepoContent = () => {
-  const [searchValue, setSearchValue] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [selectedCard, setSelectedCard] = useState(null);
-  const [repoToDelete, setRepoToDelete] = useState(null);
+  // const [searchValue, setSearchValue] = useState('');
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const [selectedCard, setSelectedCard] = useState(null);
+  // const [repoToDelete, setRepoToDelete] = useState(null);
 
   /**
    * @description 모달 hooks
    */
-  const { isOpen: isAddRepoModal, openModal: openAddRepoModal, closeModal: closeAddRepoModal } = useModal();
-  const { isOpen: isDeleteRepoModal, openModal: openDeleteRepoModal, closeModal: closeDeleteRepoModal } = useModal();
-  // const { isOpen: isDetailRepoModal, openModal: openDetailRepoModal, closeModal: closeDetailRepoModal } = useModal();
+  // const { isOpen: isAddRepoModal, openModal: openAddRepoModal, closeModal: closeAddRepoModal } = useModal();
+  // const { isOpen: isDeleteRepoModal, openModal: openDeleteRepoModal, closeModal: closeDeleteRepoModal } = useModal();
+  // // const { isOpen: isDetailRepoModal, openModal: openDetailRepoModal, closeModal: closeDetailRepoModal } = useModal();
 
   /**
    * @description App 관련 함수
    */
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
-  const { repoTitle } = useParams();
+  // const { repoTitle } = useParams();
 
-  const [isAppModalOpen, setIsAppModalOpen] = useState(!!repoTitle);
+  // const [isAppModalOpen, setIsAppModalOpen] = useState(!!repoTitle);
 
-  const openAppModal = (card) => {
-    navigate(`/repositories/${card.Repository}`);
-    setIsAppModalOpen(true);
-  };
+  // const openAppModal = (card) => {
+  //   navigate(`/repositories/${card.Repository}`);
+  //   setIsAppModalOpen(true);
+  // };
 
-  const closeAppModal = () => {
-    navigate(-1);
-    setIsAppModalOpen(false);
-  };
+  // const closeAppModal = () => {
+  //   navigate(-1);
+  //   setIsAppModalOpen(false);
+  // };
 
 
   const data = [
@@ -86,71 +87,83 @@ const RepoContent = () => {
     },
   ];
 
-  const handleSearchChange = useCallback((e) => {
-    setSearchValue(e.target.value);
-  }, []);
+  // const handleSearchChange = useCallback((e) => {
+  //   setSearchValue(e.target.value);
+  // }, []);
 
-  const handleCardClick = ((card) => {
-    console.log('Card clicked:', card);
-    setSelectedCard(card);
-    openAppModal(card);
-  });
+  // const handleCardClick = ((card) => {
+  //   console.log('Card clicked:', card);
+  //   setSelectedCard(card);
+  //   openAppModal(card);
+  // });
 
-  const handleDeleteClick = useCallback((e, repo) => {
-    e.stopPropagation(); // 이벤트 버블링 방지
-    setRepoToDelete(repo); // 삭제할 레포지토리 정보 저장
-    console.log('Delete clicked Repo : ', repo);
-    openDeleteRepoModal();
-  }, [openDeleteRepoModal]);
+  // const handleDeleteClick = useCallback((e, repo) => {
+  //   e.stopPropagation(); // 이벤트 버블링 방지
+  //   setRepoToDelete(repo); // 삭제할 레포지토리 정보 저장
+  //   console.log('Delete clicked Repo : ', repo);
+  //   openDeleteRepoModal();
+  // }, [openDeleteRepoModal]);
 
-  const handleConfirmDelete = useCallback(async () => {
-    try {
-      // API 호출 로직
-      // await deleteRepository(repoToDelete.key);
+  // const handleConfirmDelete = useCallback(async () => {
+  //   try {
+  //     // API 호출 로직
+  //     // await deleteRepository(repoToDelete.key);
 
-      // 성공적으로 삭제된 후의 처리
-      closeDeleteRepoModal();
-      setRepoToDelete(null);
+  //     // 성공적으로 삭제된 후의 처리
+  //     closeDeleteRepoModal();
+  //     setRepoToDelete(null);
 
-      // 필요한 경우 데이터 리로드 또는 상태 업데이트
-      // reloadData();
+  //     // 필요한 경우 데이터 리로드 또는 상태 업데이트
+  //     // reloadData();
 
-    } catch (error) {
-      console.error('Failed to delete repository:', error);
-      // 에러 처리 로직
-    }
-  }, [closeDeleteRepoModal]);
-
-
-  const handleCancelDelete = useCallback(() => {
-    closeDeleteRepoModal();
-    setRepoToDelete(null);
-  }, [closeDeleteRepoModal]);
+  //   } catch (error) {
+  //     console.error('Failed to delete repository:', error);
+  //     // 에러 처리 로직
+  //   }
+  // }, [closeDeleteRepoModal]);
 
 
+  // const handleCancelDelete = useCallback(() => {
+  //   closeDeleteRepoModal();
+  //   setRepoToDelete(null);
+  // }, [closeDeleteRepoModal]);
 
+  // SECTION
+  // 레포지토리 관리 관련 커스텀 훅
+  const {
+    modals: { addRepo, deleteRepo },
+    appModal,
+    handlers
+  } = useRepoManagement()
+
+  // Zustand store에서 필요한 상태와 액션 가져오기
+  const {
+    searchValue,
+    selectedCard,
+    repoToDelete,
+    repos,
+    setSearchValue,
+  } = useRepoStore()
 
   return (
     <>
 
       <ContentStyle>
         <RepoBoxWrapper>
-
+          {/*NOTE 레포지토리 추가 모달 */}
           <AddRepo
-            isOpen={isAddRepoModal} onClose={closeAddRepoModal}>
+            isOpen={addRepo.isOpen} onClose={addRepo.close}>
           </AddRepo>
 
           <DeleteRepo
-            isOpen={isDeleteRepoModal}
-            onClose={handleCancelDelete}
-            onConfirm={handleConfirmDelete}
+            isOpen={deleteRepo.isOpen}
+            onClose={handlers.handleCancelDelete}
+            onConfirm={handlers.handleConfirmDelete}
             repository={repoToDelete}
           />
 
-          <RepoDetailContent
-            isOpen={isAppModalOpen}
-            onClose={closeAppModal}
-          ></RepoDetailContent>
+          <RepoDetailContent onClose={appModal.close}>
+          </RepoDetailContent>
 
           <TitleWrapper>
             <Typo
@@ -193,7 +206,7 @@ const RepoContent = () => {
                   alignItems: "center",
                   gap: "0.5rem"
                 }}
-                onClick={openAddRepoModal}
+                onClick={addRepo.open}
               >
                 <Plus size={20} />
                 Add Repository
@@ -206,7 +219,7 @@ const RepoContent = () => {
               <SearchInput>
                 <TextBox
                   value={searchValue}
-                  onChange={handleSearchChange}
+                  onChange={(e) => setSearchValue(e.target.value)}
                   placeholder="Search repositories..."
                   plane={true}
                 />
@@ -217,12 +230,12 @@ const RepoContent = () => {
 
 
             <Board
-              dataSource={data}
-              onCardClick={handleCardClick}
+              dataSource={repos}
+              onCardClick={handlers.handleCardClick}
               selectedCard={selectedCard}
-              handleDeleteClick={handleDeleteClick}
+              handleDeleteClick={handlers.handleDeleteClick}
               MAX_PROJECTS={3}
-              onAddClick={openAddRepoModal}
+              onAddClick={addRepo.open}
             />
 
             <PaginationWrapper>

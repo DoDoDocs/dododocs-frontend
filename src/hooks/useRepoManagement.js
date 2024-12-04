@@ -1,7 +1,8 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useRepoStore from '../stores/useRepoStore';
+import useRepoStore from '../store/useRepoStore';
 import useModal from './useModal';
+import useAppModalStore from '../store/useAppModalStore';
 
 /**
  * 레포지토리 관리를 위한 커스텀 훅
@@ -11,8 +12,13 @@ import useModal from './useModal';
  */
 export const useRepoManagement = () => {
   const navigate = useNavigate();
-  const { setSelectedCard, setRepoToDelete, deleteRepo } = useRepoStore();
 
+  const setSelectedCard = useRepoStore((state) => state.setSelectedCard);
+  const setRepoToDelete = useRepoStore((state) => state.setRepoToDelete);
+  const deleteRepo = useRepoStore((state) => state.deleteRepo);
+
+  const { isAppModalOpen, setOpenAppModal, setAppRepo, setCloseAppModal } =
+    useAppModalStore();
   // 모달 상태 관리
   const {
     isOpen: isAddRepoModal,
@@ -32,17 +38,20 @@ export const useRepoManagement = () => {
    */
   const openAppModal = useCallback(
     (card) => {
+      setAppRepo(card);
+      setOpenAppModal();
       navigate(`/repositories/${card.Repository}`);
     },
-    [navigate],
+    [navigate, setOpenAppModal, setAppRepo],
   );
 
   /**
    * 레포지토리 상세 모달 닫기
    */
   const closeAppModal = useCallback(() => {
+    setCloseAppModal();
     navigate(-1);
-  }, [navigate]);
+  }, [navigate, setCloseAppModal]);
 
   /**
    * 카드 클릭 이벤트 핸들러
@@ -82,6 +91,8 @@ export const useRepoManagement = () => {
       const success = deleteRepo();
 
       if (success) {
+        console.log('Repository deleted successfully');
+
         closeDeleteRepoModal();
         // 추가적인 성공 처리 (예: 토스트 메시지)
       } else {

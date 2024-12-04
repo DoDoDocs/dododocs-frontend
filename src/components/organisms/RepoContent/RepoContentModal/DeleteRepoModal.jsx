@@ -74,7 +74,7 @@ const StyledButton = styled(Button)`
   word-break: keep-all;
 `;
 
-const AddRepo = ({ isOpen, onClose, onConfirm, repository }) => {
+const DeleteRepo = ({ isOpen, onClose, onConfirm, repository }) => {
 
   const [confirmText, setConfirmText] = React.useState('');
   const expectedText = repository?.Repository || '';
@@ -139,4 +139,4 @@ const AddRepo = ({ isOpen, onClose, onConfirm, repository }) => {
   );
 }
 
-export default AddRepo;
+export default DeleteRepo;

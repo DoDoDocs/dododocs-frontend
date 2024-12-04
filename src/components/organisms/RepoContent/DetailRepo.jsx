@@ -436,49 +436,9 @@ const App = ({ isOpen, onOpen, onClose }) => {
             </MainHeader>
 
             <Wrapper>
-              {/* <LeftSide>
-                <SideWrapper>
-                  <SideTitle>Apps</SideTitle>
-                  <SideMenu>
-                    <span href="#"><Grid size={16} /> All Apps</span>
-                    <span ><RefreshCw size={16} /> Updates <span className="notification-number updates">3</span></span>
-                  </SideMenu>
-                </SideWrapper>
-
-                <SideWrapper>
-                  <SideTitle>Categories</SideTitle>
-                  <SideMenu>
-                    <span ><Camera size={16} /> Photography</span>
-                    <span ><Pen size={16} /> Graphic Design</span>
-                    <span ><PlayCircle size={16} /> Video</span>
-                    <span ><Layout size={16} /> Illustrations</span>
-                    <span ><Box size={16} /> UI/UX</span>
-                    <span ><MessageSquare size={16} /> 3D/AR</span>
-                  </SideMenu>
-                </SideWrapper>
-              </LeftSide> */}
-
               <MainContainer>
                 <ContentWrapper>
                   <ContentSection>
-                    {/* 
-                    <h3>Installed</h3>
-                    <AppsCard>
-                      <AppCard>
-                        <div className="app-card__title">
-                          <Camera size={28} />
-                          <span>Photoshop</span>
-                        </div>
-                        <div className="app-card__subtext">
-                          Edit, master and create powerful images
-                        </div>
-                        <div className="app-card-buttons">
-                          <button className="content-button status-button">Update</button>
-                        </div>
-                      </AppCard>
-                    </AppsCard> 
-                     */}
-
                   </ContentSection>
                 </ContentWrapper>
               </MainContainer>

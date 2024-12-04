@@ -5,6 +5,9 @@ import { Bell, Search, Grid, RefreshCw, Camera, Layout, PlayCircle, Pen, Box, Me
 import {
   Image, Typo, Button, TextBox, Select,
 } from "../../index.js";
+
+import useAppModalStore from '../../../store/useAppModalStore.js';
+
 import Modal from 'react-modal';
 
 import Chatting from "./Chatting.jsx"
@@ -234,7 +237,10 @@ background-color : #10121b66;
 `
 
 // Main App Component
-const App = ({ isOpen, onClose }) => {
+const App = ({ onClose }) => {
+
+  const { isAppModalOpen: isOpen } = useAppModalStore();
+
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   const [isImgMode, setIsImgMode] = useState(false);
