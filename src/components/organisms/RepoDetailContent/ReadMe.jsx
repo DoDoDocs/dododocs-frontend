@@ -17,21 +17,44 @@ const Container = styled.div`
 `;
 
 const SideBar = styled.div`
+  display : flex;
+  flex-direction : column;
+  justify-content: space-between;
+  gap :1rem;
   background: rgba(24, 24, 27, 0.5);
   padding: 1.5rem 0;
   overflow-y: auto;
   height : 100%;
+// 스크롤바 기본 상태
+&::-webkit-scrollbar {
+    width: 6px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
 
-  &::-webkit-scrollbar {
-    width: 0.25rem;
+  &:hover::-webkit-scrollbar {
+    opacity: 1;
   }
 
   &::-webkit-scrollbar-track {
-    background: transparent;
+    background: rgb(1 2 3 / 40%);
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #3f3f46;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.5);
+    }
+  }
+
+  // Firefox용 스크롤바 스타일
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  
+  &:hover {
+    scrollbar-color: rgba(255, 255, 255, 0.3) rgb(1 2 3 / 40%);
   }
 `;
 
@@ -40,7 +63,7 @@ const SectionTitle = styled.h2`
   color: #71717a;
   font-size: 0.75rem;
   padding: 0 1.5rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.15rem;
 `;
 
 const Section = styled.div`
@@ -91,6 +114,8 @@ const Badge = styled.span`
 
 const ActionBtnWrapper = styled.div`
 display : flex;
+flex-direction: column;
+gap : 1rem;
 justify-content: center;
 align-items: center;
 padding-top : 0.75rem;
@@ -428,6 +453,30 @@ const ReadMe = () => {
     }
   };
 
+  /**
+   * E제공된 콘텐츠를 지정된 파일 이름의 Markdown 파일로 내보냅니다
+   * @param {string} content - The content to be exported as a Markdown file.
+   * @param {string} [filename='document.md'] - The filename for the exported Markdown file.
+   */
+  const exportToMd = (markdownText, filename = 'document.md') => {
+    try {
+      const blob = new Blob([content], { type: 'text/markdown' });
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Failed to export markdown:', error);
+      // 사용자에게 오류 메시지 표시
+    }
+  };
+
 
   return (
     <Container >
@@ -438,7 +487,7 @@ const ReadMe = () => {
         maxWidth={400}
       >
         <SideBar >
-          <Section mb={2}>
+          <Section mb={0.75}>
             <SectionTitle>Read Me Table</SectionTitle>
             {
               sectionsReadMe
@@ -473,15 +522,12 @@ const ReadMe = () => {
               <Button btnType={"gradientLine"} size={'small'} style={{ width: "80%", padding: "0.75rem" }}>
                 custom 하기
               </Button>
+              <Button btnType={"gradient"} size={'small'} style={{ width: "80%", padding: "0.75rem" }}
+                onClick={() => exportToMd(markdownText, 'README.md')}
+              >
+                .md로 내보내기
+              </Button>
             </ActionBtnWrapper>
-
-
-            <NavItem icon={Pencil}>custom 하기</NavItem>
-            <NavItem icon={Pencil}>내보내기</NavItem>
-            {/* <NavItem icon={Video}>Video</NavItem>
-            <NavItem icon={Palette}>Illustrations</NavItem>
-            <NavItem icon={Layout}>UI/UX</NavItem>
-            <NavItem icon={Box}>3D/AR</NavItem> */}
           </Section>
         </SideBar>
 
