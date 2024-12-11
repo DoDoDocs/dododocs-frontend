@@ -7,6 +7,7 @@ import { Splitter } from "../../index.js"
 import { useMarkdown } from '../../../hooks/useAppReadMe.js';
 import { MarkdownRenderer, LoadingSpinner, MarkdownEditor } from '../../index.js';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { Button } from "../../index.js"
 
 const Container = styled.div`
   display: flex;
@@ -87,6 +88,13 @@ const Badge = styled.span`
   padding: 0.125rem 0.5rem;
   border-radius: 9999px;
 `;
+
+const ActionBtnWrapper = styled.div`
+display : flex;
+justify-content: center;
+align-items: center;
+padding-top : 0.75rem;
+`
 
 const MainContent = styled.div`
   flex: 1;
@@ -461,6 +469,13 @@ const ReadMe = () => {
           </Section>
           <Section>
             <SectionTitle>action</SectionTitle>
+            <ActionBtnWrapper>
+              <Button btnType={"gradientLine"} size={'small'} style={{ width: "80%", padding: "0.75rem" }}>
+                custom 하기
+              </Button>
+            </ActionBtnWrapper>
+
+
             <NavItem icon={Pencil}>custom 하기</NavItem>
             <NavItem icon={Pencil}>내보내기</NavItem>
             {/* <NavItem icon={Video}>Video</NavItem>

@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom"
 import { Image, Typo, TextBox, Button } from "../../components/index.js";
 import { Row, Col } from "../index.js"
 import headerIcon from "../../assets/icons/dododocs_Icon.png"
-import useAuthStore from "../../store/authStore.js"
+import useMemberStore from "../../store/memberStore.js"
 import {
   SenHeader, LayoutHeaderWrapper, HeaderWrapper, IconHeader, SearchWrapper, IconHeaderButton,
   VerticalDivider, CategoryBox, LoginBtnBox, LoginValueBtn, LoginButton
@@ -13,11 +13,11 @@ import { userAPI } from "../../api/index.js"
 
 const HomeHeader = ({ role }) => {
   // 여러 상태 한번에 가져오기
-  const { user } = useAuthStore()
+  const { userNickname } = useMemberStore()
 
   const location = useLocation();
   // const logined = useSelector(selectIsUserInitialized);
-  const name = '채은';
+  const name = userNickname;
   //SECTION 스크롤 
   const [scrolled, setScrolled] = useState(false);
   const sentinelRef = useRef(null);
@@ -217,9 +217,9 @@ const HomeHeader = ({ role }) => {
 
 
                 {
-                  name ?
+                  userNickname ?
                     <Col md={9} span={9} justify={"flex-end"} align={"center"} style={{ paddingRight: "2rem" }}>
-                      <Typo size={'1.2rem'} color={"#545454"}>환영합니다. {name}님 </Typo>
+                      <Typo size={'1.2rem'} color={"#545454"}>환영합니다. {userNickname}님 </Typo>
                     </Col>
                     :
                     null
