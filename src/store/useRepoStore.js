@@ -1,4 +1,26 @@
 import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
+import useAuthStore from './authStore';
+
+// 인증 상태와 연동하는 미들웨어
+const authMiddleware = (config) => (set, get, api) =>
+  config(
+    (...args) => {
+      // 인증되지 않은 상태면 초기 상태로 리셋
+      if (!useAuthStore.getState().isAuthenticated) {
+        set({
+          searchValue: '',
+          selectedCard: null,
+          repoToDelete: null,
+          repos: [],
+        });
+        return;
+      }
+      set(...args);
+    },
+    get,
+    api,
+  );
 
 /**
  * Repository 관리를 위한 Zustand store
@@ -9,78 +31,88 @@ import { create } from 'zustand';
  * @property {Object|null} repoToDelete - 삭제 예정인 레포지토리
  * @property {Array} repos - 레포지토리 목록
  */
-const useRepoStore = create((set, get) => ({
-  // State
-  searchValue: '',
-  selectedCard: null,
-  repoToDelete: null,
-  repos: [
-    {
-      key: '1',
-      Repository: 'spring-boot_test',
-      Status: 'In Progress',
-      Branch: 'main',
-      Action: 'Delete',
-    },
-    {
-      key: '3',
-      Repository: 'moheng',
-      Status: 'Code Imported',
-      Branch: ['main', 'develop'],
-      Action: 'Delete',
-    },
-  ],
+const useRepoStore = create(
+  devtools(
+    authMiddleware((set, get) => ({
+      // State
+      searchValue: '',
+      selectedCard: null,
+      repoToDelete: null,
+      repos: [
+        {
+          key: '1',
+          Repository: 'spring-boot_test',
+          Status: 'In Progress',
+          Branch: 'main',
+          Action: 'Delete',
+        },
+        {
+          key: '3',
+          Repository: 'moheng',
+          Status: 'Code Imported',
+          Branch: ['main', 'develop'],
+          Action: 'Delete',
+        },
+      ],
 
-  // Actions
-  /**
-   * 검색어 설정
-   * @param {string} value - 새로운 검색어
-   */
-  setSearchValue: (value) => set({ searchValue: value }),
+      // Actions
+      setSearchValue: (value) => set({ searchValue: value }, false, 'setSearchValue'),
 
-  /**
-   * 선택된 카드 설정
-   * @param {Object} card - 선택된 레포지토리 카드
-   */
-  setSelectedCard: (card) => set({ selectedCard: card }),
+      setSelectedCard: (card) => set({ selectedCard: card }, false, 'setSelectedCard'),
 
-  /**
-   * 삭제할 레포지토리 설정
-   * @param {Object} repo - 삭제할 레포지토리
-   */
-  setRepoToDelete: (repo) => set({ repoToDelete: repo }),
+      setRepoToDelete: (repo) => set({ repoToDelete: repo }, false, 'setRepoToDelete'),
 
-  /**
-   * 새로운 레포지토리 추가
-   * @param {Object} repo - 추가할 레포지토리 정보
-   */
-  addRepo: (repo) =>
-    set((state) => ({
-      repos: [...state.repos, repo],
+      addRepo: (repo) =>
+        set(
+          (state) => ({
+            repos: [...state.repos, repo],
+          }),
+          false,
+          'addRepo',
+        ),
+
+      deleteRepo: () => {
+        const { repoToDelete, repos } = get();
+
+        if (!repoToDelete) {
+          console.warn('No repository selected for deletion');
+          return false;
+        }
+        if (!repos) {
+          console.warn('No repository exists');
+          return false;
+        }
+
+        set(
+          {
+            repos: repos.filter((repo) => repo.key !== repoToDelete.key),
+            repoToDelete: null,
+          },
+          false,
+          'deleteRepo',
+        );
+
+        return true;
+      },
+
+      // 전체 저장소 목록 초기화
+      clearRepos: () =>
+        set(
+          {
+            searchValue: '',
+            selectedCard: null,
+            repoToDelete: null,
+            repos: [],
+          },
+          false,
+          'clearRepos',
+        ),
     })),
-
-  /**
-   * 저장된 repoToDelete를 기반으로 레포지토리를 삭제하는 액션
-   * @returns {boolean} 삭제 성공 여부
-   */
-  deleteRepo: () => {
-    const { repoToDelete, repos } = get();
-
-    if (!repoToDelete) {
-      console.warn('No repository selected for deletion');
-      return false;
-    }
-    if (!repos) {
-      console.warn('No repository exists');
-      return false;
-    }
-    set({
-      repos: repos.filter((repo) => repo.key !== repoToDelete.key),
-      repoToDelete: null, // 삭제 후 상태 초기화
-    });
-
-    return true;
-  },
-}));
+    {
+      name: 'Repository Store',
+      enabled: process.env.NODE_ENV === 'development',
+    },
+  ),
+);
 
 export default useRepoStore;

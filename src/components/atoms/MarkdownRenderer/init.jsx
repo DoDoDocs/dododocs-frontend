@@ -113,46 +113,57 @@ const MarkdownContainer = styled.div`
     padding: 1.5rem;
     border-radius: 0.5rem;
     margin: 1.5rem 0;
-    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
     svg {
       max-width: 100%;
       height: auto;
     }
-  }
+
 `;
 
 
 const MermaidRenderer = ({ content }) => {
-  const mermaidRef = useRef(null);
+  const elementRef = useRef();
 
   useEffect(() => {
-    if (mermaidRef.current) {
-      const renderDiagram = async () => {
-        mermaidRef.current.innerHTML = '';
-        const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
-        mermaidRef.current.id = id;
+    let mounted = true;
 
-        try {
-          await mermaid.render(id, content, (svgCode) => {
-            mermaidRef.current.innerHTML = svgCode;
-          });
-        } catch (error) {
-          console.error('Mermaid rendering failed:', error);
-          mermaidRef.current.innerHTML = 'Failed to render diagram';
+    const renderDiagram = async () => {
+      if (!elementRef.current || !mounted) return;
+
+      try {
+        const id = `mermaid-${Math.random().toString(36).slice(2)}`;
+        elementRef.current.innerHTML = '';
+        const { svg } = await mermaid.render(id, content);
+        if (mounted && elementRef.current) {
+          elementRef.current.innerHTML = svg;
         }
-      };
+      } catch (error) {
+        console.error('Mermaid rendering failed:', error);
+        if (mounted && elementRef.current) {
+          elementRef.current.innerHTML = 'Failed to render diagram';
+        }
+      }
+    };
 
-      renderDiagram();
-    }
+    renderDiagram();
+
+    return () => {
+      mounted = false;
+    };
   }, [content]);
 
-  return <div ref={mermaidRef} className="mermaid" />;
+  return <div className="mermaid" ref={elementRef} />;
 };
+
 
 const MarkdownRenderer = ({ content }) => {
   useEffect(() => {
     mermaid.initialize({
-      startOnLoad: true,
+      startOnLoad: false,
       theme: 'dark',
       themeVariables: {
         primaryColor: '#d923ff',
@@ -168,50 +179,44 @@ const MarkdownRenderer = ({ content }) => {
   }, []);
 
   const processMarkdown = (markdown) => {
-    // 문자열을 줄 단위로 분할
-    const lines = markdown.split('\n').map(line => line.trim());
-    let processedLines = [];
-    let inMermaidBlock = false;
-    let currentMermaidContent = [];
+    // 1. 줄 단위로 분리하고 각 줄 양 끝의 공백 제거
+    let lines = markdown.split('\n').map((line) => line.trim());
 
-    lines.forEach(line => {
-      console.log(line)
-      if (line.trim() === '```mermaid') {
-        inMermaidBlock = true;
-      } else if (line.trim() === '```' && inMermaidBlock) {
-        // Mermaid 블록 종료
-        processedLines.push(
-          `<div class="mermaid-wrapper">
-            ${currentMermaidContent.join('\n')}
-          </div>`
-        );
-        currentMermaidContent = [];
-        inMermaidBlock = false;
-      } else if (inMermaidBlock) {
-        // Mermaid 콘텐츠 수집
-        currentMermaidContent.push(line);
-      } else {
-        // 일반 마크다운 라인
-        processedLines.push(line);
-      }
-    });
+    // 2. 빈 줄 제거
+    lines = lines.filter((line) => line !== '');
 
-    return processedLines.join('\n');
+    // 3. 특정 키워드 대체 (예: `[TODO]` → `**TODO**`)
+    // lines = lines.map((line) =>
+    //   line.replace(/\[TODO\]/g, '**TODO**') // 원하는 키워드 대체
+    // );
+
+    // 4. Mermaid 블록 감지 및 처리
+
+
+    // 5. 최종적으로 다시 문자열로 합치기
+
+    return lines.join('\n')
+    // return markdown.split('\n').map((v) => v.trim()).join('\n')
+
   };
 
   const components = {
-    div({ node, className, children, ...props }) {
-      if (className === 'mermaid-wrapper') {
-        return <MermaidRenderer content={children[0]} />;
-      }
-      return <div className={className} {...props}>{children}</div>;
-    }
+
+    code({ inline, children, className }) {
+      const match = /language-mermaid/.test(className || "");
+      return !inline && match ? (
+        <MermaidRenderer content={String(children).trim()} />
+      ) : (
+        <code className={className}>{children}</code>
+      );
+    },
   };
 
   return (
     <MarkdownContainer>
       <ReactMarkdown components={components}>
         {processMarkdown(content)}
+        {/* {content.split('\n').map((v) => v.trim()).join('\n')} */}
       </ReactMarkdown>
     </MarkdownContainer>
   );

@@ -9,6 +9,7 @@ export { default as TextAreaBox } from './TextAreaBox/index.jsx';
 export { default as Table } from './Table/index.jsx';
 export { default as Pagination } from './Pagination/index.jsx';
 export { default as Select } from './Select/index.jsx';
+export { default as Checkbox } from './CheckBox/index.jsx';
 export {
   default as Modal,
   ModalHeader,

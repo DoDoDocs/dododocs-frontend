@@ -13,13 +13,16 @@ export const useMarkdown = (id) => {
         },
       });
       // regularFiles 배열만 추출하여 저장
-      if (response.data && response.data.regularFiles) {
-        const regularFiles = response.data.regularFiles;
-        const valuesArray = Object.values(regularFiles).map(
-          (obj) => Object.values(obj)[0],
-        );
-        console.log(valuesArray);
-        return valuesArray;
+      console.log('res : ', response.data);
+      console.log(response.data.summaryFiles);
+      if (response.data && response.data.summaryFiles) {
+        const regularFiles = response.data.summaryFiles;
+        console.log(regularFiles[0].fileContents);
+        // const valuesArray = Object.values(regularFiles).map(
+        //   (obj) => Object.values(obj)[0],
+        // );
+        // console.log(valuesArray);
+        return [regularFiles[0].fileContents];
       }
       // return parseMarkdown(response.data);
     },

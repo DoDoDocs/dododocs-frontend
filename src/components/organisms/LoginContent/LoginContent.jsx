@@ -5,10 +5,10 @@ import { ContentStyle, LoginWrapper, Divider, LoginBtnBox } from "./LoginContent
 import { authAPI } from '../../../api/auth.js';
 import { useAuth } from '../../../hooks/useAuth.js';
 const LoginContent = () => {
-  const { login } = useAuth();
+  const { oAuthLogin } = useAuth();
   const loginProcess = async () => {
     try {
-      await login();
+      await oAuthLogin();
     } catch (error) {
       console.error('❌ Login failed:', error);
     }

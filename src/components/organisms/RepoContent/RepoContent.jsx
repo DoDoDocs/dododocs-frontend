@@ -131,7 +131,7 @@ const RepoContent = () => {
   // SECTION
   // 레포지토리 관리 관련 커스텀 훅
   const {
-    modals: { addRepo, deleteRepo },
+    modals: { app, addRepo, deleteRepo },
     appModal,
     handlers
   } = useRepoManagement()
@@ -162,7 +162,7 @@ const RepoContent = () => {
             repository={repoToDelete}
           />
 
-          <RepoDetailContent onClose={appModal.close}>
+          <RepoDetailContent onClose={app.close}>
           </RepoDetailContent>
 
           <TitleWrapper>

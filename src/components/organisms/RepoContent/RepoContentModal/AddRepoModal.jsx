@@ -2,9 +2,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import {
-  Image, Typo, Button, TextBox, Select,
+  Image, Typo, Button, TextBox, Select, Checkbox,
   Modal, ModalHeader, ModalTitle, ModalDescription, ModalContent, ModalFooter,
 } from "../../../index.js";
+import { useAddRepo } from '../../../../hooks/useAddRepo.js';
+import { Check } from 'lucide-react';
+
 // Styled Components
 
 const FormGroup = styled.div`
@@ -26,6 +29,117 @@ const Label = styled.label`
   text-align: right;
 `;
 
+const RadioGroup = styled.div`
+ display: flex;
+ gap: 24px;
+`;
+
+const RadioWrapper = styled.label`
+ display: flex;
+ align-items: center;
+ gap: 8px;
+ cursor: pointer;
+ color: ${props => props.checked ? '#ffffff' : '#71717a'};
+ &:hover {
+    color: #a9a9ab; /* Lighter hover border color */
+  }
+`;
+
+
+const RadioInput = styled.input`
+ /* width: 18px;
+ height: 18px;
+ cursor: pointer;
+ accent-color: #8b5cf6; */
+
+ accent-color: #8b5cf6;
+ appearance: none; /* Hide default input styles */
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  border-radius: 50%;
+  border: 2px solid #666; /* Default border color */
+  background: transparent;
+  position: relative;
+  transition: all 0.3s ease;
+
+  /* Custom dot for selected radio */
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: transparent; /* Hidden by default */
+    transition: all 0.3s ease;
+  }
+
+  /* When the radio is checked */
+  &:checked {
+    border-color: #8b5cf6; /* Mint color border */
+  }
+
+  &:checked::after {
+    background-color: #8b5cf6; /* Filled dot in mint */
+  }
+
+  /* Hover effect */
+  &:hover:not(:checked) {
+    border-color: #999; /* Lighter hover border color */
+  }
+`;
+
+const RadioLabel = styled.span`
+ font-size: 14px;
+ color: ${props => props.checked ? '#ffffff' : 'null'};
+ transition: color 0.2s ease-in-out;
+
+`;
+
+
+const CheckboxInput = styled.input`
+ appearance: none;
+ width: 20px;
+ height: 20px;
+ border: 2px solid #3F3F46;
+ border-radius: 4px;
+ background: transparent;
+ cursor: pointer;
+ position: relative;
+ transition: all 0.2s ease;
+
+ &:checked {
+   background-color: #10B981;
+   border-color: #10B981;
+
+   &::after {
+     content: '✓';
+     position: absolute;
+     top: 50%;
+     left: 50%;
+     transform: translate(-50%, -50%);
+     color: white;
+     font-size: 14px;
+   }
+ }
+
+ &:hover:not(:checked) {
+   border-color: #6B7280;
+ }
+`;
+
+const CheckboxLabel = styled.label`
+ display: flex;
+ align-items: center;
+ gap: 8px;
+ cursor: pointer;
+ user-select: none;
+ color: ${props => props.checked ? '#ffffff' : '#71717a'};
+`;
+
 const StyledButton = styled(Button)`
   width : 100%;
   padding: 1rem;
@@ -39,6 +153,8 @@ const StyledButton = styled(Button)`
 
 // 사용 예시 컴포넌트
 const AddRepo = ({ isOpen, onOpen, onClose }) => {
+
+  const { formData, handleChange } = useAddRepo();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -91,6 +207,45 @@ const AddRepo = ({ isOpen, onOpen, onClose }) => {
                 plane={true}
                 style={{ width: '100%' }}
               />
+            </FormGroup>
+            <FormGroup>
+              <Label htmlFor="Language">Language</Label>
+              <RadioGroup>
+                <RadioWrapper checked={formData.language === 'english'}>
+                  <RadioInput
+                    type="radio"
+                    name="language"
+                    value="english"
+                    checked={formData.language === 'english'}
+                    onChange={() => handleChange('language', 'english')}
+                  />
+                  <RadioLabel checked={formData.language === 'english'}>
+                    English
+                  </RadioLabel>
+                </RadioWrapper>
+                <RadioWrapper checked={formData.language === 'korean'}>
+                  <RadioInput
+                    type="radio"
+                    name="language"
+                    value="korean"
+                    checked={formData.language === 'korean'}
+                    onChange={() => handleChange('language', 'korean')}
+                  />
+                  <RadioLabel checked={formData.language === 'korean'}>
+                    한국어
+                  </RadioLabel>
+                </RadioWrapper>
+              </RadioGroup>
+            </FormGroup>
+            <FormGroup>
+              <Label htmlFor="isTestFile"> </Label>
+
+              <Checkbox
+                checked={formData.isTestFile}
+                onChange={(checked) => handleChange('isTestFile', checked)}
+              >
+                테스트 코드를 분석 데이터에 포함하시겠습니까?
+              </Checkbox>
             </FormGroup>
           </form>
         </ModalContent>

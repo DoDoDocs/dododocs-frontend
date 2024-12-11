@@ -473,7 +473,7 @@ const ChatbotUI = () => {
                 title="대화 새로 시작하기"
               >
                 <span><RefreshCw /></span>
-                regenerate
+                reset
               </li>
             </ul>
           </EllipsisMenu>

@@ -6,7 +6,7 @@ import { authAPI } from '../../../api/index.js';
 
 const OAuthCallback = () => {
   const navigate = useNavigate();
-  const { handleCallback } = useAuth();
+  const { login } = useAuth();
   const { error } = useAuthStore();
   const processedRef = useRef(false); // 처리 여부를 추적하는 ref
 
@@ -21,7 +21,7 @@ const OAuthCallback = () => {
 
       if (code) {
         processedRef.current = true; // 처리 시작 전 플래그 설정
-        const success = await handleCallback(code);
+        const success = await login(code);
 
         if (success) {
           const returnUrl = localStorage.getItem('returnUrl') || '/';
@@ -34,7 +34,7 @@ const OAuthCallback = () => {
     };
 
     processCallback();
-  }, [handleCallback, navigate]);
+  }, [login, navigate]);
 
   if (error) return <div>Error: {error}</div>;
   return <div>Processing login...</div>;

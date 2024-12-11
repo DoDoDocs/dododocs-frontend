@@ -51,7 +51,7 @@ const modalStyles = {
 const AppWrapper = styled.div`
   position: relative;
   border-radius: ${props => props.isFullscreen ? '0' : '0.875rem'} ;
-  width: ${props => props.isFullscreen ? '100dvw' : '95dvw'};
+  width: ${props => props.isFullscreen ? '100dvw' : '90dvw'};
   height: ${props => props.isFullscreen ? '100dvh' : '95dvh'};
   transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
 
@@ -239,21 +239,21 @@ background-color : #10121b66;
 // Main App Component
 const App = ({ onClose }) => {
 
-  const { isAppModalOpen: isOpen } = useAppModalStore();
+  const { isAppModalOpen } = useAppModalStore();
 
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   const [isImgMode, setIsImgMode] = useState(false);
   const [activeMenu, setActiveMenu] = useState('Apps');
   useEffect(() => {
-    if (isOpen) {
+    if (isAppModalOpen) {
       document.body.style.overflow = 'hidden';
     }
 
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [isOpen]);
+  }, [isAppModalOpen]);
 
   const toggleFullscreen = () => {
     setIsFullscreen(prev => !prev);
@@ -262,7 +262,7 @@ const App = ({ onClose }) => {
 
   return (
     <Modal
-      isOpen={isOpen}
+      isOpen={isAppModalOpen}
       onRequestClose={onClose}
       style={{
         ...modalStyles,
