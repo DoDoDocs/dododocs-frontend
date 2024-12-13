@@ -1,21 +1,6 @@
 // stores/userStore.js
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import useAuthStore from './authStore';
-
-const authMiddleware = (config) => (set, get, api) =>
-  config(
-    (...args) => {
-      // isAuthenticated가 false면 초기 상태로 리셋
-      if (!useAuthStore.getState().isAuthenticated) {
-        set({ userNickname: null, repositories: [] });
-        return;
-      }
-      set(...args);
-    },
-    get,
-    api,
-  );
 
 const initialState = {
   userNickname: null,
@@ -30,7 +15,7 @@ const initialState = {
 
 const useMemberStore = create(
   devtools(
-    authMiddleware((set) => ({
+    (set) => ({
       ...initialState,
 
       setUserNickname: (nickname) =>
@@ -48,7 +33,7 @@ const useMemberStore = create(
 
       clearMemberInfo: () => set(initialState, false, 'clearMemberInfo'),
       // ... other actions
-    })),
+    }),
     { name: 'User Store' },
   ),
 );

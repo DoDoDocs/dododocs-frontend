@@ -1,26 +1,5 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import useAuthStore from './authStore';
-
-// 인증 상태와 연동하는 미들웨어
-const authMiddleware = (config) => (set, get, api) =>
-  config(
-    (...args) => {
-      // 인증되지 않은 상태면 초기 상태로 리셋
-      if (!useAuthStore.getState().isAuthenticated) {
-        set({
-          searchValue: '',
-          selectedCard: null,
-          repoToDelete: null,
-          repos: [],
-        });
-        return;
-      }
-      set(...args);
-    },
-    get,
-    api,
-  );
 
 /**
  * Repository 관리를 위한 Zustand store
@@ -33,21 +12,21 @@ const authMiddleware = (config) => (set, get, api) =>
  */
 const useRepoStore = create(
   devtools(
-    authMiddleware((set, get) => ({
+    (set, get) => ({
       // State
       searchValue: '',
       selectedCard: null,
       repoToDelete: null,
       repos: [
         {
-          key: '1',
+          key: '0',
           Repository: 'spring-boot_test',
           Status: 'Code Imported',
           Branch: 'main',
           Action: 'Delete',
         },
         {
-          key: '2',
+          key: '1',
           Repository: 'moheng',
           Status: 'Code Imported',
           Branch: 'main',
@@ -58,7 +37,15 @@ const useRepoStore = create(
       // Actions
       setSearchValue: (value) => set({ searchValue: value }, false, 'setSearchValue'),
 
-      setSelectedCard: (card) => set({ selectedCard: card }, false, 'setSelectedCard'),
+      setSelectedCard: (card) =>
+        set(
+          (state) => ({
+            ...state,
+            selectedCard: card,
+          }),
+          false,
+          'setSelectedCard',
+        ),
 
       setRepoToDelete: (repo) => set({ repoToDelete: repo }, false, 'setRepoToDelete'),
 
@@ -102,12 +89,12 @@ const useRepoStore = create(
             searchValue: '',
             selectedCard: null,
             repoToDelete: null,
-            repos: [],
+            // repos: [],
           },
           false,
           'clearRepos',
         ),
-    })),
+    }),
     {
       name: 'Repository Store',
       enabled: process.env.NODE_ENV === 'development',
