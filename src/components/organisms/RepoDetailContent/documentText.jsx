@@ -1,9 +1,10 @@
-export const documentText = [
+const documentText = [];
+
+documentText.push(
   `
 # 시스템 아키텍처 문서
 
 ## 전체 구조
-
 \`\`\`mermaid
 graph TD
     A[Client] --> B[AuthController]
@@ -14,7 +15,32 @@ graph TD
     E --> F
 \`\`\`
 
+## 시스템 흐름
+\`\`\`mermaid
+sequenceDiagram
+    Client->>AuthController: Request for URI
+    AuthController->>AuthService: generateUri(providerName)
+    AuthService->>OAuthProvider: getOAuthUriProvider(providerName)
+    AuthService->>Client: Return URI
 
+    Client->>AuthController: Login Request
+    AuthController->>AuthService: generateTokenWithCode(code, providerName)
+    AuthService->>OAuthClient: getOAuthMember(code)
+    AuthService->>MemberService: findOrCreateMember(oAuthMember, providerName)
+    MemberService->>Database: Check if member exists
+    MemberService->>Database: Save new member if not exists
+    AuthService->>TokenManager: createMemberToken(memberId)
+    AuthService->>Client: Return MemberToken
+
+    Client->>AuthController: Extend Login Request
+    AuthController->>AuthService: generateRenewalAccessToken(refreshToken)
+    AuthService->>TokenManager: generateRenewalAccessToken(refreshToken)
+    AuthService->>Client: Return RenewalAccessTokenResponse
+
+    Client->>AuthController: Logout Request
+    AuthController->>AuthService: removeRefreshToken(logoutRequest)
+    AuthService->>TokenManager: removeRefreshToken(refreshToken)
+\`\`\`
 
 ## 주요 컴포넌트 설명
 
@@ -150,9 +176,13 @@ Refresh Token을 사용하여 Access Token을 갱신합니다.
 
 ## 인증 및 권한
 - 모든 API 엔드포인트는 적절한 인증이 필요합니다. 특히, 로그인 및 로그아웃 요청은 유효한 Refresh Token이 필요합니다.
-`,
 
-  `# 시스템 아키텍처
+`
+)
+
+documentText.push(
+  `
+  # 시스템 아키텍처
 
 ## 전체 구조
 \`\`\`mermaid
@@ -167,6 +197,13 @@ graph TD
     F --> G
 \`\`\`
 
+## 시스템 흐름
+\`\`\`mermaid
+sequenceDiagram
+    Client->>KeywordController: Request
+    KeywordController->>KeywordService: Process
+    KeywordService->>KeywordRepository: Data Access
+\`\`\`
 # 시스템 아키텍처 문서
 
 ## 전체 구조
@@ -529,11 +566,12 @@ Refresh Token을 사용하여 Access Token을 갱신합니다.
     ]
 }
 \`\`\`
-`
-  ,
+`)
 
+
+documentText.push(
   `
- # Controller Files Summary
+# Controller Files Summary
 
 ## MemberLiveInformationController.md
 ## 시스템 아키텍처 요약
@@ -860,5 +898,10 @@ Refresh Token을 사용하여 Access Token을 갱신합니다.
 
 이 문서는 시스템의 아키텍처와 주요 컴포넌트의 역할을 간결하게 설명하며, 각 레이어의 상호작용과 주요 패턴을 강조합니다.
 
-`
-]
+
+  `
+)
+
+
+
+export default documentText;

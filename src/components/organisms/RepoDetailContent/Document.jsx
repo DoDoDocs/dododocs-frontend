@@ -6,7 +6,7 @@ import api from "../../../api/axios.js";
 import { Splitter } from "../../index.js"
 import { useMarkdown } from '../../../hooks/useAppReadMe.js';
 import { MarkdownRenderer, LoadingSpinner } from '../../index.js';
-import { documentText } from './documentText.jsx';
+import documentText from './documentText.jsx';
 
 const Container = styled.div`
   display: flex;
@@ -253,6 +253,10 @@ const ReadMe = () => {
 
   // 문서 선택 핸들러
   const handleDocSelect = (docId) => {
+    if (docId === "summary") {
+      setContent(documentText[2]);
+      return;
+    }
     setSelectedDoc(docId);
     const selectedContent = controllerDocs.find(doc => doc.id === docId)?.content;
     if (selectedContent) {
@@ -299,7 +303,7 @@ const ReadMe = () => {
           <Section flex={3}>
             <SectionTitle>Controller Summary</SectionTitle>
             <SectionContent>
-              <NavItem icon={Pencil} onClick={() => handleDocSelect(2)}>Controller_summery.md</NavItem>
+              <NavItem icon={Pencil} onClick={() => handleDocSelect('summary')}>Controller_summery.md</NavItem>
             </SectionContent>
             {/* <NavItem icon={Video}>Video</NavItem>
             <NavItem icon={Palette}>Illustrations</NavItem>
