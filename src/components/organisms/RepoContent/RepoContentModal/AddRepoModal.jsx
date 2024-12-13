@@ -219,7 +219,12 @@ const AddRepo = ({ isOpen, onOpen, onClose }) => {
               <Label htmlFor="Repository">Repository</Label>
               <Select
                 selectTitle={'Select Repository'}
-                options={userRepositories}
+                options={['0526_signup',
+                  'airbnb_clone',
+                  'ant-design',
+                  'mohang',
+                  'spring-boot_test',
+                ]}
                 selectedValue={formData.name}
                 onChange={(selectedOption) => { handleChange('name', selectedOption) }}
               />

@@ -19,7 +19,13 @@ const authMiddleware = (config) => (set, get, api) =>
 
 const initialState = {
   userNickname: null,
-  repositories: [],
+  repositories: [
+    '0526_signup',
+    'airbnb_clone',
+    'ant-design',
+    'mohang',
+    'spring-boot_test',
+  ],
 };
 
 const useMemberStore = create(
