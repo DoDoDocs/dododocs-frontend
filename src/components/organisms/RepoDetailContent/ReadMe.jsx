@@ -1,7 +1,7 @@
 // src/components/organisms/RepoDetailContent/ReadMe.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { Camera, Pencil, Video, Palette, Layout, Box, MoreVertical } from 'lucide-react';
+import { Camera, Pencil, Video, Palette, Layout, Box, MoreVertical, GripVertical, Check, X, Plus } from 'lucide-react';
 import api from "../../../api/axios.js";
 import { Splitter } from "../../index.js"
 import { useMarkdown } from '../../../hooks/useAppReadMe.js';
@@ -28,6 +28,8 @@ const SideBar = styled.div`
   height : 100%;
 
 `;
+
+
 
 const Section = styled.div`
   margin-bottom: ${props => props.mb || 0}rem;
@@ -87,11 +89,70 @@ flex: 1; // Section 내부에서 남은 공간을 모두 차지
 `
 
 
+
+
+const DragHandle = styled.div`
+  margin-right: 0.5rem;
+  cursor: grab;
+  opacity: ${props => props.isCustomMode ? 0.7 : 0};
+  transition: opacity 0.2s;
+  
+  &:active {
+    cursor: grabbing;
+  }
+`;
+
+const ToggleButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  margin-left: auto;
+  background: ${props => props.isIncluded ? 'rgba(147, 51, 234, 0.2)' : 'rgba(255, 255, 255, 0.1)'};
+  color: ${props => props.isIncluded ? '#9333ea' : '#71717a'};
+  transition: all 0.2s;
+
+  &:hover {
+    background: ${props => props.isIncluded ? 'rgba(147, 51, 234, 0.3)' : 'rgba(255, 255, 255, 0.2)'};
+  }
+`;
+
+
+
+const NavItemContainer = styled.div`
+ position: relative;
+  opacity: ${props => props.isExcluded ? 0.5 : 1};
+  
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #9333ea;
+    opacity: 0;
+    transition: opacity 0.2s;
+    ${props => props.isDragTarget === 'top' && `
+      top: 0;
+      opacity: 1;
+    `}
+    ${props => props.isDragTarget === 'bottom' && `
+      bottom: 0;
+      opacity: 1;
+    `}
+  }
+`;
+
+
+
+
 const NavItemWrapper = styled.div`
   display: flex;
   align-items: center;
   padding: 0.75rem 1.5rem;
-  cursor: pointer;
+  cursor: ${props => props.isCustomMode ? 'move' : 'pointer'};
   transition: all 0.2s;
   color: ${props => props.active ? 'white' : '#a1a1aa'};
   background: ${props => props.active ? 'rgba(147, 51, 234, 0.1)' : 'transparent'};
@@ -101,6 +162,11 @@ const NavItemWrapper = styled.div`
     background: ${props => props.active ? 'rgba(147, 51, 234, 0.1)' : 'rgba(255, 255, 255, 0.05)'};
     color: white;
   }
+
+  ${props => props.isDragging && `
+    opacity: 0.5;
+    background: rgba(147, 51, 234, 0.2);
+  `}
 
   ${props => props.active && `
     &::before {
@@ -114,6 +180,23 @@ const NavItemWrapper = styled.div`
     }
   `}
 `;
+
+const ExcludedSectionsContainer = styled.div`
+  margin-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 1rem;
+`;
+
+const RestorableNavItem = styled(NavItemWrapper)`
+  opacity: 0.6;
+  background: transparent;
+  
+  &:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.05);
+  }
+`;
+
 
 const IconWrapper = styled.div`
   margin-right: 0.75rem;
@@ -195,31 +278,91 @@ const handleChange = (newContent) => {
 };
 
 
-const NavItem = ({ onClick, icon: Icon, emoji, children, active, badge }) => (
-  <NavItemWrapper onClick={onClick} active={active}>
-    <IconWrapper>
-      {
-        emoji ? <span>{emoji}</span> :
-          <Icon size={20} />
-      }
-    </IconWrapper>
-    <span>{children}</span>
-    {badge && <Badge>{badge}</Badge>}
-  </NavItemWrapper>
+
+const NavItem = ({
+  onClick,
+  icon: Icon,
+  emoji,
+  children,
+  active,
+  badge,
+  isCustomMode,
+  onDragStart,
+  onDragEnd,
+  onDragOver,
+  onDrop,
+  draggable,
+  index,
+  isDragTarget,
+  isDragging,
+  isIncluded,
+  onToggleInclude
+}) => (
+  <NavItemContainer isDragTarget={isDragTarget} isExcluded={!isIncluded}>
+    <NavItemWrapper
+      onClick={!isCustomMode ? onClick : undefined}
+      active={active}
+      draggable={draggable && isIncluded}
+      onDragStart={onDragStart}
+      onDragEnd={onDragEnd}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+      data-index={index}
+      isCustomMode={isCustomMode}
+      isDragging={isDragging}
+    >
+      {isCustomMode && (
+        <DragHandle isCustomMode={isCustomMode && isIncluded}>
+          <GripVertical size={16} />
+        </DragHandle>
+      )}
+      <IconWrapper>
+        {emoji ? <span>{emoji}</span> : <Icon size={20} />}
+      </IconWrapper>
+      <span>{children}</span>
+      {isCustomMode && (
+        <ToggleButton
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleInclude(index);
+          }}
+          isIncluded={isIncluded}
+        >
+          {isIncluded ? <Check size={14} /> : <X size={14} />}
+        </ToggleButton>
+      )}
+    </NavItemWrapper>
+  </NavItemContainer>
 );
+
 
 const ReadMe = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const mainContentRef = useRef(null);
 
-
+  /**
+   * @desc 네비게이션 바 데이터 (커스텀모드)
+   */
+  const [isCustomMode, setIsCustomMode] = useState(false);
+  const [draggedIndex, setDraggedIndex] = useState(null);
+  const [dragTarget, setDragTarget] = useState({ index: null, position: null });
+  const [includedSections, setIncludedSections] = useState(new Set());
 
   /**
    * @desc readme '#','##' 문자열을 기준으로 마크다운 파싱
    */
   const [sectionsReadMe, setSectionsReadMe] = useState([]);
+  const [allSections, setAllSections] = useState([]); // 모든 섹션 저장
 
+
+  const excludedSections = React.useMemo(() => {
+    return allSections.filter(section =>
+      !sectionsReadMe.some(activeSection =>
+        activeSection.title === section.title
+      )
+    );
+  }, [allSections, sectionsReadMe]);
 
   useEffect(() => {
     // sections 배열 구조 예시:
@@ -282,7 +425,10 @@ const ReadMe = () => {
       return sections;
     };
 
-    setSectionsReadMe(parseSections(markdownText));
+    const initialSections = parseSections(markdownText);
+    setAllSections(initialSections);
+    setSectionsReadMe(initialSections);
+    setIncludedSections(new Set(initialSections.map((_, index) => index)));
   }, [markdownText]);
 
   useEffect(() => {
@@ -335,6 +481,94 @@ const ReadMe = () => {
     }
   };
 
+  // SECTION 커스텀 모드 handler
+  const handleDragStart = (e, index) => {
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+    setDragTarget({ index: null, position: null });
+  };
+
+
+  const handleDragOver = (e, index) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+
+    if (draggedIndex === null || draggedIndex === index) {
+      setDragTarget({ index: null, position: null });
+      return;
+    }
+
+    const rect = e.currentTarget.getBoundingClientRect();
+    const mouseY = e.clientY;
+    const threshold = rect.top + (rect.height / 2);
+    const position = mouseY < threshold ? 'top' : 'bottom';
+
+    setDragTarget({ index, position });
+  };
+
+
+  const handleDrop = (e, targetIndex) => {
+    e.preventDefault();
+
+    if (draggedIndex === null || !dragTarget.position) return;
+
+    const newSections = [...sectionsReadMe];
+    const [draggedSection] = newSections.splice(draggedIndex, 1);
+
+    // 드롭 위치에 따라 삽입 위치 조정
+    const actualTargetIndex = dragTarget.position === 'bottom' ?
+      targetIndex + (targetIndex > draggedIndex ? 1 : 0) :
+      targetIndex + (targetIndex > draggedIndex ? 0 : -1);
+
+    const insertIndex = Math.max(0, Math.min(actualTargetIndex, newSections.length));
+    newSections.splice(insertIndex, 0, draggedSection);
+
+    setSectionsReadMe(newSections);
+    setDraggedIndex(null);
+    setDragTarget({ index: null, position: null });
+  };
+
+  const handleRestoreSection = (section) => {
+    setSectionsReadMe(prev => [...prev, section]);
+    setIncludedSections(prev => {
+      const newSet = new Set(prev);
+      newSet.add(sectionsReadMe.length); // 새로 추가되는 섹션의 인덱스
+      return newSet;
+    });
+  };
+
+  const handleToggleSection = (index) => {
+    setIncludedSections(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(index)) {
+        newSet.delete(index);
+      } else {
+        newSet.add(index);
+      }
+      return newSet;
+    });
+  };
+
+  const toggleCustomMode = () => {
+    if (isCustomMode) {
+      // 커스텀 모드 종료 시 선택된 섹션만 유지
+      const newSections = sectionsReadMe.filter((_, index) =>
+        includedSections.has(index)
+      );
+      setSectionsReadMe(newSections);
+      setIncludedSections(new Set(newSections.map((_, index) => index)));
+    }
+    setIsCustomMode(!isCustomMode);
+    setDraggedIndex(null);
+    setDragTarget({ index: null, position: null });
+  };
+  // !SECTION 커스텀 모드 handler
+
+
   /**
    * E제공된 콘텐츠를 지정된 파일 이름의 Markdown 파일로 내보냅니다
    * @param {string} content - The content to be exported as a Markdown file.
@@ -372,38 +606,75 @@ const ReadMe = () => {
           <Section flex={7} mb={0.75}>
             <SectionTitle>Read Me Table</SectionTitle>
             <SectionContent>
-              {
-                sectionsReadMe
-                  .filter((section) => section.level === 1 || section.level === 2) // 조건에 맞는 섹션 필터링
-                  .map((section, index) => {
-                    const [emoji, withoutEmoji] = hasLeadingEmoji(section.name);
-                    // URL 해시 생성
-                    const sectionId = `${emoji ? emoji + '-' : ''}${withoutEmoji}`
-                      .toLowerCase()
-                      .replace(/\s+/g, '-');
+              {/* 활성화된 섹션 목록 */}
+              {sectionsReadMe
+                .filter((section) => section.level === 1 || section.level === 2)
+                .map((section, index) => {
+                  const [emoji, withoutEmoji] = hasLeadingEmoji(section.name);
+                  const sectionId = `${emoji ? emoji + '-' : ''}${withoutEmoji}`
+                    .toLowerCase()
+                    .replace(/\s+/g, '-');
 
+                  return (
+                    <NavItem
+                      key={`active-${index}`}
+                      onClick={() => handleNavItemClick(sectionId)}
+                      icon={Box}
+                      emoji={emoji}
+                      isCustomMode={isCustomMode}
+                      draggable={isCustomMode}
+                      onDragStart={(e) => handleDragStart(e, index)}
+                      onDragEnd={handleDragEnd}
+                      onDragOver={(e) => handleDragOver(e, index)}
+                      onDrop={(e) => handleDrop(e, index)}
+                      index={index}
+                      isDragTarget={dragTarget.index === index ? dragTarget.position : null}
+                      isDragging={draggedIndex === index}
+                      isIncluded={includedSections.has(index)}
+                      onToggleInclude={handleToggleSection}
+                    >
+                      {withoutEmoji}
+                    </NavItem>
+                  );
+                })}
 
+              {/* 제외된 섹션 목록 (커스텀 모드일 때만 표시) */}
+              {isCustomMode && excludedSections.length > 0 && (
+                <ExcludedSectionsContainer>
+                  <SectionTitle>제외된 섹션</SectionTitle>
+                  {excludedSections
+                    .filter((section) => section.level === 1 || section.level === 2)
+                    .map((section, index) => {
+                      const [emoji, withoutEmoji] = hasLeadingEmoji(section.name);
 
-                    return (
-                      <NavItem
-                        key={index}
-                        onClick={() => handleNavItemClick(sectionId)}
-                        // badge={section.level}
-                        icon={Box}
-                        emoji={emoji}
-                      // active={isActiveSection(section)}
-                      >
-                        {withoutEmoji}
-                      </NavItem>)
-                  })
-              }
+                      return (
+                        <RestorableNavItem
+                          key={`excluded-${index}`}
+                          onClick={() => handleRestoreSection(section)}
+                        >
+                          <IconWrapper>
+                            <Plus size={16} />
+                          </IconWrapper>
+                          {emoji && <span>{emoji}</span>}
+                          <span>{withoutEmoji}</span>
+                        </RestorableNavItem>
+                      );
+                    })}
+                </ExcludedSectionsContainer>
+              )}
             </SectionContent>
+
           </Section>
           <Section flex={3}>
             <SectionTitle>action</SectionTitle>
             <ActionBtnWrapper>
-              <Button btnType={"gradientLine"} size={'small'} style={{ width: "80%", padding: "0.75rem" }}>
-                custom 하기
+              <Button
+                btnType={isCustomMode ? "gradient" : "gradientLine"}
+                size={'small'}
+                style={{ width: "80%", padding: "0.75rem" }}
+                onClick={toggleCustomMode}
+              >
+                {isCustomMode ? '완료' : 'custom 하기'}
               </Button>
               <Button btnType={"gradient"} size={'small'} style={{ width: "80%", padding: "0.75rem" }}
                 onClick={() => exportToMd(markdownText, 'README.md')}

@@ -3,6 +3,8 @@ import styled, { css, keyframes } from 'styled-components';
 import { Send, User, Bot, Sparkles, RefreshCw, EllipsisVertical } from 'lucide-react';
 import { Typo } from "../../index.js";
 import useClickAway from '../../../hooks/useClickAway.js';
+import { TypingMarkdownRenderer, MarkdownRenderer } from '../../index.js';
+import { chattingText } from "./chattingText.jsx";
 
 // Animations
 const fadeIn = keyframes`
@@ -14,6 +16,17 @@ const shimmer = keyframes`
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 `;
+
+const WelcomeFadeIn = keyframes`
+ from { 
+    opacity: 0; 
+    transform: translate(-50%, -30%); // 최종 위치와 동일하게 설정
+  }
+  to { 
+    opacity: 1;
+    transform: translate(-50%, -30%); // 최종 위치와 동일하게 설정
+  }
+`
 
 // Styled Components
 const ChatWrapper = styled.div`
@@ -173,8 +186,8 @@ const WelcomeTitle = styled.div`
 `;
 
 const WelcomeMessage = styled.div`
-  display: flex;
-  flex-direction : column;
+   display: flex;
+  flex-direction: column;
   gap: .5rem;
   align-items: flex-start;
   background: rgba(105, 14, 124, 0.05);
@@ -184,9 +197,9 @@ const WelcomeMessage = styled.div`
   position: absolute;
   bottom: 0;
   left: 50%;
-  transform: translate(-50%, -30%);
+  transform: translate(-50%, -30%); // 초기 위치를 최종 위치와 동일하게 설정
   backdrop-filter: blur(10px);
-  animation: ${fadeIn} 0.6s ease-out;
+  animation: ${WelcomeFadeIn} 0.6s ease-out;
   max-width: 90%;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
 `;
@@ -403,6 +416,13 @@ const ChatbotUI = () => {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
 
+  const [isTest, setIsTest] = useState(0);
+  const [completedMessages, setCompletedMessages] = useState(new Set());
+
+  const handleMessageComplete = (messageId) => {
+    setCompletedMessages(prev => new Set([...prev, messageId]));
+  };
+
   useClickAway(menuRef, () => {
     if (isMenuOpen) {
       setIsMenuOpen(false);
@@ -431,12 +451,33 @@ const ChatbotUI = () => {
 
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setMessages(prev => [...prev, {
-        id: Date.now(),
-        text: "연결된 레포지토리의 코드를 분석하여 답변 드리겠습니다.",
-        isUser: false
-      }]);
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      if (isTest === 0) {
+        setMessages(prev => [...prev, {
+          id: Date.now(),
+          text: chattingText[0],
+          isUser: false
+        }]);
+        setIsTest((state) => state + 1);
+      }
+      if (isTest === 1) {
+        setMessages(prev => [...prev, {
+          id: Date.now(),
+          text: chattingText[1],
+          isUser: false
+        }]);
+        setIsTest((state) => state + 1);
+      }
+
+      if (isTest > 1) {
+        setMessages(prev => [...prev, {
+          id: Date.now(),
+          text: chattingText[2],
+          isUser: false
+        }]);
+        setIsTest((state) => state + 1);
+      }
+
     } catch (error) {
       setMessages(prev => [...prev, {
         id: Date.now(),
@@ -530,7 +571,22 @@ const ChatbotUI = () => {
                 <Avatar isUser={message.isUser}>
                   {message.isUser ? <User size={18} /> : <Bot size={18} />}
                 </Avatar>
-                <Message isUser={message.isUser}>{message.text}</Message>
+                <Message isUser={message.isUser}>
+                  {
+                    message.isUser ?
+                      message.text
+                      :
+                      <TypingMarkdownRenderer
+                        content={message.text}
+                        // onComplete={() => handleMessageComplete(message.id)}
+                        onComplete={() => console.log('타이핑 완료')} // 필요한 경우에만 사용
+
+                      />
+
+                  }
+                  {/* <MarkdownRenderer content={message.text} /> */}
+                  {/* {message.text} */}
+                </Message>
               </MessageBubble>
             ))}
             {isLoading && (

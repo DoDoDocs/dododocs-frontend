@@ -15,6 +15,7 @@ export { default as Splitter } from './atoms/Splitter/FlexSplitter.jsx';
 export { default as LoadingSpinner } from './atoms/LoadingSpinner/index.jsx';
 export { default as MarkdownRenderer } from './atoms/MarkdownRenderer/index.jsx';
 export { default as MarkdownEditor } from './atoms/MarkdownEditor/index.jsx';
+export { default as TypingMarkdownRenderer } from './atoms/TypingMarkdownRenderer/index.jsx';
 export { default as Checkbox } from './atoms/CheckBox';
 export {
   Modal,

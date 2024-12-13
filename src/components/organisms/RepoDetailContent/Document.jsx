@@ -6,6 +6,8 @@ import api from "../../../api/axios.js";
 import { Splitter } from "../../index.js"
 import { useMarkdown } from '../../../hooks/useAppReadMe.js';
 import { MarkdownRenderer, LoadingSpinner } from '../../index.js';
+import { documentText } from './documentText.jsx';
+
 const Container = styled.div`
   display: flex;
   height: 100%;
@@ -14,22 +16,24 @@ const Container = styled.div`
 `;
 
 const SideBar = styled.div`
+  display : flex;
+  flex-direction : column;
+  justify-content: space-between;
+  gap :1rem;
   background: rgba(24, 24, 27, 0.5);
   padding: 1.5rem 0;
-  overflow-y: auto;
+  /* overflow-y: auto; */
   height : 100%;
 
-  &::-webkit-scrollbar {
-    width: 0.25rem;
-  }
+`;
 
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: #3f3f46;
-  }
+const Section = styled.div`
+  margin-bottom: ${props => props.mb || 0}rem;
+  flex: ${props => props.flex || 1};
+  min-height: 0; // 중요: flex 자식 요소의 overflow 처리를 위해 필요
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;
 
 const SectionTitle = styled.h2`
@@ -40,9 +44,50 @@ const SectionTitle = styled.h2`
   margin-bottom: 0.75rem;
 `;
 
-const Section = styled.div`
-  margin-bottom: ${props => props.mb || 0}rem;
-`;
+
+const SectionContent = styled.div`
+flex: 1; // Section 내부에서 남은 공간을 모두 차지
+  display: flex;
+  flex-direction: column;
+  overflow-x : hidden;
+  overflow-y: auto;
+
+// 스크롤바 기본 상태
+&::-webkit-scrollbar {
+    width: 6px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover::-webkit-scrollbar {
+    opacity: 1;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgb(1 2 3 / 40%);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.5);
+    }
+  }
+
+  // Firefox용 스크롤바 스타일
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  
+  &:hover {
+    scrollbar-color: rgba(255, 255, 255, 0.3) rgb(1 2 3 / 40%);
+  }
+`
+
+
+
+
 
 const NavItemWrapper = styled.div`
   display: flex;
@@ -177,8 +222,8 @@ classDiagram
 `;
 
 
-const NavItem = ({ icon: Icon, children, active, badge }) => (
-  <NavItemWrapper active={active}>
+const NavItem = ({ onClick, icon: Icon, children, active, badge }) => (
+  <NavItemWrapper active={active} onClick={onClick}>
     <IconWrapper>
       <Icon size={20} />
     </IconWrapper>
@@ -188,44 +233,44 @@ const NavItem = ({ icon: Icon, children, active, badge }) => (
 );
 
 const ReadMe = () => {
-  // const [mdText, setMdText] = useState([]);
 
-  // useEffect(() => {
-  //   const apiHandler = async () => {
-  //     try {
-  //       const response = await api.get('api/analyze/result', {
-  //         params: {
-  //           repositoryName: "Gatsby-Starter-Haon"
-  //         }
-  //       });
-  //       // regularFiles 배열만 추출하여 저장
-  //       if (response.data && response.data.regularFiles) {
-  //         const regularFiles = response.data.regularFiles;
-  //         const valuesArray = Object.values(regularFiles).map(obj => Object.values(obj)[0]);
-  //         setMdText(valuesArray);
 
-  //         console.log(response.data.regularFiles);
-  //       } console.log(response.data);
-  //     } catch (error) {
-  //       console.error('API 호출 중 에러 발생:', error);
-  //     }
-  //   };
-  //   apiHandler();
-  // }, []);
+  const [selectedDoc, setSelectedDoc] = useState('AuthController'); // 선택된 문서 상태 추가
+  const [content, setContent] = useState(documentText[0]); // 현재 표시될 내용
 
-  // useEffect(() => {
-  //   console.log('mdText', mdText);
-  // }, [mdText]);
+  // 문서 메뉴 데이터 정의
+  const controllerDocs = [
+    { id: 'AuthController', name: 'AuthController.md', content: documentText[0] },
+    { id: 'KeywordController', name: 'KeywordController.md', content: documentText[1] },
+    { id: 'LiveInformationController', name: 'LiveInformationController.md', content: documentText[2] },
+    { id: 'MemberController', name: 'MemberController.md', content: documentText[0] },
+    { id: 'MemberLiveInformationController', name: 'MemberLiveInformationController.md', content: documentText[0] },
+    { id: 'PlannerController', name: 'PlannerController.md', content: documentText[0] },
+    { id: 'RecommendController', name: 'RecommendController.md', content: documentText[0] },
+    { id: 'TripController', name: 'TripController.md', content: documentText[0] },
+    { id: 'TripScheduleController', name: 'TripScheduleController.md', content: documentText[0] }
+  ];
 
+  // 문서 선택 핸들러
+  const handleDocSelect = (docId) => {
+    setSelectedDoc(docId);
+    const selectedContent = controllerDocs.find(doc => doc.id === docId)?.content;
+    if (selectedContent) {
+      setContent(selectedContent);
+    }
+
+  };
+
+
+  console.log(documentText)
   const {
-    data: content,
+    // data: content,
     isLoading,
     isError,
     error
   } = useMarkdown('readMeId');
 
   if (isLoading) return <LoadingSpinner />;
-
   if (content) console.log('Document content', content);
   return (
     <Container >
@@ -236,15 +281,26 @@ const ReadMe = () => {
         maxWidth={400}
       >
         <SideBar >
-          <Section mb={2}>
-            <SectionTitle>시스템 아키텍쳐 문서</SectionTitle>
-            <NavItem icon={Box}>전체구조</NavItem>
-            <NavItem icon={Box} active badge="3">시스템 흐름</NavItem>
+          <Section flex={7} mb={0.75}>
+            <SectionTitle>Controller Docs</SectionTitle>
+            <SectionContent>
+              {controllerDocs.map(doc => (
+                <NavItem
+                  key={doc.id}
+                  icon={Box}
+                  active={selectedDoc === doc.id}
+                  onClick={() => handleDocSelect(doc.id)}
+                >
+                  {doc.name}
+                </NavItem>
+              ))}
+            </SectionContent>
           </Section>
-          <Section>
-            <SectionTitle>컴포넌트 설명</SectionTitle>
-            <NavItem icon={Pencil}>KeywordController.md</NavItem>
-            <NavItem icon={Pencil}>PlannerController.md</NavItem>
+          <Section flex={3}>
+            <SectionTitle>Controller Summary</SectionTitle>
+            <SectionContent>
+              <NavItem icon={Pencil} onClick={() => handleDocSelect(2)}>Controller_summery.md</NavItem>
+            </SectionContent>
             {/* <NavItem icon={Video}>Video</NavItem>
             <NavItem icon={Palette}>Illustrations</NavItem>
             <NavItem icon={Layout}>UI/UX</NavItem>
@@ -260,10 +316,8 @@ const ReadMe = () => {
                 <div className="text-red-500 p-4">
                   Error: {error.message}
                 </div>
-                : content.map((content) => (
-                  <MarkdownRenderer content={content} />
-                ))
-
+                :
+                <MarkdownRenderer content={content} />
           }
         </MainContent>
       </Splitter>
