@@ -278,7 +278,7 @@ const ProjectBoard = ({
 
           <ProgressSection>
             <ProgressBarContainer>
-              <ProgressBar progress={60} />
+              <ProgressBar progress={100} />
             </ProgressBarContainer>
             <StatusContainer>
               <StatusBadge status={project.Status}>

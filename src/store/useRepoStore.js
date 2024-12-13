@@ -42,7 +42,7 @@ const useRepoStore = create(
         {
           key: '1',
           Repository: 'spring-boot_test',
-          Status: 'In Progress',
+          Status: 'Code Imported',
           Branch: 'main',
           Action: 'Delete',
         },
