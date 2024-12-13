@@ -244,7 +244,7 @@ const App = ({ onClose }) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   const [isImgMode, setIsImgMode] = useState(false);
-  const [activeMenu, setActiveMenu] = useState('Apps');
+  const [activeMenu, setActiveMenu] = useState('Read Me Maker');
   useEffect(() => {
     if (isAppModalOpen) {
       document.body.style.overflow = 'hidden';

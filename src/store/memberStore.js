@@ -25,12 +25,22 @@ const initialState = {
 const useMemberStore = create(
   devtools(
     authMiddleware((set) => ({
-      initialState,
+      ...initialState,
 
-      setUserNickname: (nickname) => set({ userNickname: nickname }),
+      setUserNickname: (nickname) =>
+        set({ userNickname: nickname }, false, 'setUserNickname'),
 
-      setRepositories: (repos) => set({ repositories: repos }),
+      setRepositories: (repos) =>
+        set(
+          (state) => ({
+            ...state,
+            repositories: Array.isArray(repos) ? repos : [], // repos가 배열이 아닌 경우 빈 배열로 설정
+          }),
+          false,
+          'setRepositories',
+        ),
 
+      clearMemberInfo: () => set(initialState, false, 'clearMemberInfo'),
       // ... other actions
     })),
     { name: 'User Store' },

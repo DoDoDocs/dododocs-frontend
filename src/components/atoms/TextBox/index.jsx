@@ -5,7 +5,7 @@ const planeStyle = css`
  display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 30%;
+  width: 100%;
   height: 2.5rem;
   padding-left: 1rem;
   border: 1px solid rgba(63, 63, 70, 0.7);

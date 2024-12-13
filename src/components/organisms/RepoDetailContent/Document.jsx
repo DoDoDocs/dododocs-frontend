@@ -226,6 +226,7 @@ const ReadMe = () => {
 
   if (isLoading) return <LoadingSpinner />;
 
+  if (content) console.log('Document content', content);
   return (
     <Container >
       <Splitter

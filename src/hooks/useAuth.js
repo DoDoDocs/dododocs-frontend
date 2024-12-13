@@ -11,7 +11,7 @@ export function useAuth() {
   const queryClient = useQueryClient();
   // Zustand의 store의 액션들을 가져옴
   const { setAuth, clearAuth, setError } = useAuthStore();
-  const { setUserNickname } = useMemberStore();
+  const { setUserNickname, setRepositories } = useMemberStore();
 
   /**
    * @desc GitHub OAuth 로그인 시작
@@ -59,6 +59,14 @@ export function useAuth() {
 
       // 4. 사용자 정보 저장
       setUserNickname(userInfo.nickname);
+
+      // 5. 사용자 레포지토리 정보 조회
+      console.log('🏃 사용자 레포지토리 정보 조회 시작');
+      const repoList = await memberAPI.getMemberAllRepoList();
+      console.log('⭐️ 사용자 레포지토리 정보 조회 성공:', repoList.names);
+      console.log(repoList.names);
+      // 6. 사용자 레포지토리 정보 저장
+      setRepositories(repoList.names);
 
       return true;
     } catch (error) {

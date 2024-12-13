@@ -7,6 +7,8 @@ import {
 } from "../../../index.js";
 import { useAddRepo } from '../../../../hooks/useAddRepo.js';
 import { Check } from 'lucide-react';
+import useMemberStore from '../../../../store/memberStore.js';
+import { docsAPI } from '../../../../api/docs.js';
 
 // Styled Components
 
@@ -112,8 +114,8 @@ const CheckboxInput = styled.input`
  transition: all 0.2s ease;
 
  &:checked {
-   background-color: #10B981;
-   border-color: #10B981;
+   background-color: #8b5cf6;
+   border-color: #8b5cf6;
 
    &::after {
      content: '✓';
@@ -154,33 +156,43 @@ const StyledButton = styled(Button)`
 // 사용 예시 컴포넌트
 const AddRepo = ({ isOpen, onOpen, onClose }) => {
 
-  const { formData, handleChange } = useAddRepo();
+  const {
+    formData,
+    validationErrors,
+    isLoading,
+    error,
+    handleChange,
+    handleSubmit,
+  } = useAddRepo(() => {
+    console.log('Repository upload successful!');
+  });
+  const { repositories } = useMemberStore();
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    console.log(formData);
+  }, [formData]);
+
+
+  const userRepositories = repositories ? repositories : [];
+
+  const handleBtnClick = (e) => {
     e.preventDefault();
-    // 제출 로직
+
+    handleSubmit();
     onClose();
-  };
-
-  const [selectedRepo, setSelectedRepo] = useState('');
-
-  const repositories = [
-    'euncherry/0526_signup',
-    'euncherry/airbnb_clone',
-    'euncherry/ant-design',
-    'euncherry/0526_signupdfdfd',
-    'euncherry/airbnb_clon',
-    'euncherry/ant-desn',
-    'euncherry/0526_sign',
-    'euncherry/airbnb_cle',
-    'euncherry/ant-',
-    // ...
-  ];
+  }
 
 
   return (
     <>
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose}
+        widths={{
+          desktop: '45dvw',
+          tablet_large: '60dvw',
+          tablet: '70dvw',
+          mobile: '90dvw'
+        }}
+      >
         <ModalHeader>
           <ModalTitle>Add Repository</ModalTitle>
           <ModalDescription>
@@ -194,9 +206,9 @@ const AddRepo = ({ isOpen, onOpen, onClose }) => {
               <Label htmlFor="Repository">Repository</Label>
               <Select
                 selectTitle={'Select Repository'}
-                options={repositories}
-                selectedValue={selectedRepo}
-                onChange={setSelectedRepo}
+                options={userRepositories}
+                selectedValue={formData.name}
+                onChange={(selectedOption) => { handleChange('name', selectedOption) }}
               />
             </FormGroup>
             <FormGroup>
@@ -204,6 +216,7 @@ const AddRepo = ({ isOpen, onOpen, onClose }) => {
               <TextBox
                 id="username"
                 placeholder="Enter your branch name"
+                onChange={(e) => handleChange('branch', e.target.value)}
                 plane={true}
                 style={{ width: '100%' }}
               />
@@ -250,8 +263,10 @@ const AddRepo = ({ isOpen, onOpen, onClose }) => {
           </form>
         </ModalContent>
 
-        <ModalFooter>
-          <StyledButton btnType="primary" onClick={handleSubmit}>
+        <ModalFooter style={{ display: 'flex', flexDirection: 'column' }}>
+          {isLoading && <div>Uploading repository...</div>}
+          {error && <div>Error: {error}</div>}
+          <StyledButton btnType="primary" onClick={(e) => handleBtnClick(e)} disabled={isLoading}>
             추가하기
           </StyledButton>
         </ModalFooter>

@@ -27,7 +27,6 @@ const ModalWrapper = styled.div`
   border-radius: 8px;
   padding: 0;
   width: 100%;
-  max-width: ${props => props.modalWidth || '45dvw'};
   margin: 20px;
   position: relative;
   max-height: calc(100vh - 40px);
@@ -53,6 +52,21 @@ const ModalWrapper = styled.div`
       transform: translateY(0);
     }
   }
+
+  max-width: ${props => props.widths?.desktop || '45dvw'};
+
+@media (max-width: 1200px) {
+  max-width: ${props => props.widths?.tablet_large || '60dvw'};
+}
+
+@media (max-width: 768px) {
+  max-width: ${props => props.widths?.tablet || '70dvw'};
+}
+
+@media (max-width: 480px) {
+  max-width: ${props => props.widths?.mobile || '90dvw'};
+}
+
 `;
 
 const ModalHeader = styled.div`
@@ -96,7 +110,7 @@ const ModalFooter = styled.div`
   }
 `;
 
-const Modal = ({ modalWidth, isOpen, onClose, children, overlayStyles, wrapperStyles }) => {
+const Modal = ({ modalWidth, widths, isOpen, onClose, children, overlayStyles, wrapperStyles }) => {
   const modalRef = useRef(null);
 
   const handleClickAway = (event) => {
@@ -123,6 +137,7 @@ const Modal = ({ modalWidth, isOpen, onClose, children, overlayStyles, wrapperSt
     <ModalOverlay overlayStyles={overlayStyles}>
       <ModalWrapper
         modalWidth={modalWidth}
+        widths={widths}
         ref={modalRef} wrapperStyles={wrapperStyles}>
         {children}
       </ModalWrapper>

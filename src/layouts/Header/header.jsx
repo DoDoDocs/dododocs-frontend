@@ -213,20 +213,20 @@ const HomeHeader = ({ role }) => {
               </Row>
             </Col>
             <Col span={5}>
-              <Row align={"center"} justify={"space-between"}>
+              <Row align={"center"} justify={"flex-end"}>
 
 
                 {
                   userNickname ?
-                    <Col md={9} span={9} justify={"flex-end"} align={"center"} style={{ paddingRight: "2rem" }}>
+                    <Col md={8} span={9} justify={"flex-end"} align={"center"} style={{ paddingRight: "2rem" }}>
                       <Typo size={'1.2rem'} color={"#545454"}>환영합니다. {userNickname}님 </Typo>
                     </Col>
                     :
                     null
                 }
-                <Col md={3} span={2}>
+                <Col md={3} span={2} justify={"flex-end"} align={"center"}>
                   <Button onClick={() => { navigate("/repositories") }}
-                    btnType={"gradientLine"} size={'large'} $bold
+                    btnType={"gradientLine"} size={'large'} $bold style={{ minWidth: '10rem', wordBreak: 'keep-all' }}
                   >Repo 관리
                   </Button>
                 </Col>

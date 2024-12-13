@@ -55,7 +55,7 @@ const DocsContent = () => {
   const handleTestClick = async () => {
     console.log(process.env.REACT_APP_API_BASE_URL)
     const data = await apiHandler();
-    console.log(data)
+    console.log("api/analyze/result testApi 결과 받기 : ", data)
   }
 
   const navigate = useNavigate();

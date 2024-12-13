@@ -1,13 +1,13 @@
 // src/hooks/useAddRepo.js
 import { useState, useCallback } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { addRepository } from '../api/index.js';
+import { docsAPI } from '../api/index.js';
 import useRepoStore from '../store/useRepoStore';
 
 const initialFormState = {
   name: null,
   branch: '',
-  language: 'English',
+  language: 'english',
   isTestFile: false,
 };
 
@@ -17,32 +17,45 @@ export const useAddRepo = (onSuccess) => {
 
   const queryClient = useQueryClient();
   const addRepoToStore = useRepoStore((state) => state.addRepo);
-
+  const reposLength = useRepoStore((state) => state.repos.length);
   const {
     mutate: addRepo,
     isLoading,
     error,
   } = useMutation({
-    // mutationFn: addRepository,
-    onSuccess: (newRepo) => {
-      // React Query 캐시 업데이트
-      // TODO : api구현 후 주석 해제
-      // queryClient.invalidateQueries({ queryKey: ['repositories'] });
-
+    mutationFn: (uploadRepo) => {
+      return docsAPI.postUploadRepo({
+        repositoryName: uploadRepo.name,
+        branchName: uploadRepo.branch,
+        korean: uploadRepo.language === 'korean',
+        includeTest: uploadRepo.isTestFile,
+      });
+    },
+    onSuccess: (response) => {
       // Zustand store에 새 레포지토리 추가
       const repoToAdd = {
-        key: newRepo.id || String(Date.now()), // API 응답에 따라 조정
-        Repository: newRepo.name || formData.name,
-        Status: 'In Progress',
+        key: String(reposLength),
+        Repository: formData.name,
+        Status: isLoading ? 'In Progress' : 'Code Imported',
         Branch: formData.branch,
         Action: 'Delete',
       };
 
       addRepoToStore(repoToAdd);
 
+      // React Query 캐시 업데이트
+      queryClient.invalidateQueries({ queryKey: ['repositories'] });
+
       // 폼 초기화 및 성공 콜백
       resetForm();
-      onSuccess?.(newRepo);
+      onSuccess?.(response);
+    },
+    onError: (error) => {
+      console.error('Repository upload failed:', error);
+      setValidationErrors((prev) => ({
+        ...prev,
+        submit: error.message || 'Failed to upload repository',
+      }));
     },
   });
 
@@ -51,9 +64,11 @@ export const useAddRepo = (onSuccess) => {
       ...prev,
       [field]: value,
     }));
+    // 에러 메시지 초기화
     setValidationErrors((prev) => ({
       ...prev,
       [field]: null,
+      submit: null,
     }));
   }, []);
 
@@ -66,14 +81,29 @@ export const useAddRepo = (onSuccess) => {
     return Object.keys(errors).length === 0;
   }, [formData]);
 
-  const handleSubmit = useCallback(
-    async (e) => {
-      e?.preventDefault();
-      if (!validateForm()) return false;
-      addRepo(formData);
-    },
-    [formData, addRepo, validateForm],
-  );
+  // TODO 영상제출이후 수정
+  // const handleSubmit = useCallback(
+  //   async (e) => {
+  //     e?.preventDefault();
+  //     if (!validateForm()) return false;
+
+  //     console.log('Submitting repository:', formData);
+  //     addRepo(formData);
+  //   },
+  //   [formData, addRepo, validateForm],
+  // );
+
+  const handleSubmit = () => {
+    const repoToAdd = {
+      key: String(reposLength),
+      Repository: formData.name,
+      Status: 'Code Imported',
+      Branch: formData.branch,
+      Action: 'Delete',
+    };
+
+    addRepoToStore(repoToAdd);
+  };
 
   const resetForm = useCallback(() => {
     setFormData(initialFormState);

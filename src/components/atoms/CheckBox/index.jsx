@@ -11,15 +11,15 @@ const CheckboxWrapper = styled.label`
 const CheckboxInput = styled.div`
  width: 20px;
  height: 20px;
- border: 2px solid ${props => props.checked ? '#10B981' : '#3F3F46'};
+ border: 2px solid ${props => props.checked ? '#8b5cf6' : '#3F3F46'};
  border-radius: 4px;
- background: ${props => props.checked ? '#10B981' : 'transparent'};
+ background: ${props => props.checked ? '#8b5cf6' : 'transparent'};
  cursor: pointer;
  position: relative;
  transition: all 0.2s ease;
 
  &:hover {
-   border-color: ${props => props.checked ? '#10B981' : '#6B7280'};
+   border-color: ${props => props.checked ? '#8b5cf6' : '#6B7280'};
  }
 `;
 

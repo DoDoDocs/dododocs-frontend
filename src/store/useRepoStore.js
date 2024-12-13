@@ -47,7 +47,7 @@ const useRepoStore = create(
           Action: 'Delete',
         },
         {
-          key: '3',
+          key: '2',
           Repository: 'moheng',
           Status: 'Code Imported',
           Branch: ['main', 'develop'],

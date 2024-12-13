@@ -13,7 +13,7 @@ export const useMarkdown = (id) => {
         },
       });
       // regularFiles 배열만 추출하여 저장
-      console.log('res : ', response.data);
+      console.log(' api/analyze/result testApi res : ', response.data);
       console.log(response.data.summaryFiles);
       if (response.data && response.data.summaryFiles) {
         const regularFiles = response.data.summaryFiles;

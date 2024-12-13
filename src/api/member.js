@@ -1,4 +1,4 @@
-// src/api/auth.js
+// src/api/member.js
 import api from './axios.js';
 
 export const memberAPI = {
