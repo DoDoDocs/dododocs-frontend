@@ -309,13 +309,13 @@ const ReadMe = () => {
         </SideBar>
 
         <MainContent>
-          <ContentArea>Main Content Area</ContentArea>
           {
             isLoading ? <LoadingSpinner /> :
               isError ?
-                <div className="text-red-500 p-4">
-                  Error: {error.message}
-                </div>
+                // <div className="text-red-500 p-4">
+                //   Error: {error.message}
+                // </div>
+                <MarkdownRenderer content={content} />
                 :
                 <MarkdownRenderer content={content} />
           }

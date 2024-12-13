@@ -689,10 +689,24 @@ const ReadMe = () => {
           {
             isLoading ? <LoadingSpinner /> :
               isError ?
-                <div className="text-red-500 p-4">
-                  Error: {error.message}
-                </div>
-                : sectionsReadMe.map((section) => {
+                // <div className="text-red-500 p-4">
+                //   Error: {error.message}
+                // </div>
+                sectionsReadMe.map((section) => {
+                  const [emoji, withoutEmoji] = hasLeadingEmoji(section.name);
+                  const sectionId = `${emoji ? emoji + '-' : ''}${withoutEmoji}`
+                    .toLowerCase()
+                    .replace(/\s+/g, '-');
+
+                  return (
+                    <div key={sectionId} id={sectionId}>
+                      <MarkdownRenderer content={section.title} />
+                      <MarkdownRenderer content={section.content} />
+                    </div>
+                  );
+                })
+                :
+                sectionsReadMe.map((section) => {
                   const [emoji, withoutEmoji] = hasLeadingEmoji(section.name);
                   const sectionId = `${emoji ? emoji + '-' : ''}${withoutEmoji}`
                     .toLowerCase()
@@ -708,10 +722,10 @@ const ReadMe = () => {
 
           }
           <div style={{ padding: '20px' }}>
-            <MarkdownEditor
+            {/* <MarkdownEditor
               initialValue={initialMarkdown}
               onChange={handleChange}
-            />
+            /> */}
           </div>
         </MainContent>
       </Splitter>
