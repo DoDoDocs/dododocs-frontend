@@ -2,9 +2,9 @@
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
-import useRepoStore from '../store/useRepoStore';
+import useRepoStore from '../store/repoStore';
 import useModal from './useModal';
-import useAppModalStore from '../store/useAppModalStore';
+import useAppModalStore from '../store/appModalStore';
 import { useAddRepo } from './useAddRepo';
 
 /**

@@ -4,7 +4,7 @@ import { Image, Typo, Button, TextBox, Table, Pagination, Select, } from "../../
 import bgShapeFive from "../../../assets/images/bg-shape-five.png";
 import bgShapeFour from "../../../assets/images/bg-shape-four.png";
 import { Search, Trash2, Plus, Trash } from 'lucide-react';
-import useRepoStore from '../../../store/useRepoStore'
+import useRepoStore from '../../../store/repoStore.js'
 import { useRepoManagement } from '../../../hooks/useRepoManagement'
 import { useParams, useNavigate } from 'react-router-dom';
 

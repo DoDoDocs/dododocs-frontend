@@ -3,21 +3,25 @@ import { useLocation, useNavigate } from "react-router-dom"
 import { Image, Typo, TextBox, Button } from "../../components/index.js";
 import { Row, Col } from "../index.js"
 import headerIcon from "../../assets/icons/dododocs_Icon.png"
-import useMemberStore from "../../store/memberStore.js"
 import {
   SenHeader, LayoutHeaderWrapper, HeaderWrapper, IconHeader, SearchWrapper, IconHeaderButton,
   VerticalDivider, CategoryBox, LoginBtnBox, LoginValueBtn, LoginButton
 } from "./header.styles.js"
-// import { selectIsUserInitialized } from "../../entities/session/index.js";
-import { userAPI } from "../../api/index.js"
+
+import { useAuth } from "../../hooks/useAuth.js";
+import { useAuthStore, useMemberStore } from "../../store/store.js"
 
 const HomeHeader = ({ role }) => {
   // 여러 상태 한번에 가져오기
   const { userNickname } = useMemberStore()
+  const {
+    isAuthenticated
+  } = useAuthStore();
 
   const location = useLocation();
-  // const logined = useSelector(selectIsUserInitialized);
-  const name = userNickname;
+
+  const { logout } = useAuth();
+
   //SECTION 스크롤 
   const [scrolled, setScrolled] = useState(false);
   const sentinelRef = useRef(null);
@@ -58,97 +62,19 @@ const HomeHeader = ({ role }) => {
   //SECTION 회원가입 정보
 
   const handleSignUp = () => {
-    handleLoginModalOpen();
+    navigate('/login');
   }
 
-  const handleLogout = async () => {
-    try {
-      const response = await fetch('http://localhost:8080/api/v1/auth/logout', {
-        method: 'GET',
-        credentials: 'include' // 이 옵션을 사용하면 쿠키가 포함됩니다.
-      });
-
-      if (response.ok) {
-        // 요청이 성공했을 때의 처리
-        console.log('로그아웃 성공');
-        // 로그아웃 후 원하는 페이지로 리다이렉트
-
-      } else {
-        // 요청이 실패했을 때의 처리
-        console.error('로그아웃 실패');
-      }
-    } catch (error) {
-      console.error('로그아웃 중 오류 발생:', error);
-    }
-  };
 
   const logOutOnClick = () => {
     //TODO logout_process
     // logout_process()
-    handleLogout();
+    logout();
+    navigate('/');
   }
 
 
   //!SECTION
-
-
-  //SECTION modal(Login , Signup) , UI controls 
-
-  const [openLoginModal, setOpenLoginModal] = useState(false);
-  const handleLoginModalOpen = () => setOpenLoginModal(true);
-  const handleLoginModalClose = () => {
-    setOpenLoginModal(false)
-  };
-
-  const doingLogin = async () => {
-    console.log('repoo')
-    const res = await userAPI.getPreferences();
-    console.log(res)
-  }
-
-
-
-
-
-
-
-  /**
-      * @description 마이페이지, 장바구니 클릭시 func
-      */
-
-  const IconHeaderBtnOnClick = {
-    home: () => {
-      navigate('/');
-    },
-
-    myPage: () => {
-      navigate('/mypage/order')
-    },
-    cart: () => {
-      navigate('/cart');
-
-    }
-  }
-
-  //!SECTION
-
-
-
-
-
-  //SECTION - Login
-  const handleKakaoLogin = () => {
-    window.location.href = "http://localhost:8080/oauth2/authorization/kakao"
-    handleLoginModalClose()
-  }
-
-  const handleNaverLogin = () => {
-    window.location.href = "http://localhost:8080/oauth2/authorization/naver"
-    handleLoginModalClose()
-
-  }
-
-  //!SECTION - Login
 
 
 
@@ -162,39 +88,20 @@ const HomeHeader = ({ role }) => {
 
       <div ref={sentinelRef} style={{ position: 'absolute', top: '2.5dvh', height: '1px', width: '100%' }} />
       <SenHeader data-scrolled={scrolled} $isHome={location.pathname !== '/'}>
-        {
-          false ?
 
-            // SECTION - jsx 장바구니 | 로그인 | 회원가입
-            <LoginBtnBox>
-              {/* <LoginValueBtn onClick={() => navigate('/cart')} >마이페이지</LoginValueBtn> */}
-              <LoginValueBtn onClick={() => { navigate("/admin") }}>관리자 페이지</LoginValueBtn>
+        {/* SECTION - jsx 장바구니 | 로그인 | 회원가입 */}
+        <LoginBtnBox>
+
+          {
+            isAuthenticated ?
               <LoginValueBtn onClick={logOutOnClick}>로그아웃</LoginValueBtn>
-              {
-                role === 'ADMIN' ?
-                  <LoginValueBtn onClick={() => { navigate("/admin") }}>관리자 페이지</LoginValueBtn>
-                  :
-                  null
-              }
-            </LoginBtnBox>
-            :
-            <>
-              <LoginBtnBox>
-                {
-                  role === 'ADMIN' ?
-                    <LoginValueBtn onClick={() => { navigate("/admin") }}>관리자 페이지</LoginValueBtn>
-                    :
-                    null
-                }
-                <LoginValueBtn onClick={handleSignUp} >회원가입</LoginValueBtn>
-                {/*TODO 삭제  */}
+              :
+              <LoginValueBtn onClick={handleSignUp}>로그인</LoginValueBtn>
+          }
+        </LoginBtnBox>
+        {/* !SECTION - jsx 장바구니 | 로그인 | 회원가입 */}
 
 
-              </LoginBtnBox>
-            </>
-          // !SECTION - jsx 장바구니 | 로그인 | 회원가입
-
-        }
       </SenHeader>
       <LayoutHeaderWrapper data-scrolled={scrolled} >
         <HeaderWrapper>

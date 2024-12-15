@@ -16,11 +16,24 @@ import {
   MainFeatureSectionWrapper, MainFeatureSection, FeatureContentText, FeatureContentImage
 } from "./HomeContent.styles.js"
 
+import useAuthStore from '../../../store/authStore.js';
+
+
 const DocsContent = () => {
   const navigate = useNavigate();
 
+  //Zustand store에서 현재 사용자 정보를 가져옵니다.
+  const {
+    isAuthenticated
+  } = useAuthStore();
+
   const handleStartClick = () => {
-    console.log("dkjdkd")
+    console.log("handleStartClick")
+    // 로그인시 메인페이지로 이동
+    // 로그인 안했으면 로그인 페이지로 이동
+    if (isAuthenticated) {
+      return navigate('/repositories')
+    }
     return navigate('/login')
   }
 

@@ -2,7 +2,7 @@
 import { useState, useCallback } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { docsAPI } from '../api/index.js';
-import useRepoStore from '../store/useRepoStore';
+import useRepoStore from '../store/repoStore.js';
 
 const initialFormState = {
   name: null,

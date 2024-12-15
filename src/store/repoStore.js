@@ -1,6 +1,28 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
+const initialState = {
+  searchValue: '',
+  selectedCard: null,
+  repoToDelete: null,
+  repos: [
+    {
+      key: '0',
+      Repository: 'spring-boot_test',
+      Status: 'Code Imported',
+      Branch: 'main',
+      Action: 'Delete',
+    },
+    {
+      key: '1',
+      Repository: 'moheng',
+      Status: 'Code Imported',
+      Branch: 'main',
+      Action: 'Delete',
+    },
+  ],
+};
+
 /**
  * Repository 관리를 위한 Zustand store
  *
@@ -13,26 +35,8 @@ import { devtools } from 'zustand/middleware';
 const useRepoStore = create(
   devtools(
     (set, get) => ({
-      // State
-      searchValue: '',
-      selectedCard: null,
-      repoToDelete: null,
-      repos: [
-        {
-          key: '0',
-          Repository: 'spring-boot_test',
-          Status: 'Code Imported',
-          Branch: 'main',
-          Action: 'Delete',
-        },
-        {
-          key: '1',
-          Repository: 'moheng',
-          Status: 'Code Imported',
-          Branch: 'main',
-          Action: 'Delete',
-        },
-      ],
+      // 초기 상태
+      ...initialState,
 
       // Actions
       setSearchValue: (value) => set({ searchValue: value }, false, 'setSearchValue'),
@@ -82,18 +86,8 @@ const useRepoStore = create(
         return true;
       },
 
-      // 전체 저장소 목록 초기화
-      clearRepos: () =>
-        set(
-          {
-            searchValue: '',
-            selectedCard: null,
-            repoToDelete: null,
-            // repos: [],
-          },
-          false,
-          'clearRepos',
-        ),
+      // 전체 store reset 함수 추가
+      reset: () => set(initialState, false, 'reset'),
     }),
     {
       name: 'Repository Store',

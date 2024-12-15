@@ -6,7 +6,7 @@ import {
   Image, Typo, Button, TextBox, Select,
 } from "../../index.js";
 
-import useAppModalStore from '../../../store/useAppModalStore.js';
+import useAppModalStore from '../../../store/appModalStore.js';
 
 import Modal from 'react-modal';
 
