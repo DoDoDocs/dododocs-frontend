@@ -102,6 +102,28 @@ const DragHandle = styled.div`
   }
 `;
 
+const DropIndicator = styled.div`
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #9333ea;
+  z-index: 10;
+  ${props => props.isTop ? 'top: -1px;' : 'bottom: -1px;'}
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: -0.5rem;
+    top: -0.375rem;
+    width: 1rem;
+    height: 1rem;
+    background: #9333ea;
+    border-radius: 50%;
+  }
+`;
+
+
 const ToggleButton = styled.button`
   display: flex;
   align-items: center;
@@ -123,7 +145,7 @@ const ToggleButton = styled.button`
 
 const NavItemContainer = styled.div`
  position: relative;
-  opacity: ${props => props.isExcluded ? 0.5 : 1};
+  opacity: 1;
   
   &::before {
     content: '';
@@ -134,14 +156,6 @@ const NavItemContainer = styled.div`
     background: #9333ea;
     opacity: 0;
     transition: opacity 0.2s;
-    ${props => props.isDragTarget === 'top' && `
-      top: 0;
-      opacity: 1;
-    `}
-    ${props => props.isDragTarget === 'bottom' && `
-      bottom: 0;
-      opacity: 1;
-    `}
   }
 `;
 
@@ -162,11 +176,6 @@ const NavItemWrapper = styled.div`
     background: ${props => props.active ? 'rgba(147, 51, 234, 0.1)' : 'rgba(255, 255, 255, 0.05)'};
     color: white;
   }
-
-  ${props => props.isDragging && `
-    opacity: 0.5;
-    background: rgba(147, 51, 234, 0.2);
-  `}
 
   ${props => props.active && `
     &::before {
@@ -249,11 +258,6 @@ const MainContent = styled.div`
 }
 `;
 
-const ContentArea = styled.div`
-  padding: 2rem;
-  color: #a1a1aa;
-`;
-
 
 
 const initialMarkdown = `# 마크다운 에디터 예시
@@ -285,34 +289,36 @@ const NavItem = ({
   emoji,
   children,
   active,
-  badge,
   isCustomMode,
+  section, // section 객체 전체를 전달
   onDragStart,
-  onDragEnd,
+  onDragEnter,
+  onDragLeave,
   onDragOver,
+  onDragEnd,
   onDrop,
-  draggable,
-  index,
-  isDragTarget,
-  isDragging,
-  isIncluded,
-  onToggleInclude
+  draggedOverItem,
+  dropPosition,
+  handleToggleButton,
+  isIncluded
 }) => (
-  <NavItemContainer isDragTarget={isDragTarget} isExcluded={!isIncluded}>
+  <NavItemContainer>
+    {draggedOverItem?.sectionIndex === section.sectionIndex &&
+      dropPosition === 'top' && <DropIndicator isTop />}
     <NavItemWrapper
       onClick={!isCustomMode ? onClick : undefined}
       active={active}
-      draggable={draggable && isIncluded}
-      onDragStart={onDragStart}
-      onDragEnd={onDragEnd}
-      onDragOver={onDragOver}
-      onDrop={onDrop}
-      data-index={index}
       isCustomMode={isCustomMode}
-      isDragging={isDragging}
+      draggable={isCustomMode}
+      onDragStart={(e) => onDragStart(e, section)}
+      onDragEnter={(e) => onDragEnter(e, section)}
+      onDragLeave={onDragLeave}
+      onDragOver={onDragOver}
+      onDragEnd={onDragEnd}
+      onDrop={onDrop}
     >
       {isCustomMode && (
-        <DragHandle isCustomMode={isCustomMode && isIncluded}>
+        <DragHandle isCustomMode={isCustomMode}>
           <GripVertical size={16} />
         </DragHandle>
       )}
@@ -320,18 +326,22 @@ const NavItem = ({
         {emoji ? <span>{emoji}</span> : <Icon size={20} />}
       </IconWrapper>
       <span>{children}</span>
-      {isCustomMode && (
-        <ToggleButton
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggleInclude(index);
-          }}
-          isIncluded={isIncluded}
-        >
-          {isIncluded ? <Check size={14} /> : <X size={14} />}
-        </ToggleButton>
-      )}
+      {isCustomMode &&
+        (
+          <ToggleButton
+            onClick={(e) => {
+              e.stopPropagation();
+              handleToggleButton(section.sectionIndex);
+            }}
+            isIncluded={isIncluded}
+          >
+            {isIncluded ? <Check size={14} /> : <X size={14} />}
+          </ToggleButton>
+        )
+      }
     </NavItemWrapper>
+    {draggedOverItem?.sectionIndex === section.sectionIndex &&
+      dropPosition === 'bottom' && <DropIndicator />}
   </NavItemContainer>
 );
 
@@ -342,34 +352,32 @@ const ReadMe = () => {
   const mainContentRef = useRef(null);
 
   /**
-   * @desc 네비게이션 바 데이터 (커스텀모드)
-   */
-  const [isCustomMode, setIsCustomMode] = useState(false);
-  const [draggedIndex, setDraggedIndex] = useState(null);
-  const [dragTarget, setDragTarget] = useState({ index: null, position: null });
-  const [includedSections, setIncludedSections] = useState(new Set());
+    * @desc readme '#','##' 문자열을 기준으로 마크다운 파싱
+    */
+  const [sectionsReadMe, setSectionsReadMe] = useState([]);
 
   /**
-   * @desc readme '#','##' 문자열을 기준으로 마크다운 파싱
+   * @desc 네비게이션 바 Draggable 설정을 위한 useState
    */
-  const [sectionsReadMe, setSectionsReadMe] = useState([]);
-  const [allSections, setAllSections] = useState([]); // 모든 섹션 저장
+  // 커스텀 모드 상태를 추적하는 상태
+  const [isCustomMode, setIsCustomMode] = useState(false);
+  // 현재 드래그 중인 항목을 추적하는 상태
+  const [draggedItem, setDraggedItem] = useState(null);
+  // 드래그된 항목이 위치한 대상 항목을 추적하는 상태
+  const [draggedOverItem, setDraggedOverItem] = useState([]);
+  // 드롭 위치(위/아래)를 추적하는 상태
+  const [dropPosition, setDropPosition] = useState([]);
 
 
-  const excludedSections = React.useMemo(() => {
-    return allSections.filter(section =>
-      !sectionsReadMe.some(activeSection =>
-        activeSection.title === section.title
-      )
-    );
-  }, [allSections, sectionsReadMe]);
+
+
 
   useEffect(() => {
     // sections 배열 구조 예시:
     // [
-    //   { level: 1, name : "Project Name",title: "#Project Name", content: "..." },
-    //   { level: 2, name : "Table of Contents",title: "#Table of Contents", content: "..." },
-    //   { level: 2, name : "Overview" ,title: "#Overview", content: "..." },
+    //   { sectionIndex : 1,excludeSection : false ,level: 1, name : "Project Name",title: "#Project Name", content: "..." },
+    //   { sectionIndex : 2 , excludeSection : false,level: 2, name : "Table of Contents",title: "#Table of Contents", content: "..." },
+    //   { sectionIndex : 3, excludeSection : false,level: 2, name : "Overview" ,title: "#Overview", content: "..." },
     //   ...
     // ]
 
@@ -377,63 +385,115 @@ const ReadMe = () => {
     const parseSections = (markdown) => {
       const lines = markdown.split('\n');
       const sections = [];
-      let currentSection = { level: 0, title: '', content: [] };
-      let isInCodeBlock = false; // 코드 블록 내부인지 추적
+      let isInCodeBlock = false;
+      let currentContent = [];
+
+      const createSection = (level, title, content, sectionIndex) => ({
+        sectionIndex,
+        level,
+        name: title.replace(/^#+\s+/, ''),
+        title,
+        content: content.join('\n'),
+        // 제외 처리를 위한 속성 추가
+        excludeSection: false
+      });
+
+      let sectionIndex = 0;
+      let currentTitle = '';
+      let currentLevel = 0;
+      let isFirstSection = true;
+
+      const processCurrentContent = (level, title, sectionIndex) => {
+        // 첫 번째 섹션이 아니고, 실제 내용이 있는 경우에만 섹션 추가
+        if (!isFirstSection && currentContent.length > 0) {
+          sections.push(createSection(level, title, currentContent, sectionIndex));
+        }
+        isFirstSection = false;
+        currentContent = [];
+      };
 
       lines.forEach((line) => {
-        // 코드 블록 시작/끝 체크
         if (line.includes('```')) {
           isInCodeBlock = !isInCodeBlock;
-          currentSection.content.push(line);
+          currentContent.push(line);
           return;
         }
 
-        // 코드 블록 내부가 아닐 때만 # 체크
         if (!isInCodeBlock && line.startsWith('#')) {
           const level = line.match(/^#+/)[0].length;
 
           if (level === 1 || level === 2) {
-            if (currentSection.content.length > 0) {
-              sections.push({
-                ...currentSection,
-                content: currentSection.content.join('\n')
-              });
-            }
-
-            currentSection = {
-              level,
-              name: line.replace(/^#+\s+/, ''),
-              title: line,
-              content: []
-            };
+            processCurrentContent(currentLevel, currentTitle, sectionIndex);
+            currentTitle = line;
+            currentLevel = level;
+            sectionIndex++;
           } else {
-            currentSection.content.push(line);
+            currentContent.push(line);
           }
         } else {
-          currentSection.content.push(line);
+          currentContent.push(line);
         }
       });
 
-      // 마지막 섹션 추가
-      if (currentSection.content.length > 0) {
-        sections.push({
-          ...currentSection,
-          content: currentSection.content.join('\n')
-        });
+      // 마지막 섹션 처리 (내용이 있는 경우에만)
+      if (currentContent.length > 0) {
+        sections.push(createSection(currentLevel, currentTitle, currentContent, sectionIndex));
       }
 
       return sections;
     };
 
     const initialSections = parseSections(markdownText);
-    setAllSections(initialSections);
     setSectionsReadMe(initialSections);
-    setIncludedSections(new Set(initialSections.map((_, index) => index)));
   }, [markdownText]);
 
+
+
+
+  // 목차 업데이트를 위한 상태 추가
+  const [tableContent, setTableContent] = useState('');
+
   useEffect(() => {
-    console.log(sectionsReadMe)
-  }, [sectionsReadMe])
+    /**
+     * 목차를 생성하는 함수
+     * @param {Array} sections - 현재 섹션 배열
+     * @returns {string} - 생성된 목차 마크다운 문자열
+     */
+    const generateTableOfContents = (sections) => {
+      const activeSections = sections.filter(section => !section.excludeSection && section.name !== 'Table of Contents');
+
+      return activeSections
+        .filter(section => section.level === 1 || section.level === 2)
+        .map(section => {
+          const [emoji, withoutEmoji] = hasLeadingEmoji(section.name);
+          const linkText = emoji ? `${emoji} ${withoutEmoji}` : withoutEmoji;
+          const linkId = `${emoji ? emoji + '-' : ''}${withoutEmoji}`
+            .toLowerCase()
+            .replace(/\s+/g, '-');
+
+          const indent = section.level === 2 ? '  ' : '';
+          return `${indent}[ ${linkText}](#${linkId})`;
+        })
+        .join('\n');
+    };
+
+    // 목차 내용 생성
+    const newTableContent = generateTableOfContents(sectionsReadMe);
+    setTableContent(newTableContent);
+  }, [sectionsReadMe]);
+
+  // 목차 내용이 변경될 때마다 섹션 업데이트
+  useEffect(() => {
+    if (!tableContent) return;
+
+    setSectionsReadMe(prevSections =>
+      prevSections.map(section =>
+        section.name === 'Table of Contents'
+          ? { ...section, content: tableContent }
+          : section
+      )
+    );
+  }, [tableContent]);
 
   const {
     data: content,
@@ -465,12 +525,6 @@ const ReadMe = () => {
     return [emoji, withoutEmoji];
   }
 
-  // 현재 활성화된 섹션 확인
-  const isActiveSection = (section) => {
-    const currentHash = decodeURIComponent(location.hash.replace('#', ''));
-    return currentHash === '📁-project-structure' &&
-      section.title.includes('Project Structure');
-  };
 
   // sidebar 클릭시 해당 섹션으로 이동
   const handleNavItemClick = (sectionId) => {
@@ -481,96 +535,146 @@ const ReadMe = () => {
     }
   };
 
-  // SECTION 커스텀 모드 handler
-  const handleDragStart = (e, index) => {
-    setDraggedIndex(index);
-    e.dataTransfer.effectAllowed = 'move';
+  // SECTION 커스텀 모드 handler ( 드래그 , 제외 설정)
+  /**
+   * @desc sidebar 커스텀 모드 시 드래그를 통한 순서변경가능 하도록 처리
+   * @desc sidebar 커스텀 모드 시 요소를 제외된 섹션을 통해서 요소를 추가 및 제외 가능
+   */
+
+  /**
+   * 드래그 시작 핸들러
+   * @param {DragEvent} e - 드래그 이벤트 객체
+   * @param {Section} section - 드래그 중인 섹션
+   */
+  const handleDragStart = (e, section) => {
+    console.log(section.name)
+    setDraggedItem(section);
   };
 
-  const handleDragEnd = () => {
-    setDraggedIndex(null);
-    setDragTarget({ index: null, position: null });
-  };
-
-
-  const handleDragOver = (e, index) => {
+  /**
+   * 드래그 엔터 핸들러
+   * @param {DragEvent} e - 드래그 이벤트 객체
+   * @param {Section} section - 드래그가 진입한 섹션
+   */
+  const handleDragEnter = (e, section) => {
     e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
+    if (section.sectionIndex === draggedItem?.sectionIndex) return;
 
-    if (draggedIndex === null || draggedIndex === index) {
-      setDragTarget({ index: null, position: null });
-      return;
-    }
+    setDraggedOverItem(section);
 
     const rect = e.currentTarget.getBoundingClientRect();
     const mouseY = e.clientY;
-    const threshold = rect.top + (rect.height / 2);
-    const position = mouseY < threshold ? 'top' : 'bottom';
-
-    setDragTarget({ index, position });
+    const threshold = rect.top + rect.height / 2;
+    setDropPosition(mouseY < threshold ? 'top' : 'bottom');
   };
 
-
-  const handleDrop = (e, targetIndex) => {
+  /**
+     * 드래그된 항목이 다른 항목을 벗어날 때 호출되는 핸들러
+     * @param {DragEvent} e - 드래그 이벤트 객체
+     */
+  const handleDragLeave = (e) => {
     e.preventDefault();
+    if (!e.currentTarget.contains(e.relatedTarget)) {
+      setDraggedOverItem(null);
+      setDropPosition(null);
+    }
+  };
 
-    if (draggedIndex === null || !dragTarget.position) return;
+  /**
+     * 드래그 중인 항목이 다른 항목 위에 있을 때 지속적으로 호출되는 핸들러
+     * @param {DragEvent} e - 드래그 이벤트 객체
+     */
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    if (!draggedOverItem) return;
+
+    // 마우스 위치에 따라 드롭 위치 실시간 업데이트
+    const rect = e.currentTarget.getBoundingClientRect();
+    const mouseY = e.clientY;
+    const threshold = rect.top + rect.height / 2;
+    setDropPosition(mouseY < threshold ? 'top' : 'bottom');
+  };
+
+  /**
+     * 항목이 드롭될 때 호출되는 핸들러
+     * @param {DragEvent} e - 드래그 이벤트 객체
+     */
+  const handleDrop = (e) => {
+    e.preventDefault();
+    // 유효하지 않은 드롭 동작 처리 방지
+    if (!draggedItem || !draggedOverItem || draggedItem.sectionIndex === draggedOverItem.sectionIndex) return;
 
     const newSections = [...sectionsReadMe];
-    const [draggedSection] = newSections.splice(draggedIndex, 1);
+    // 드래그된 항목과 드롭된 위치의 인덱스 찾기
+    const draggedIndex = sectionsReadMe.findIndex(section => section.sectionIndex === draggedItem.sectionIndex);
+    const droppedIndex = sectionsReadMe.findIndex(section => section.sectionIndex === draggedOverItem.sectionIndex);
 
-    // 드롭 위치에 따라 삽입 위치 조정
-    const actualTargetIndex = dragTarget.position === 'bottom' ?
-      targetIndex + (targetIndex > draggedIndex ? 1 : 0) :
-      targetIndex + (targetIndex > draggedIndex ? 0 : -1);
+    // 항목 순서 변경 로직
+    newSections.splice(draggedIndex, 1);
+    const adjustedDropIndex = dropPosition === 'bottom' ?
+      (draggedIndex < droppedIndex ? droppedIndex - 1 : droppedIndex) + 1 :
+      (draggedIndex < droppedIndex ? droppedIndex - 1 : droppedIndex);
 
-    const insertIndex = Math.max(0, Math.min(actualTargetIndex, newSections.length));
-    newSections.splice(insertIndex, 0, draggedSection);
+    newSections.splice(adjustedDropIndex, 0, draggedItem);
 
+    // sectionIndex 재할당
+    // const updatedSections = newSections.map((section, index) => ({
+    //   ...section,
+    //   sectionIndex: index + 1
+    // }));
+
+    // 상태 업데이트 및 초기화
     setSectionsReadMe(newSections);
-    setDraggedIndex(null);
-    setDragTarget({ index: null, position: null });
+    setDraggedItem(null);
+    setDraggedOverItem(null);
+    setDropPosition(null);
   };
 
-  const handleRestoreSection = (section) => {
-    setSectionsReadMe(prev => [...prev, section]);
-    setIncludedSections(prev => {
-      const newSet = new Set(prev);
-      newSet.add(sectionsReadMe.length); // 새로 추가되는 섹션의 인덱스
-      return newSet;
-    });
+  /**
+   * 드래그가 종료될 때 호출되는 핸들러
+   */
+  const handleDragEnd = () => {
+    // 모든 드래그 관련 상태 초기화
+    setDraggedItem(null);
+    setDraggedOverItem(null);
+    setDropPosition(null);
   };
 
-  const handleToggleSection = (index) => {
-    setIncludedSections(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(index)) {
-        newSet.delete(index);
-      } else {
-        newSet.add(index);
-      }
-      return newSet;
-    });
-  };
+  /**
+   * @desc 섹션Index 받아서 해당 섹션 제외 / 추가 설정
+   * @param {Number} sectionIndex - 토글할 섹션의 인덱스 
+   * @detail SectionsReadMe 배열에 속성을 !변경
+   */
+  const handleToggleButton = (sectionIndex) => {
+    setSectionsReadMe(prevSections =>
+      prevSections.map(section =>
+        section.sectionIndex === sectionIndex
+          ? { ...section, excludeSection: !section.excludeSection }
+          : section
+      )
+    );
+  }
 
+  /**
+   * @desc 커스텀 모드 버튼 클릭시 처리
+   */
   const toggleCustomMode = () => {
+    /**
+     *@desc 커스텀 모드 종료 시 처리
+     *@detail 확정 후 api 요청 처리
+     */
     if (isCustomMode) {
-      // 커스텀 모드 종료 시 선택된 섹션만 유지
-      const newSections = sectionsReadMe.filter((_, index) =>
-        includedSections.has(index)
-      );
-      setSectionsReadMe(newSections);
-      setIncludedSections(new Set(newSections.map((_, index) => index)));
+      console.log("커스텀 모드 종료");
     }
     setIsCustomMode(!isCustomMode);
-    setDraggedIndex(null);
-    setDragTarget({ index: null, position: null });
   };
+
+
   // !SECTION 커스텀 모드 handler
 
 
   /**
-   * E제공된 콘텐츠를 지정된 파일 이름의 Markdown 파일로 내보냅니다
+   * 제공된 콘텐츠를 지정된 파일 이름의 Markdown 파일로 내보냅니다
    * @param {string} content - The content to be exported as a Markdown file.
    * @param {string} [filename='document.md'] - The filename for the exported Markdown file.
    */
@@ -608,7 +712,7 @@ const ReadMe = () => {
             <SectionContent>
               {/* 활성화된 섹션 목록 */}
               {sectionsReadMe
-                .filter((section) => section.level === 1 || section.level === 2)
+                .filter(section => !section.excludeSection)
                 .map((section, index) => {
                   const [emoji, withoutEmoji] = hasLeadingEmoji(section.name);
                   const sectionId = `${emoji ? emoji + '-' : ''}${withoutEmoji}`
@@ -617,40 +721,45 @@ const ReadMe = () => {
 
                   return (
                     <NavItem
-                      key={`active-${index}`}
+                      key={section.sectionIndex}
                       onClick={() => handleNavItemClick(sectionId)}
                       icon={Box}
                       emoji={emoji}
                       isCustomMode={isCustomMode}
-                      draggable={isCustomMode}
-                      onDragStart={(e) => handleDragStart(e, index)}
+                      section={section}
+                      onDragStart={handleDragStart}
+                      onDragEnter={handleDragEnter}
+                      onDragLeave={handleDragLeave}
+                      onDragOver={handleDragOver}
                       onDragEnd={handleDragEnd}
-                      onDragOver={(e) => handleDragOver(e, index)}
-                      onDrop={(e) => handleDrop(e, index)}
-                      index={index}
-                      isDragTarget={dragTarget.index === index ? dragTarget.position : null}
-                      isDragging={draggedIndex === index}
-                      isIncluded={includedSections.has(index)}
-                      onToggleInclude={handleToggleSection}
+                      onDrop={handleDrop}
+                      draggedOverItem={draggedOverItem}
+                      dropPosition={dropPosition}
+                      handleToggleButton={handleToggleButton}
+                      isIncluded={!section.excludeSection}
                     >
                       {withoutEmoji}
                     </NavItem>
+
+
                   );
                 })}
-
-              {/* 제외된 섹션 목록 (커스텀 모드일 때만 표시) */}
-              {isCustomMode && excludedSections.length > 0 && (
+              {/* 제외된 섹션 목록 (커스텀 모드일 때만 표시)  */}
+              {isCustomMode && sectionsReadMe.some(section => section.excludeSection) && (
                 <ExcludedSectionsContainer>
                   <SectionTitle>제외된 섹션</SectionTitle>
-                  {excludedSections
-                    .filter((section) => section.level === 1 || section.level === 2)
-                    .map((section, index) => {
+                  {sectionsReadMe
+                    .filter(section =>
+                      section.excludeSection &&
+                      (section.level === 1 || section.level === 2)
+                    )
+                    .map(section => {
                       const [emoji, withoutEmoji] = hasLeadingEmoji(section.name);
 
                       return (
                         <RestorableNavItem
-                          key={`excluded-${index}`}
-                          onClick={() => handleRestoreSection(section)}
+                          key={section.sectionIndex}
+                          onClick={() => handleToggleButton(section.sectionIndex)}
                         >
                           <IconWrapper>
                             <Plus size={16} />
@@ -697,7 +806,6 @@ const ReadMe = () => {
                   const sectionId = `${emoji ? emoji + '-' : ''}${withoutEmoji}`
                     .toLowerCase()
                     .replace(/\s+/g, '-');
-
                   return (
                     <div key={sectionId} id={sectionId}>
                       <MarkdownRenderer content={section.title} />
@@ -706,7 +814,7 @@ const ReadMe = () => {
                   );
                 })
                 :
-                sectionsReadMe.map((section) => {
+                sectionsReadMe.filter(section => !section.excludeSection).map((section) => {
                   const [emoji, withoutEmoji] = hasLeadingEmoji(section.name);
                   const sectionId = `${emoji ? emoji + '-' : ''}${withoutEmoji}`
                     .toLowerCase()
