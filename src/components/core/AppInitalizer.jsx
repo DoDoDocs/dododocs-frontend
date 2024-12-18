@@ -4,11 +4,14 @@ import { useEffect } from 'react';
 import useAuthStore from '../../store/authStore';
 import { useUser } from '../../hooks/useUser';
 
+
 const AppInitializer = ({ children }) => {
+
   const {
     isInitialized, // 앱 초기화 상태
     checkInitialAuth, // 초기화 함수
     authError, // 에러 상태
+    clearAuth, // 로그아웃 함수
   } = useAuthStore();
   const { isUserDataLoading, userDataError, isUserDataSuccess, repoList } = useUser();
 
@@ -20,12 +23,14 @@ const AppInitializer = ({ children }) => {
           await checkInitialAuth();
         } catch (error) {
           console.error('토큰은 있으나 인증 초기화 실패:', error);
+          clearAuth();
+
         }
       }
     };
 
     initializeAuth();
-  }, [isInitialized, checkInitialAuth]);
+  }, [isInitialized, checkInitialAuth, clearAuth]);
 
 
   // 초기화 상태 로깅
@@ -38,13 +43,16 @@ const AppInitializer = ({ children }) => {
     }
     if (userDataError) {
       console.log(`🏃🏃앱 초기화 : ❌ ${userDataError}`);
+      clearAuth();
+
     }
     if (authError) {
       console.log(`🏃🏃앱 초기화 : ❌ ${authError}`);
+      clearAuth();
+
     }
     if (isUserDataSuccess) {
 
-      console.log(repoList)
       console.log('🏃🏃앱 초기화 : 사용자 데이터 로딩 완료');
     }
   }, [
@@ -53,6 +61,7 @@ const AppInitializer = ({ children }) => {
     userDataError,
     authError,
     isUserDataSuccess,
+    clearAuth,
   ]);
 
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Typo, Button } from "../../index.js"
 import { Check } from "lucide-react"
 import api from "../../../api/axios.js"
@@ -11,7 +11,8 @@ import {
   MainFeatureSectionWrapper, MainFeatureSection, FeatureContentText, FeatureContentImage
 } from "../HomeContent/HomeContent.styles.js"
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
+import { RefreshCw, Loader2 } from 'lucide-react';
 
 const ChatButton = styled.button`
   padding: 8px 16px;
@@ -38,6 +39,51 @@ const modalStyles = {
     backgroundColor: 'rgba(0, 0, 0, 0.5)'
   }
 };
+
+
+const rotate = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`;
+
+// 애니메이션 관련 styled-components
+const fade = keyframes`
+  0%, 100% { opacity: 0; transform: translateY(10px); }
+  20%, 80% { opacity: 1; transform: translateY(0); }
+`;
+
+const LoadingWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background-color: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  min-height: 3.5rem;  // 높이 고정으로 텍스트 변경시 레이아웃 시프트 방지
+`;
+
+const LoadingText = styled.span`
+  color: #8b5cf6;
+  font-size: 0.875rem;
+  font-weight: 500;
+  min-width : 12rem;
+  animation: ${fade} 2s ease-in-out;
+`;
+
+const RotatingLoader = styled(Loader2)`
+  ${css`
+    animation: ${rotate} 1s linear infinite;
+  `}
+  color: #8b5cf6;
+`;
+
 
 const DocsContent = () => {
 
@@ -71,6 +117,26 @@ const DocsContent = () => {
   };
 
 
+  const loadingMessages = [
+    '레포지토리 연결 중...',
+    '코드를 분석하는 중입니다...',
+    'AI가 코드를 이해하는 중입니다...'
+  ];
+
+  const [messageIndex, setMessageIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setMessageIndex((prev) => (prev + 1) % loadingMessages.length);
+    }, 2000); // 2초마다 메시지 변경
+
+    return () => clearInterval(interval);
+  }, []);
+
+
+
+
+
   return (
     <>
 
@@ -82,7 +148,12 @@ const DocsContent = () => {
           시작하기
         </Button>
       </TextContainer>
-
+      <LoadingWrapper>
+        <RotatingLoader size={16} />
+        <LoadingText key={messageIndex}>
+          {loadingMessages[messageIndex]}
+        </LoadingText>
+      </LoadingWrapper>
       <div>
         <h1>채팅 목록</h1>
         <div>

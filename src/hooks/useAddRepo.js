@@ -2,7 +2,6 @@
 import { useState, useCallback } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { docsAPI } from '../api/index.js';
-import useRepoStore from '../store/repoStore.js';
 
 const initialFormState = {
   name: null,
@@ -16,8 +15,6 @@ export const useAddRepo = (onSuccess) => {
   const [validationErrors, setValidationErrors] = useState({});
 
   const queryClient = useQueryClient();
-  const addRepoToStore = useRepoStore((state) => state.addRepo);
-  const reposLength = useRepoStore((state) => state.repos.length);
   const {
     mutate: addRepo,
     isLoading,
@@ -33,17 +30,6 @@ export const useAddRepo = (onSuccess) => {
       });
     },
     onSuccess: (response) => {
-      // Zustand store에 새 레포지토리 추가
-      const repoToAdd = {
-        key: String(reposLength),
-        Repository: formData.name,
-        Status: isLoading ? 'In Progress' : 'Code Imported',
-        Branch: formData.branch,
-        Action: 'Delete',
-      };
-
-      addRepoToStore(repoToAdd);
-
       // React Query 캐시 업데이트
       queryClient.invalidateQueries({ queryKey: ['repositories'] });
 
@@ -83,7 +69,6 @@ export const useAddRepo = (onSuccess) => {
     return Object.keys(errors).length === 0;
   }, [formData]);
 
-  // TODO 영상제출이후 수정
   const handleSubmit = useCallback(
     async (e) => {
       e?.preventDefault();
@@ -100,18 +85,6 @@ export const useAddRepo = (onSuccess) => {
     },
     [formData, addRepo, validateForm],
   );
-
-  // const handleSubmit = () => {
-  //   const repoToAdd = {
-  //     key: String(reposLength),
-  //     Repository: formData.name,
-  //     Status: 'Code Imported',
-  //     Branch: formData.branch,
-  //     Action: 'Delete',
-  //   };
-
-  //   addRepoToStore(repoToAdd);
-  // };
 
   const resetForm = useCallback(() => {
     setFormData(initialFormState);

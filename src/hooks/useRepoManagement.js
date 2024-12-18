@@ -32,13 +32,14 @@ export const useRepoManagement = () => {
   const {
     formData,
     validationErrors,
-    isLoading: isAddingRepo,
+    isLoading: isAddingRepoLoading,
     error: addRepoError,
     handleChange,
     handleSubmit,
     resetForm,
   } = useAddRepo((newRepo) => {
     // 성공 시 처리
+    resetForm();
     modalHandlers.addRepo.close();
     // TODO: 토스트 메시지 추가
     console.log('Repository added successfully:', newRepo);
@@ -94,7 +95,9 @@ export const useRepoManagement = () => {
       },
       [setSelectedCard, modalHandlers.app],
     ),
+  };
 
+  const deleteRepoHandlers = {
     handleDeleteClick: useCallback(
       (e, repo) => {
         e.stopPropagation();
@@ -144,15 +147,18 @@ export const useRepoManagement = () => {
       },
     },
 
-    // Add Repository Form State & Handlers
+    // Add Repository 관련 상태와 핸들러
     addRepoForm: {
       formData,
       validationErrors,
-      isLoading: isAddingRepo,
+      isLoading: isAddingRepoLoading,
       error: addRepoError,
       handleChange,
       handleSubmit,
+      resetForm,
     },
+    // Delete Repository 관련 상태와 핸들러
+    deleteRepoHandlers,
 
     // Event Handlers
     handlers: eventHandlers,

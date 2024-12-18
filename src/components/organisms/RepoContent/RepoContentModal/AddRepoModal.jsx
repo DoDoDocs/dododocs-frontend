@@ -1,15 +1,13 @@
 // src/components/organisms/RepoContent/AddRepo.test.jsx
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import {
-  Image, Typo, Button, TextBox, Select, Checkbox,
+  Button, TextBox, Select, Checkbox,
   Modal, ModalHeader, ModalTitle, ModalDescription, ModalContent, ModalFooter,
 } from "../../../index.js";
-import { useAddRepo } from '../../../../hooks/useAddRepo.js';
 import { useUser } from '../../../../hooks/useUser.js';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, Loader2 } from 'lucide-react';
 import { useUserStore } from '../../../../store/store.js';
-import { docsAPI } from '../../../../api/docs.js';
 
 // Styled Components
 // 회전 애니메이션 정의
@@ -21,6 +19,13 @@ const rotate = keyframes`
     transform: rotate(360deg);
   }
 `;
+
+// 애니메이션 관련 styled-components
+const fade = keyframes`
+  0%, 100% { opacity: 0; transform: translateY(10px); }
+  20%, 80% { opacity: 1; transform: translateY(0); }
+`;
+
 
 const FormGroup = styled.div`
   display: grid;
@@ -145,9 +150,9 @@ const RadioInput = styled.input`
 `;
 
 const RadioLabel = styled.span`
- font-size: 14px;
- color: ${props => props.checked ? '#ffffff' : 'null'};
- transition: color 0.2s ease-in-out;
+  font-size: 14px;
+  color: ${props => props.checked ? '#ffffff' : 'null'};
+  transition: color 0.2s ease-in-out;
 
 `;
 
@@ -160,25 +165,50 @@ const StyledButton = styled(Button)`
   border-radius: 0.5rem;
   transition: all 0.2s;
   word-break: keep-all;
+  min-height: 3.5rem;
 `;
 
+const LoadingWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background-color: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  min-height: 3.5rem;  // 높이 고정으로 텍스트 변경시 레이아웃 시프트 방지
+`;
+
+const LoadingText = styled.span`
+  color: #8b5cf6;
+  font-size: 0.875rem;
+  font-weight: 500;
+  word-break: keep-all;
+  animation: ${fade} 2s ease-in-out;
+`;
+
+const RotatingLoader = styled(Loader2)`
+  ${css`
+    animation: ${rotate} 1s linear infinite;
+  `}
+  color: #8b5cf6;
+`;
 
 // 사용 예시 컴포넌트
-const AddRepo = ({ isOpen, onOpen, onClose }) => {
-
+const AddRepo = ({ isOpen, onClose,
+  formData,
+  validationErrors,
+  isAddingRepoLoading,
+  addRepoError,
+  handleChange,
+  handleSubmit,
+  resetForm,
+}) => {
+  // const isAddingRepoLoading = true;
   const { repoListRefetch, isUserDataLoading } = useUser();
-  const {
-    formData,
-    validationErrors,
-    isLoading,
-    error,
-    handleChange,
-    handleSubmit,
-    resetForm,
-  } = useAddRepo((response) => {
-    console.log('Repository added successfully!:', response);
-    handleModalClose();
-  });
+
   const { repositories } = useUserStore();
 
   useEffect(() => {
@@ -188,25 +218,6 @@ const AddRepo = ({ isOpen, onOpen, onClose }) => {
 
   const userRepositories = repositories.length !== 0 ? repositories : [];
 
-  const handleModalClose = () => {
-    resetForm();
-    onClose();
-  };
-
-  const handleRefresh = async () => {
-    // API 호출 로직
-    try {
-      // await fetchRepositories();
-    } catch (error) {
-      console.error('Failed to fetch repositories:', error);
-    }
-  };
-
-  const handleSubmitBtnClick = async (e) => {
-    e.preventDefault();
-    handleSubmit();
-
-  }
 
   const handleRefreshClick = (e) => {
     e.preventDefault();  // 이벤트 전파 중단
@@ -214,9 +225,37 @@ const AddRepo = ({ isOpen, onOpen, onClose }) => {
     repoListRefetch();
   };
 
+  const loadingMessages = [
+    '레포지토리 연결 중...',
+    '코드를 분석하는 중입니다...',
+    'AI가 코드를 이해하는 중입니다...'
+  ];
+
+  const [messageIndex, setMessageIndex] = useState(0);
+
+  useEffect(() => {
+    let interval;
+
+    if (isAddingRepoLoading) {
+      interval = setInterval(() => {
+        setMessageIndex((prev) => (prev + 1) % loadingMessages.length);
+      }, 2000);
+    } else {
+      setMessageIndex(0);  // 로딩이 끝나면 메시지 인덱스 초기화
+    }
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [isAddingRepoLoading, loadingMessages.length]);
+
+
+
   return (
     <>
-      <Modal isOpen={isOpen} onClose={handleModalClose}
+      <Modal isOpen={isOpen} onClose={onClose}
         widths={{
           desktop: '45dvw',
           tablet_large: '60dvw',
@@ -320,16 +359,32 @@ const AddRepo = ({ isOpen, onOpen, onClose }) => {
           </form>
         </ModalContent>
 
-        <ModalFooter style={{ display: 'flex', flexDirection: 'column' }}>
-          {isLoading && <div>Uploading repository...</div>}
-          {error && <ErrorMessage>Error: {error}</ErrorMessage>}
-          <StyledButton btnType="primary" onClick={(e) => handleSubmitBtnClick(e)} disabled={isLoading}>
-            추가하기
-          </StyledButton>
+        <ModalFooter style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+
+          {addRepoError && <ErrorMessage>Error: {addRepoError}</ErrorMessage>}
+          {
+            isAddingRepoLoading ?
+              <LoadingWrapper>
+                <RotatingLoader size={'1rem'} />
+                <LoadingText key={messageIndex}>
+                  {loadingMessages[messageIndex]}
+                </LoadingText>
+              </LoadingWrapper>
+              :
+              <StyledButton
+                btnType="primary"
+                onClick={(e) => handleSubmit(e)}
+                disabled={isAddingRepoLoading}
+              >
+                추가하기
+              </StyledButton>
+          }
+
+
         </ModalFooter>
       </Modal>
     </>
   );
 }
 
-export default AddRepo;
+export default AddRepo;       
