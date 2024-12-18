@@ -1,9 +1,7 @@
 import { create } from 'zustand';
 import { combine, persist, createJSONStorage } from 'zustand/middleware';
 import { devtools } from 'zustand/middleware';
-import { memberAPI } from '../api';
 import jwtUtils from '../utils/jwtUtils';
-import useMemberStore from '../store/memberStore.js';
 
 /**
  * 초기 상태 정의

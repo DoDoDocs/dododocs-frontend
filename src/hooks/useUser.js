@@ -1,14 +1,13 @@
 // src/hooks/useUser.js
 
 import { useQuery } from '@tanstack/react-query';
-import useAuthStore from '../store/authStore.js';
-import useMemberStore from '../store/memberStore.js';
+import { useAuthStore, useUserStore } from '../store/store.js';
 import { memberAPI } from '../api/index.js';
 import { useEffect } from 'react';
 
 export const useUser = () => {
   const { isAuthenticated } = useAuthStore();
-  const { setUserNickname, setRepositories, repositories } = useMemberStore();
+  const { setUserNickname, setRepositories, repositories } = useUserStore();
 
   const userInfoQuery = useQuery({
     queryKey: ['user', 'info'],

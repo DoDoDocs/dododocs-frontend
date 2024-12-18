@@ -7,7 +7,7 @@ const initialState = {
   repositories: [],
 };
 
-const useMemberStore = create(
+const useUserStore = create(
   devtools(
     (set) => ({
       ...initialState,
@@ -25,11 +25,11 @@ const useMemberStore = create(
           'setRepositories',
         ),
 
-      clearMemberInfo: () => set(initialState, false, 'clearMemberInfo'),
+      clearUserInfo: () => set(initialState, false, 'clearUserInfo'),
       // ... other actions
     }),
     { name: 'User Store' },
   ),
 );
 
-export default useMemberStore;
+export default useUserStore;

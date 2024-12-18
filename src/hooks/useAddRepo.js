@@ -28,7 +28,7 @@ export const useAddRepo = (onSuccess) => {
       return docsAPI.postUploadRepo({
         repositoryName: uploadRepo.name,
         branchName: uploadRepo.branch,
-        korean: uploadRepo.language === 'korean',
+        korean: uploadRepo.korean,
         includeTest: uploadRepo.isTestFile,
       });
     },
@@ -75,6 +75,7 @@ export const useAddRepo = (onSuccess) => {
 
   const validateForm = useCallback(() => {
     const errors = {};
+    console.log('AddRepoFormData👋👋👋', formData);
     if (!formData.name) errors.name = 'Repository name is required';
     if (!formData.branch.trim()) errors.branch = 'Branch name is required';
 

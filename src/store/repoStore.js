@@ -1,6 +1,10 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
+const repo이렇게설정해야할듯 = {
+  registeredRepoId: 0,
+};
+
 const initialState = {
   searchValue: '',
   selectedCard: null,
@@ -25,7 +29,6 @@ const initialState = {
 
 /**
  * Repository 관리를 위한 Zustand store
- *
  * @store
  * @property {string} searchValue - 레포지토리 검색어
  * @property {Object|null} selectedCard - 현재 선택된 레포지토리 카드

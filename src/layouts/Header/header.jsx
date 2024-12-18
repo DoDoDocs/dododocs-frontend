@@ -9,11 +9,11 @@ import {
 } from "./header.styles.js"
 
 import { useAuth } from "../../hooks/useAuth.js";
-import { useAuthStore, useMemberStore } from "../../store/store.js"
+import { useAuthStore, useUserStore } from "../../store/store.js"
 
 const HomeHeader = ({ role }) => {
   // 여러 상태 한번에 가져오기
-  const { userNickname } = useMemberStore()
+  const { userNickname } = useUserStore()
   const {
     isAuthenticated
   } = useAuthStore();

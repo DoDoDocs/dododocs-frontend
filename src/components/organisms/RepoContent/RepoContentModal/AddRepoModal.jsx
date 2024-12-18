@@ -8,7 +8,7 @@ import {
 import { useAddRepo } from '../../../../hooks/useAddRepo.js';
 import { useUser } from '../../../../hooks/useUser.js';
 import { RefreshCw } from 'lucide-react';
-import useMemberStore from '../../../../store/memberStore.js';
+import { useUserStore } from '../../../../store/store.js';
 import { docsAPI } from '../../../../api/docs.js';
 
 // Styled Components
@@ -152,46 +152,6 @@ const RadioLabel = styled.span`
 `;
 
 
-const CheckboxInput = styled.input`
- appearance: none;
- width: 20px;
- height: 20px;
- border: 2px solid #3F3F46;
- border-radius: 4px;
- background: transparent;
- cursor: pointer;
- position: relative;
- transition: all 0.2s ease;
-
- &:checked {
-   background-color: #8b5cf6;
-   border-color: #8b5cf6;
-
-   &::after {
-     content: '✓';
-     position: absolute;
-     top: 50%;
-     left: 50%;
-     transform: translate(-50%, -50%);
-     color: white;
-     font-size: 14px;
-   }
- }
-
- &:hover:not(:checked) {
-   border-color: #6B7280;
- }
-`;
-
-const CheckboxLabel = styled.label`
- display: flex;
- align-items: center;
- gap: 8px;
- cursor: pointer;
- user-select: none;
- color: ${props => props.checked ? '#ffffff' : '#71717a'};
-`;
-
 const StyledButton = styled(Button)`
   width : 100%;
   padding: 1rem;
@@ -219,7 +179,7 @@ const AddRepo = ({ isOpen, onOpen, onClose }) => {
     console.log('Repository added successfully!:', response);
     handleModalClose();
   });
-  const { repositories } = useMemberStore();
+  const { repositories } = useUserStore();
 
   useEffect(() => {
     console.log(formData);
@@ -242,14 +202,17 @@ const AddRepo = ({ isOpen, onOpen, onClose }) => {
     }
   };
 
-
-  const handleBtnClick = async (e) => {
+  const handleSubmitBtnClick = async (e) => {
     e.preventDefault();
     handleSubmit();
 
   }
 
-
+  const handleRefreshClick = (e) => {
+    e.preventDefault();  // 이벤트 전파 중단
+    e.stopPropagation();  // 이벤트 버블링 중단
+    repoListRefetch();
+  };
 
   return (
     <>
@@ -282,7 +245,10 @@ const AddRepo = ({ isOpen, onOpen, onClose }) => {
                   />
                 </DataSection>
                 <div style={{ display: 'flex', width: '8%' }}>
-                  <RefreshButton onClick={repoListRefetch} disabled={isUserDataLoading}>
+                  <RefreshButton
+                    onClick={handleRefreshClick}
+                    disabled={isUserDataLoading}
+                  >
                     <RotatingRefreshCw
                       size={16}
                       isLoading={isUserDataLoading}
@@ -313,27 +279,27 @@ const AddRepo = ({ isOpen, onOpen, onClose }) => {
               <Label htmlFor="Language">Language</Label>
               <DataSection>
                 <RadioGroup>
-                  <RadioWrapper checked={formData.language === 'english'}>
+                  <RadioWrapper checked={formData.korean === false}>
                     <RadioInput
                       type="radio"
                       name="language"
                       value="english"
-                      checked={formData.language === 'english'}
-                      onChange={() => handleChange('language', 'english')}
+                      checked={formData.korean === false}
+                      onChange={() => handleChange('korean', false)}
                     />
-                    <RadioLabel checked={formData.language === 'english'}>
+                    <RadioLabel checked={formData.korean === true}>
                       English
                     </RadioLabel>
                   </RadioWrapper>
-                  <RadioWrapper checked={formData.language === 'korean'}>
+                  <RadioWrapper checked={formData.korean === true}>
                     <RadioInput
                       type="radio"
                       name="language"
                       value="korean"
-                      checked={formData.language === 'korean'}
-                      onChange={() => handleChange('language', 'korean')}
+                      checked={formData.korean === true}
+                      onChange={() => handleChange('korean', true)}
                     />
-                    <RadioLabel checked={formData.language === 'korean'}>
+                    <RadioLabel checked={formData.korean === true}>
                       한국어
                     </RadioLabel>
                   </RadioWrapper>
@@ -357,7 +323,7 @@ const AddRepo = ({ isOpen, onOpen, onClose }) => {
         <ModalFooter style={{ display: 'flex', flexDirection: 'column' }}>
           {isLoading && <div>Uploading repository...</div>}
           {error && <ErrorMessage>Error: {error}</ErrorMessage>}
-          <StyledButton btnType="primary" onClick={(e) => handleBtnClick(e)} disabled={isLoading}>
+          <StyledButton btnType="primary" onClick={(e) => handleSubmitBtnClick(e)} disabled={isLoading}>
             추가하기
           </StyledButton>
         </ModalFooter>
