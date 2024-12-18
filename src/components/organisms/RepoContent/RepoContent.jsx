@@ -8,7 +8,9 @@ import useRepoStore from '../../../store/repoStore.js'
 import { useRepoManagement } from '../../../hooks/useRepoManagement'
 import { useParams, useNavigate } from 'react-router-dom';
 
+import BoardTest from './Board.test.jsx';
 import Board from './Board.jsx';
+
 import {
   BgShape,
   ContentStyle,
@@ -227,7 +229,14 @@ const RepoContent = () => {
               </SearchInput>
             </SearchTextWrapper>
 
-
+            <BoardTest
+              dataSource={repos}
+              onCardClick={handlers.handleCardClick}
+              selectedCard={selectedCard}
+              handleDeleteClick={handlers.handleDeleteClick}
+              MAX_PROJECTS={3}
+              onAddClick={addRepo.open}
+            />
 
             <Board
               dataSource={repos}
@@ -237,6 +246,8 @@ const RepoContent = () => {
               MAX_PROJECTS={3}
               onAddClick={addRepo.open}
             />
+
+
 
             <PaginationWrapper>
             </PaginationWrapper>

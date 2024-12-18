@@ -1,12 +1,14 @@
 // src/hooks/useUser.js
+
 import { useQuery } from '@tanstack/react-query';
 import useAuthStore from '../store/authStore.js';
 import useMemberStore from '../store/memberStore.js';
 import { memberAPI } from '../api/index.js';
+import { useEffect } from 'react';
 
 export const useUser = () => {
   const { isAuthenticated } = useAuthStore();
-  const { setUserNickname, setRepositories } = useMemberStore();
+  const { setUserNickname, setRepositories, repositories } = useMemberStore();
 
   const userInfoQuery = useQuery({
     queryKey: ['user', 'info'],
@@ -23,13 +25,36 @@ export const useUser = () => {
   const repoListQuery = useQuery({
     queryKey: ['user', 'repos'],
     queryFn: memberAPI.getMemberAllRepoList,
-    enabled: isAuthenticated && userInfoQuery.data !== undefined, // userInfo 로드 후 실행
+    enabled:
+      isAuthenticated && (userInfoQuery.data !== undefined || repositories.length === 0), // userInfo 로드 후 실행
     staleTime: 1000 * 60 * 5,
     onSuccess: (data) => {
+      console.log('⭐️ 레포지토리 목록 요청 성공:', data);
       // 레포지토리 목록을 store에 업데이트
       setRepositories(data.names);
     },
   });
+
+  // 캐시된 데이터를 포함한 모든 데이터 상태 동기화
+  useEffect(() => {
+    if (userInfoQuery.data) {
+      console.log(
+        'zustand에 저장된 데이터 : memberStore nickname : ',
+        userInfoQuery.data.nickname,
+      );
+      setUserNickname(userInfoQuery.data.nickname);
+    }
+  }, [userInfoQuery.data, setUserNickname]);
+
+  useEffect(() => {
+    if (repoListQuery.data?.names) {
+      console.log(
+        'zustand에 저장된 데이터 : memberStore repositories : ',
+        repoListQuery.data.names,
+      );
+      setRepositories(repoListQuery.data.names);
+    }
+  }, [repoListQuery.data, setRepositories]);
 
   return {
     userInfo: userInfoQuery.data,

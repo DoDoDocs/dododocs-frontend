@@ -197,10 +197,11 @@ const WelcomeMessage = styled.div`
   position: absolute;
   bottom: 0;
   left: 50%;
-  transform: translate(-50%, -30%); // 초기 위치를 최종 위치와 동일하게 설정
+  transform: translate(-50%, -10%); // 초기 위치를 최종 위치와 동일하게 설정
   backdrop-filter: blur(10px);
   animation: ${WelcomeFadeIn} 0.6s ease-out;
   max-width: 90%;
+  width : 60%;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
 `;
 
@@ -546,7 +547,7 @@ const ChatbotUI = () => {
                       <span>DODODOCS AI</span>
                       {/* <Badge>AI 챗봇</Badge> */}
                     </strong>
-                    <p>
+                    <p style={{ wordBreak: 'keep-all' }}>
                       안녕하세요! GitHub 레포지토리의 코드에 대해 궁금하신 점을 물어보세요.
                       자세한 분석과 함께 답변해드리겠습니다.
                     </p>

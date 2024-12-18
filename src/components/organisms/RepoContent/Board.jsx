@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { CalendarIcon, X, GitBranch, Plus } from 'lucide-react';
 
@@ -240,8 +240,10 @@ const ProjectBoard = ({
   onAddClick,
   MAX_PROJECTS
 }) => {
-  const emptySlots = Math.max(0, MAX_PROJECTS - dataSource.length);
 
+
+  const emptySlots = Math.max(0, MAX_PROJECTS - dataSource.length);
+  console.log(dataSource)
   return (
     <BoardGrid>
       {dataSource.map((project) => (

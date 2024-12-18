@@ -8,7 +8,7 @@ import useClickAway from '../../../hooks/useClickAway.js';
 
 const SelectContainer = styled.div`
   position: relative;
-  width: 100%;
+  width: ${props => props.selectWidth || '100%'} ;
 `;
 
 const SelectButton = styled.div`
@@ -95,7 +95,7 @@ const Option = styled.div`
   }
 `;
 
-const Select = ({ selectTitle = 'Select option', options, selectedValue, onChange, placeholder = '선택하세요' }) => {
+const Select = ({ selectTitle = 'Select option', options, selectedValue, onChange, placeholder = '선택하세요', selectWidth }) => {
   const [isSelectOpen, setIsSelectOpen] = useState(false);
   const [dropdownStyle, setDropdownStyle] = useState({});
   const containerRef = useRef(null);
@@ -137,6 +137,9 @@ const Select = ({ selectTitle = 'Select option', options, selectedValue, onChang
         newStyle.maxHeight = Math.max(100, spaceBelow - 10);
       }
 
+      if (options.length <= 1) {
+        newStyle.maxHeight = 'none';
+      }
       setDropdownStyle(newStyle);
     }
   }, [isSelectOpen, options.length]);
@@ -144,7 +147,7 @@ const Select = ({ selectTitle = 'Select option', options, selectedValue, onChang
 
 
   return (
-    <SelectContainer ref={containerRef} className="select-container">
+    <SelectContainer selectWidth={selectWidth} ref={containerRef} className="select-container">
       <SelectButton
         ref={buttonRef}
         onClick={(e) => {

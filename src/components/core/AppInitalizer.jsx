@@ -10,7 +10,7 @@ const AppInitializer = ({ children }) => {
     checkInitialAuth, // 초기화 함수
     authError, // 에러 상태
   } = useAuthStore();
-  const { isUserDataLoading, userDataError, isUserDataSuccess } = useUser();
+  const { isUserDataLoading, userDataError, isUserDataSuccess, repoList } = useUser();
 
   useEffect(() => {
     const initializeAuth = async () => {
@@ -43,6 +43,8 @@ const AppInitializer = ({ children }) => {
       console.log(`🏃🏃앱 초기화 : ❌ ${authError}`);
     }
     if (isUserDataSuccess) {
+
+      console.log(repoList)
       console.log('🏃🏃앱 초기화 : 사용자 데이터 로딩 완료');
     }
   }, [

@@ -7,7 +7,7 @@ import useRepoStore from '../store/repoStore.js';
 const initialFormState = {
   name: null,
   branch: '',
-  language: 'english',
+  korean: false,
   isTestFile: false,
 };
 
@@ -22,6 +22,7 @@ export const useAddRepo = (onSuccess) => {
     mutate: addRepo,
     isLoading,
     error,
+    reset: resetMutation, // react-query의 reset 함수
   } = useMutation({
     mutationFn: (uploadRepo) => {
       return docsAPI.postUploadRepo({
@@ -82,33 +83,40 @@ export const useAddRepo = (onSuccess) => {
   }, [formData]);
 
   // TODO 영상제출이후 수정
-  // const handleSubmit = useCallback(
-  //   async (e) => {
-  //     e?.preventDefault();
-  //     if (!validateForm()) return false;
+  const handleSubmit = useCallback(
+    async (e) => {
+      e?.preventDefault();
+      if (!validateForm()) {
+        console.log('Validation failed');
+        return { validateSuccess: false, error: 'Validation failed' };
+      }
+      //     console.log('Submitting repository:', formData);
+      //     addRepo(formData);
+      //   },
+      //   [formData, addRepo, validateForm],
+      // );
+      addRepo(formData);
+    },
+    [formData, addRepo, validateForm],
+  );
 
-  //     console.log('Submitting repository:', formData);
-  //     addRepo(formData);
-  //   },
-  //   [formData, addRepo, validateForm],
-  // );
+  // const handleSubmit = () => {
+  //   const repoToAdd = {
+  //     key: String(reposLength),
+  //     Repository: formData.name,
+  //     Status: 'Code Imported',
+  //     Branch: formData.branch,
+  //     Action: 'Delete',
+  //   };
 
-  const handleSubmit = () => {
-    const repoToAdd = {
-      key: String(reposLength),
-      Repository: formData.name,
-      Status: 'Code Imported',
-      Branch: formData.branch,
-      Action: 'Delete',
-    };
-
-    addRepoToStore(repoToAdd);
-  };
+  //   addRepoToStore(repoToAdd);
+  // };
 
   const resetForm = useCallback(() => {
     setFormData(initialFormState);
     setValidationErrors({});
-  }, []);
+    resetMutation(); // mutation 상태 초기화
+  }, [resetMutation]);
 
   return {
     formData,

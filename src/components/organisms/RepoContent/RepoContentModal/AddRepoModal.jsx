@@ -1,21 +1,31 @@
 // src/components/organisms/RepoContent/AddRepo.test.jsx
 import React, { useState, useEffect, useRef } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import {
   Image, Typo, Button, TextBox, Select, Checkbox,
   Modal, ModalHeader, ModalTitle, ModalDescription, ModalContent, ModalFooter,
 } from "../../../index.js";
 import { useAddRepo } from '../../../../hooks/useAddRepo.js';
-import { Check } from 'lucide-react';
+import { useUser } from '../../../../hooks/useUser.js';
+import { RefreshCw } from 'lucide-react';
 import useMemberStore from '../../../../store/memberStore.js';
 import { docsAPI } from '../../../../api/docs.js';
 
 // Styled Components
+// 회전 애니메이션 정의
+const rotate = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`;
 
 const FormGroup = styled.div`
   display: grid;
   grid-template-columns: 120px 1fr;
-  align-items: center;
+  align-items: start;
   gap: 16px;
   margin-bottom: 16px;
 
@@ -23,13 +33,53 @@ const FormGroup = styled.div`
     margin-bottom: 0;
   }
 `;
-
+// 에러 메시지 스타일 추가
+const ErrorMessage = styled.span`
+  color: #ef4444;
+  font-size: 12px;
+  margin-top: 4px;
+  grid-column: 2; // 라벨 밑이 아닌 입력 필드 밑에 위치하도록
+`;
 const Label = styled.label`
   font-size: 14px;
   color: #fafafa;
   font-weight: 500;
   text-align: right;
 `;
+
+const DataSection = styled.div`
+width : 90%;
+`
+// 새로고침 아이콘 버튼
+const RefreshButton = styled.button`
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover:not(:disabled) {
+    color: #8b5cf6;
+
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+`;
+
+const RotatingRefreshCw = styled(RefreshCw)`
+  ${props => props.isLoading && css`
+    animation: ${rotate} 1s linear infinite;
+  `}
+`;
+
+
+
 
 const RadioGroup = styled.div`
  display: flex;
@@ -156,6 +206,7 @@ const StyledButton = styled(Button)`
 // 사용 예시 컴포넌트
 const AddRepo = ({ isOpen, onOpen, onClose }) => {
 
+  const { repoListRefetch, isUserDataLoading } = useUser();
   const {
     formData,
     validationErrors,
@@ -163,8 +214,10 @@ const AddRepo = ({ isOpen, onOpen, onClose }) => {
     error,
     handleChange,
     handleSubmit,
-  } = useAddRepo(() => {
-    console.log('Repository upload successful!');
+    resetForm,
+  } = useAddRepo((response) => {
+    console.log('Repository added successfully!:', response);
+    handleModalClose();
   });
   const { repositories } = useMemberStore();
 
@@ -173,32 +226,34 @@ const AddRepo = ({ isOpen, onOpen, onClose }) => {
   }, [formData]);
 
 
-  // const userRepositories = repositories ? repositories : [
-  //   '0526_signup',
-  //   'airbnb_clone',
-  //   'ant-design',
-  //   'mohang',
-  // ];
+  const userRepositories = repositories.length !== 0 ? repositories : [];
 
-  const userRepositories = ['0526_signup',
-    'airbnb_clone',
-    'ant-design',
-    'mohang',
-    'spring-boot_test',
-  ]
-
-
-  const handleBtnClick = (e) => {
-    e.preventDefault();
-
-    handleSubmit();
+  const handleModalClose = () => {
+    resetForm();
     onClose();
+  };
+
+  const handleRefresh = async () => {
+    // API 호출 로직
+    try {
+      // await fetchRepositories();
+    } catch (error) {
+      console.error('Failed to fetch repositories:', error);
+    }
+  };
+
+
+  const handleBtnClick = async (e) => {
+    e.preventDefault();
+    handleSubmit();
+
   }
+
 
 
   return (
     <>
-      <Modal isOpen={isOpen} onClose={onClose}
+      <Modal isOpen={isOpen} onClose={handleModalClose}
         widths={{
           desktop: '45dvw',
           tablet_large: '60dvw',
@@ -217,73 +272,91 @@ const AddRepo = ({ isOpen, onOpen, onClose }) => {
           <form onSubmit={handleSubmit}>
             <FormGroup>
               <Label htmlFor="Repository">Repository</Label>
-              <Select
-                selectTitle={'Select Repository'}
-                options={['0526_signup',
-                  'airbnb_clone',
-                  'ant-design',
-                  'mohang',
-                  'spring-boot_test',
-                ]}
-                selectedValue={formData.name}
-                onChange={(selectedOption) => { handleChange('name', selectedOption) }}
-              />
+              <div style={{ width: '100%', display: 'flex' }}>
+                <DataSection>
+                  <Select
+                    selectTitle={userRepositories.length === 0 ? 'No Repository' : 'Select Repository'}
+                    options={userRepositories}
+                    selectedValue={formData.name}
+                    onChange={(selectedOption) => { handleChange('name', selectedOption) }}
+                  />
+                </DataSection>
+                <div style={{ display: 'flex', width: '8%' }}>
+                  <RefreshButton onClick={repoListRefetch} disabled={isUserDataLoading}>
+                    <RotatingRefreshCw
+                      size={16}
+                      isLoading={isUserDataLoading}
+                    />
+                  </RefreshButton>
+                </div>
+
+              </div>
+              {validationErrors.name && <ErrorMessage>{validationErrors.name}</ErrorMessage>}
+
             </FormGroup>
             <FormGroup>
               <Label htmlFor="Branch">Branch</Label>
-              <TextBox
-                id="username"
-                placeholder="Enter your branch name"
-                onChange={(e) => handleChange('branch', e.target.value)}
-                plane={true}
-                style={{ width: '100%' }}
-              />
+              <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
+                <DataSection>
+                  <TextBox
+                    id="username"
+                    placeholder="Enter your branch name"
+                    onChange={(e) => handleChange('branch', e.target.value)}
+                    plane={true}
+                    style={{ width: '100%' }}
+                  />
+                </DataSection>
+                {validationErrors.branch && <ErrorMessage>{validationErrors.branch}</ErrorMessage>}
+              </div>
             </FormGroup>
             <FormGroup>
               <Label htmlFor="Language">Language</Label>
-              <RadioGroup>
-                <RadioWrapper checked={formData.language === 'english'}>
-                  <RadioInput
-                    type="radio"
-                    name="language"
-                    value="english"
-                    checked={formData.language === 'english'}
-                    onChange={() => handleChange('language', 'english')}
-                  />
-                  <RadioLabel checked={formData.language === 'english'}>
-                    English
-                  </RadioLabel>
-                </RadioWrapper>
-                <RadioWrapper checked={formData.language === 'korean'}>
-                  <RadioInput
-                    type="radio"
-                    name="language"
-                    value="korean"
-                    checked={formData.language === 'korean'}
-                    onChange={() => handleChange('language', 'korean')}
-                  />
-                  <RadioLabel checked={formData.language === 'korean'}>
-                    한국어
-                  </RadioLabel>
-                </RadioWrapper>
-              </RadioGroup>
+              <DataSection>
+                <RadioGroup>
+                  <RadioWrapper checked={formData.language === 'english'}>
+                    <RadioInput
+                      type="radio"
+                      name="language"
+                      value="english"
+                      checked={formData.language === 'english'}
+                      onChange={() => handleChange('language', 'english')}
+                    />
+                    <RadioLabel checked={formData.language === 'english'}>
+                      English
+                    </RadioLabel>
+                  </RadioWrapper>
+                  <RadioWrapper checked={formData.language === 'korean'}>
+                    <RadioInput
+                      type="radio"
+                      name="language"
+                      value="korean"
+                      checked={formData.language === 'korean'}
+                      onChange={() => handleChange('language', 'korean')}
+                    />
+                    <RadioLabel checked={formData.language === 'korean'}>
+                      한국어
+                    </RadioLabel>
+                  </RadioWrapper>
+                </RadioGroup>
+              </DataSection>
             </FormGroup>
             <FormGroup>
               <Label htmlFor="isTestFile"> </Label>
-
-              <Checkbox
-                checked={formData.isTestFile}
-                onChange={(checked) => handleChange('isTestFile', checked)}
-              >
-                테스트 코드를 분석 데이터에 포함하시겠습니까?
-              </Checkbox>
+              <DataSection>
+                <Checkbox
+                  checked={formData.isTestFile}
+                  onChange={(checked) => handleChange('isTestFile', checked)}
+                >
+                  테스트 코드를 분석 데이터에 포함하시겠습니까?
+                </Checkbox>
+              </DataSection>
             </FormGroup>
           </form>
         </ModalContent>
 
         <ModalFooter style={{ display: 'flex', flexDirection: 'column' }}>
           {isLoading && <div>Uploading repository...</div>}
-          {error && <div>Error: {error}</div>}
+          {error && <ErrorMessage>Error: {error}</ErrorMessage>}
           <StyledButton btnType="primary" onClick={(e) => handleBtnClick(e)} disabled={isLoading}>
             추가하기
           </StyledButton>

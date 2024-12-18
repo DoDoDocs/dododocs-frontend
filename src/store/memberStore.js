@@ -4,13 +4,7 @@ import { devtools } from 'zustand/middleware';
 
 const initialState = {
   userNickname: null,
-  repositories: [
-    '0526_signup',
-    'airbnb_clone',
-    'ant-design',
-    'mohang',
-    'spring-boot_test',
-  ],
+  repositories: [],
 };
 
 const useMemberStore = create(
