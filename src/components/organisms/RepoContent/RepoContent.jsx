@@ -42,7 +42,9 @@ const RepoContent = () => {
   // SECTION
   // 레포지토리 관리 관련 커스텀 훅
   const {
-    RegisteredRepositories: { registeredRepositoriesData, isRegisteredRepositoriesError, RegisteredRepositoriesError },
+    RegisteredRepositories: {
+      registeredRepositoriesList,
+    },
     modals: { app, addRepo, deleteRepo },
     handlers,
     addRepoForm,
@@ -146,7 +148,7 @@ const RepoContent = () => {
             </SearchTextWrapper>
 
             <BoardTest
-              dataSource={registeredRepositoriesData}
+              dataSource={registeredRepositoriesList}
               onCardClick={handlers.handleCardClick}
               selectedCard={activeRepository}
               handleDeleteClick={deleteRepoHandlers.handleDeleteClick}

@@ -164,6 +164,7 @@ const useRegisteredRepoStore = create(
       // 폴링 시간 체크 함수
       checkPollingTimeout: () => {
         const { pollingStartTime } = get();
+        console.log('pollingStartTime', pollingStartTime);
         if (!pollingStartTime) return false;
 
         const timeElapsed = Date.now() - pollingStartTime;
@@ -175,13 +176,7 @@ const useRegisteredRepoStore = create(
        * @desc 스토어를 초기 상태로 리셋합니다.
        */
       resetRegisteredRepoStore: () =>
-        set({
-          registeredRepoList: [],
-          activeRepository: null,
-          repositoryToRemove: null,
-          isLoadingRepository: false,
-          pollingStartTime: null,
-        }),
+        set(() => ({ ...initialState }), false, 'resetRegisteredRepoStore'),
 
       getActiveRepository: () => get().activeRepository,
 

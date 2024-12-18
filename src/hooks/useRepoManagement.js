@@ -33,7 +33,7 @@ export const useRepoManagement = () => {
   const repos = useRepoStore((state) => state.repos);
 
   //NOTE Store
-  const { setRegisteredRepositories, setIsLoadingRepository } = useRegisteredRepoStore();
+  // const { setRegisteredRepositories, setIsLoadingRepository } = useRegisteredRepoStore();
 
   /**
    * @axios React Query를 사용한 레포지토리 데이터 페칭
@@ -41,30 +41,117 @@ export const useRepoManagement = () => {
    * @desc 레포지터리 등록한 리스트 목록 가져오기
    * @desc 레포지토리 데이터를 스토어에 저장
    */
+
+  // useState로 폴링 관련 상태 관리
+  const [pollingStartTime, setPollingStartTime] = useState(null);
+  const [isPolling, setIsPolling] = useState(false);
+
+  // 5분 체크 함수
+  const checkPollingTimeout = useCallback(() => {
+    if (!pollingStartTime) return false;
+    const timeElapsed = Date.now() - pollingStartTime;
+    // return timeElapsed >= 5 * 60 * 1000; // 5분
+    return timeElapsed >= 1 * 30 * 1000; // 5분
+  }, [pollingStartTime]);
+
   const {
-    data: registeredRepositoriesData,
-    isError: isRegisteredRepositoriesError,
-    error: RegisteredRepositoriesError,
+    data: registeredRepositoriesList,
+    isError,
+    error,
+    isLoading,
   } = useQuery({
     queryKey: ['registeredRepos'],
-    queryFn: registerAPI.getRegisteredRepoList,
+    // queryFn: registerAPI.getRegisteredRepoList,
+    queryFn: async () => {
+      try {
+        // API 호출 전에 시작 시간 기록
+        const response = await registerAPI.getRegisteredRepoList();
+
+        // 첫 번째 로딩중인 레포지토리 발견 시 시작 시간 기록
+        if (Array.isArray(response)) {
+          const hasLoadingRepo = response.some(
+            (repo) => !repo.readmeComplete || !repo.chatbotComplete || !repo.docsComplete,
+          );
+
+          if (hasLoadingRepo && !pollingStartTime) {
+            console.log('🕒 폴링 시작 시간 기록');
+            setPollingStartTime(Date.now());
+            setIsPolling(true);
+          }
+        }
+
+        return response;
+      } catch (error) {
+        throw error;
+      }
+    },
+    refetchInterval: (queryInfo) => {
+      const data = queryInfo?.state?.data;
+      if (!data) return false;
+      // if (!pollingStartTime) {
+      //   setPollingStartTime(Date.now());
+      // }
+      // if (!isPolling) {
+      //   if (!checkPollingTimeout()) {
+      //     setIsPolling(true);
+      //   }
+      // }
+      // 경과 시간 계산 및 표시
+      const currentTime = Date.now();
+      console.log(isPolling, pollingStartTime);
+      if (isPolling && pollingStartTime) {
+        const elapsedMinutes = Math.floor((currentTime - pollingStartTime) / 1000 / 60);
+        const elapsedSeconds = Math.floor(((currentTime - pollingStartTime) / 1000) % 60);
+        console.log(
+          `⏰ 폴링 경과 시간: ${String(elapsedMinutes).padStart(2, '0')}:${String(
+            elapsedSeconds,
+          ).padStart(2, '0')}`,
+        );
+      }
+
+      // 5분 초과 체크
+      if (checkPollingTimeout()) {
+        console.log('⚠️ 폴링 시간 초과 (5분)');
+        // setIsPolling(false);
+        // setPollingStartTime(null);
+        return false;
+      }
+
+      const hasLoadingRepo =
+        Array.isArray(data) &&
+        data.some(
+          (repo) => !repo.readmeComplete || !repo.chatbotComplete || !repo.docsComplete,
+        );
+
+      return hasLoadingRepo ? 10000 : false;
+    },
     onSuccess: (data) => {
-      console.log(data);
-      console.log('💿💿받아온 등록된 레포지터리 목록[hooks] : ', data);
+      if (!Array.isArray(data)) {
+        console.error('잘못된 데이터 형식:', data);
+        return;
+      }
 
-      // 레포지토리 데이터를 스토어에 저장
-      console.log('레포지토리 데이터를 스토어에 저장');
-      setRegisteredRepositories(data);
-
-      // 로딩 중인 레포지토리 체크
       const hasLoadingRepo = data.some(
         (repo) => !repo.readmeComplete || !repo.chatbotComplete || !repo.docsComplete,
       );
 
-      // 로딩 상태 업데이트
-      console.log('로딩 상태 업데이트');
-      setIsLoadingRepository(hasLoadingRepo);
+      // 폴링 시작 시간 설정 (최초 폴링 시작 시에만)
+      if (hasLoadingRepo && !isPolling) {
+        setPollingStartTime(Date.now());
+        setIsPolling(true);
+      }
+
+      // 모든 레포지토리 로딩 완료 시
+      if (!hasLoadingRepo) {
+        console.log('✅ 모든 레포지토리 로딩 완료');
+        setIsPolling(false);
+        setPollingStartTime(null);
+        queryClient.invalidateQueries(['registeredRepos']);
+      }
     },
+    retry: false,
+    refetchOnWindowFocus: false,
+    staleTime: 0,
   });
 
   //SECTION - App Modal 관리
@@ -184,9 +271,7 @@ export const useRepoManagement = () => {
   return {
     //RegisteredRepositories Data
     RegisteredRepositories: {
-      registeredRepositoriesData,
-      isRegisteredRepositoriesError,
-      RegisteredRepositoriesError,
+      registeredRepositoriesList,
     },
 
     // Modal States & Controls
