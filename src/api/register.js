@@ -30,7 +30,9 @@ export const registerAPI = {
     try {
       console.log('🏃 레포지터리 등록한 리스트 목록 가져오기,,,');
       const response = await api.get(`/api/member/repos/registered`);
-      return response.data;
+      console.log('💿💿받아온 등록된 레포지터리 목록', response.data);
+      const parsingData = response.data.findRegisterRepoResponses;
+      return parsingData;
     } catch (error) {
       console.error('Failed to get Repo List :', error);
       throw new Error(error.response?.data?.message || '❌ Failed to get Repo List');

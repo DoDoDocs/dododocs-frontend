@@ -246,50 +246,55 @@ const ProjectBoard = ({
   console.log(dataSource)
   return (
     <BoardGrid>
-      {dataSource.map((project) => (
-        <ProjectCard
-          key={project.key}
-          onClick={() => onCardClick?.(project)}
-          isSelected={selectedCard === project.key}
-        >
-          <CardContent>
-            <HeaderSection>
-              <ProjectIcon>
-                {project.Repository.charAt(0)}
-              </ProjectIcon>
-              <CloseButton onClick={(e) => handleDeleteClick(e, project)}>
-                <X />
-              </CloseButton>
-            </HeaderSection>
+      {dataSource.map((project) => {
+        return (
 
-            <ProjectInfo>
-              <ProjectTitle>{project.Repository}</ProjectTitle>
-              <BranchContainer>
-                <BranchTag>
-                  <GitBranch size={14} />
-                  {project.Branch}
-                </BranchTag>
-              </BranchContainer>
-            </ProjectInfo>
 
-            <Timeline>
-              <CalendarIcon size={16} />
-              <span>Dec 2024</span>
-            </Timeline>
-          </CardContent>
+          <ProjectCard
+            key={project.key}
+            onClick={() => onCardClick?.(project)}
+            isSelected={selectedCard === project.key}
+          >
+            <CardContent>
+              <HeaderSection>
+                <ProjectIcon>
+                  {project.Repository.charAt(0)}
+                </ProjectIcon>
+                <CloseButton onClick={(e) => handleDeleteClick(e, project)}>
+                  <X />
+                </CloseButton>
+              </HeaderSection>
 
-          <ProgressSection>
-            <ProgressBarContainer>
-              <ProgressBar progress={100} />
-            </ProgressBarContainer>
-            <StatusContainer>
-              <StatusBadge status={project.Status}>
-                {project.Status}
-              </StatusBadge>
-            </StatusContainer>
-          </ProgressSection>
-        </ProjectCard>
-      ))}
+              <ProjectInfo>
+                <ProjectTitle>{project.Repository}</ProjectTitle>
+                <BranchContainer>
+                  <BranchTag>
+                    <GitBranch size={14} />
+                    {project.Branch}
+                  </BranchTag>
+                </BranchContainer>
+              </ProjectInfo>
+
+              <Timeline>
+                <CalendarIcon size={16} />
+                <span>Dec 2024</span>
+              </Timeline>
+            </CardContent>
+
+            <ProgressSection>
+              <ProgressBarContainer>
+                <ProgressBar progress={100} />
+              </ProgressBarContainer>
+              <StatusContainer>
+                <StatusBadge status={project.Status}>
+                  {project.Status}
+                </StatusBadge>
+              </StatusContainer>
+            </ProgressSection>
+          </ProjectCard>
+        )
+      }
+      )}
 
       {/* Empty Slots */}
       {emptySlots > 0 && Array(emptySlots)

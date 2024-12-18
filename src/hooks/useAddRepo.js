@@ -31,7 +31,7 @@ export const useAddRepo = (onSuccess) => {
     },
     onSuccess: (response) => {
       // React Query 캐시 업데이트
-      queryClient.invalidateQueries({ queryKey: ['repositories'] });
+      queryClient.invalidateQueries({ queryKey: ['addRepositories'] });
 
       // 폼 초기화 및 성공 콜백
       resetForm();

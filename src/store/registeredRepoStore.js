@@ -20,7 +20,18 @@ const initialState = {
       chatbotComplete: false,
       docsComplete: false,
     },
+    {
+      registeredRepoId: 1,
+      repositoryName: 'todolist',
+      branchName: 'main',
+      createdAt: '2024-12-18',
+      readmeComplete: true,
+      chatbotComplete: true,
+      docsComplete: true,
+    },
   ],
+  isLoadingRepository: false, // 로딩중인 레포지터리가 있다면 true
+  pollingStartTime: null, // 폴링 시작 시간
 };
 
 /**
@@ -56,7 +67,7 @@ const useRegisteredRepoStore = create(
 
       /** NOTE 레포지터리 목록 추가
        * @desc 등록된 레포지토리에 하나의 레포지토리를 추가합니다.
-       * @param {Object} repository - 활성화할 레포지토리.
+       * @param {Object} repository - 추가할 레포지토리.
        */
       addRegisteredRepo: (repository) =>
         set(
@@ -115,7 +126,7 @@ const useRegisteredRepoStore = create(
         }
 
         const updatedRepoList = registeredRepoList.filter(
-          (repo) => repo.key !== repositoryToRemove.key,
+          (repo) => repo.registeredRepoId !== repositoryToRemove.registeredRepoId,
         );
 
         set((state) => ({
@@ -127,11 +138,50 @@ const useRegisteredRepoStore = create(
         return true;
       },
 
+      // 폴링 관련 액션들
+      /** NOTE 폴링 로딩중인 레포지토리 bool
+       * @desc 활성화된 레포지토리를  t/f
+       * @param {bool} isLoading - 로딩중인 레포지토리가 있다면 true, 아니면 false.
+       */
+      setIsLoadingRepository: (isLoading) => {
+        if (isLoading && !get().pollingStartTime) {
+          // 폴링 시작 시간 설정
+          set({
+            isLoadingRepository: isLoading,
+            pollingStartTime: Date.now(),
+          });
+        } else if (!isLoading) {
+          // 폴링 종료 시 시간 초기화
+          set({
+            isLoadingRepository: false,
+            pollingStartTime: null,
+          });
+        } else {
+          set({ isLoadingRepository: isLoading });
+        }
+      },
+
+      // 폴링 시간 체크 함수
+      checkPollingTimeout: () => {
+        const { pollingStartTime } = get();
+        if (!pollingStartTime) return false;
+
+        const timeElapsed = Date.now() - pollingStartTime;
+        const fiveMinutes = 5 * 60 * 1000;
+        return timeElapsed >= fiveMinutes;
+      },
+
       /**NOTE 스토어 초기화
        * @desc 스토어를 초기 상태로 리셋합니다.
        */
       resetRegisteredRepoStore: () =>
-        set(() => ({ ...initialState }), false, 'resetRegisteredRepoStore'),
+        set({
+          registeredRepoList: [],
+          activeRepository: null,
+          repositoryToRemove: null,
+          isLoadingRepository: false,
+          pollingStartTime: null,
+        }),
 
       getActiveRepository: () => get().activeRepository,
 

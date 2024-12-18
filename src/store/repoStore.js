@@ -11,14 +11,14 @@ const initialState = {
   repoToDelete: null,
   repos: [
     {
-      key: '0',
+      registeredRepoId: '0',
       Repository: 'spring-boot_test',
       Status: 'Code Imported',
       Branch: 'main',
       Action: 'Delete',
     },
     {
-      key: '1',
+      registeredRepoId: '1',
       Repository: 'moheng',
       Status: 'Code Imported',
       Branch: 'main',

@@ -291,7 +291,8 @@ const TimeLineStatusText = styled.span`
 const EmptySlot = styled.div`
   border: 2px dashed #27272a;
   border-radius: 0.5rem;
-  height: 320px;
+  height: 21rem;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;

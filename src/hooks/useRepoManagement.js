@@ -1,11 +1,16 @@
 // src/hooks/useRepoManagement.js
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useQueryClient } from '@tanstack/react-query';
-import useRepoStore from '../store/repoStore';
 import useModal from './useModal';
-import useAppModalStore from '../store/appModalStore';
 import { useAddRepo } from './useAddRepo';
+import { registerAPI } from '../api/index.js';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+
+import {
+  useAppModalStore,
+  useRepoStore,
+  useRegisteredRepoStore,
+} from '../store/store.js';
 
 /**
  * 레포지토리 관리를 위한 통합 커스텀 훅
@@ -14,11 +19,55 @@ export const useRepoManagement = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  // Store Actions
+  /** NOTE 로직 생각
+   * @desc 페이지 진입 시 레포지터리 데이터 받아오기
+   * @detail store에 setRegisteredRepositories
+   * @detail 각 레포별로 readmeComplete,chatbotComplete ,docsComplete를 각각 확인해서  로딩중인 레포지터리가 있는지 확인
+   * @detail 로딩중인 레포지터리가 있으면 store에 setIsLoadingRepository
+   */
+
+  //TODO 지울거 Store Actions
   const setSelectedCard = useRepoStore((state) => state.setSelectedCard);
   const setRepoToDelete = useRepoStore((state) => state.setRepoToDelete);
   const deleteRepo = useRepoStore((state) => state.deleteRepo);
   const repos = useRepoStore((state) => state.repos);
+
+  //NOTE Store
+  const { setRegisteredRepositories, setIsLoadingRepository } = useRegisteredRepoStore();
+
+  /**
+   * @axios React Query를 사용한 레포지토리 데이터 페칭
+   * @axios registerAPI.getRegisteredRepoList
+   * @desc 레포지터리 등록한 리스트 목록 가져오기
+   * @desc 레포지토리 데이터를 스토어에 저장
+   */
+  const {
+    data: registeredRepositoriesData,
+    isError: isRegisteredRepositoriesError,
+    error: RegisteredRepositoriesError,
+  } = useQuery({
+    queryKey: ['registeredRepos'],
+    queryFn: registerAPI.getRegisteredRepoList,
+    onSuccess: (data) => {
+      console.log(data);
+      console.log('💿💿받아온 등록된 레포지터리 목록[hooks] : ', data);
+
+      // 레포지토리 데이터를 스토어에 저장
+      console.log('레포지토리 데이터를 스토어에 저장');
+      setRegisteredRepositories(data);
+
+      // 로딩 중인 레포지토리 체크
+      const hasLoadingRepo = data.some(
+        (repo) => !repo.readmeComplete || !repo.chatbotComplete || !repo.docsComplete,
+      );
+
+      // 로딩 상태 업데이트
+      console.log('로딩 상태 업데이트');
+      setIsLoadingRepository(hasLoadingRepo);
+    },
+  });
+
+  //SECTION - App Modal 관리
 
   // App Modal Store
   const { isAppModalOpen, setOpenAppModal, setAppRepo, setCloseAppModal } =
@@ -45,7 +94,9 @@ export const useRepoManagement = () => {
     console.log('Repository added successfully:', newRepo);
 
     // React Query 캐시 갱신
-    queryClient.invalidateQueries({ queryKey: ['repositories'] });
+    queryClient.invalidateQueries({ queryKey: ['addRepositories'] });
+
+    // NOTE: registeredRepoStore 레포지토리 스토어 업데이트
   });
 
   /**
@@ -55,7 +106,7 @@ export const useRepoManagement = () => {
     app: {
       open: useCallback(
         (card) => {
-          const repo = repos.find((r) => r.key === card.key);
+          const repo = repos.find((r) => r.registeredRepoId === card.registeredRepoId);
           if (repo) {
             setAppRepo(repo);
             setOpenAppModal();
@@ -67,7 +118,7 @@ export const useRepoManagement = () => {
 
       close: useCallback(() => {
         setCloseAppModal();
-        navigate(-1);
+        navigate('/repositories');
       }, [navigate, setCloseAppModal]),
     },
 
@@ -83,6 +134,7 @@ export const useRepoManagement = () => {
       }, [resetForm, addRepoModal]),
     },
   };
+  //!SECTION - 모달관리
 
   /**
    * 이벤트 핸들러
@@ -130,6 +182,13 @@ export const useRepoManagement = () => {
   };
 
   return {
+    //RegisteredRepositories Data
+    RegisteredRepositories: {
+      registeredRepositoriesData,
+      isRegisteredRepositoriesError,
+      RegisteredRepositoriesError,
+    },
+
     // Modal States & Controls
     modals: {
       app: {

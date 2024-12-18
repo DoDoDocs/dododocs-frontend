@@ -4,10 +4,10 @@ import { Image, Typo, Button, TextBox, Table, Pagination, Select, } from "../../
 import bgShapeFive from "../../../assets/images/bg-shape-five.png";
 import bgShapeFour from "../../../assets/images/bg-shape-four.png";
 import { Search, Plus } from 'lucide-react';
-import useRepoStore from '../../../store/repoStore.js'
+import { useRepoStore, useRegisteredRepoStore } from '../../../store/store.js'
 import { useRepoManagement } from '../../../hooks/useRepoManagement'
 
-import BoardTest from './Board.test.jsx';
+import BoardTest from './RepoBoard/RepoBoard.jsx';
 import Board from './Board.jsx';
 
 import {
@@ -42,6 +42,7 @@ const RepoContent = () => {
   // SECTION
   // 레포지토리 관리 관련 커스텀 훅
   const {
+    RegisteredRepositories: { registeredRepositoriesData, isRegisteredRepositoriesError, RegisteredRepositoriesError },
     modals: { app, addRepo, deleteRepo },
     handlers,
     addRepoForm,
@@ -55,7 +56,13 @@ const RepoContent = () => {
     repoToDelete,
     repos,
     setSearchValue,
-  } = useRepoStore()
+  } = useRepoStore();
+
+  //NOTE 
+  const {
+    activeRepository,
+    repositoryToRemove,
+  } = useRegisteredRepoStore();
 
   return (
     <>
@@ -70,7 +77,7 @@ const RepoContent = () => {
             isOpen={deleteRepo.isOpen}
             onClose={deleteRepoHandlers.handleCancelDelete}
             onConfirm={deleteRepoHandlers.handleConfirmDelete}
-            repository={repoToDelete}
+            repository={repositoryToRemove}
           />
 
           <RepoDetailContent onClose={app.close}>
@@ -139,9 +146,9 @@ const RepoContent = () => {
             </SearchTextWrapper>
 
             <BoardTest
-              dataSource={repos}
+              dataSource={registeredRepositoriesData}
               onCardClick={handlers.handleCardClick}
-              selectedCard={selectedCard}
+              selectedCard={activeRepository}
               handleDeleteClick={deleteRepoHandlers.handleDeleteClick}
               MAX_PROJECTS={3}
               onAddClick={addRepo.open}
