@@ -55,15 +55,15 @@ const FlexSplitter = ({
   }, [isDragging, handleMouseMove, handleMouseUp]);
 
   return (
-    <Container splitterWidth={splitterWidth}>
+    <Container $width={splitterWidth}>
       {
         position === 'left' ?
           <>
-            <NarrowPanel width={leftWidth} isDragging={isDragging}>
+            <NarrowPanel width={leftWidth} $isDragging={isDragging}>
               {children[0]}
             </NarrowPanel>
-            <Divider onMouseDown={handleMouseDown} isDragging={isDragging}>
-              <DividerLine isDragging={isDragging} />
+            <Divider onMouseDown={handleMouseDown} >
+              <DividerLine $isDragging={isDragging} />
             </Divider>
             <WidePanel>
               {children[1]}
@@ -74,10 +74,10 @@ const FlexSplitter = ({
             <WidePanel>
               {children[0]}
             </WidePanel>
-            <Divider onMouseDown={handleMouseDown} isDragging={isDragging}>
-              <DividerLine isDragging={isDragging} />
+            <Divider onMouseDown={handleMouseDown} >
+              <DividerLine $isDragging={isDragging} />
             </Divider>
-            <NarrowPanel width={leftWidth} isDragging={isDragging}>
+            <NarrowPanel width={leftWidth} $isDragging={isDragging}>
               {children[1]}
             </NarrowPanel>
           </>

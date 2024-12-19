@@ -4,11 +4,12 @@ import styled from 'styled-components';
 import { Camera, Pencil, Video, Palette, Layout, Box, MoreVertical, GripVertical, Check, X, Plus } from 'lucide-react';
 import api from "../../../api/axios.js";
 import { Splitter } from "../../index.js"
-import { useMarkdown } from '../../../hooks/useAppReadMe.js';
 import { MarkdownRenderer, LoadingSpinner, MarkdownEditor } from '../../index.js';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from "../../index.js"
 import { markdownText } from './markdownText.jsx';
+import { useReadme } from '../../../hooks/RepoDetailContent/useReadme.js';
+import { useRegisteredRepoStore } from "../../../store/store.js"
 
 const Container = styled.div`
   display: flex;
@@ -258,25 +259,6 @@ const MainContent = styled.div`
 }
 `;
 
-
-
-const initialMarkdown = `# 마크다운 에디터 예시
-
-일반 텍스트와 **굵은 텍스트**
-
-\`\`\`mermaid
-graph TD
-    A[시작] --> B[처리]
-    B --> C[종료]
-\`\`\`
-
-## 코드 블록
-\`\`\`javascript
-const hello = "world";
-console.log(hello);
-\`\`\`
-`;
-
 const handleChange = (newContent) => {
   console.log('마크다운이 변경되었습니다:', newContent);
 };
@@ -347,9 +329,23 @@ const NavItem = ({
 
 
 const ReadMe = () => {
+  const { activeRepositoryId } = useRegisteredRepoStore();
   const location = useLocation();
   const navigate = useNavigate();
   const mainContentRef = useRef(null);
+
+  const {
+    data: markdownText,
+    isLoading,
+    isError,
+    error
+  } = useReadme(activeRepositoryId);
+
+  useEffect(() => {
+    console.log("😂😂 READ  ME : ", markdownText)
+
+  }, [markdownText])
+
 
   /**
     * @desc readme '#','##' 문자열을 기준으로 마크다운 파싱
@@ -370,9 +366,13 @@ const ReadMe = () => {
 
 
 
-
-
   useEffect(() => {
+
+    console.log("😂😂😂😂😂 READ  ME : ", markdownText)
+
+    if (!markdownText) return; // Add this check
+
+    // 마크다운을 섹션으로 나누는 함수
     // sections 배열 구조 예시:
     // [
     //   { sectionIndex : 1,excludeSection : false ,level: 1, name : "Project Name",title: "#Project Name", content: "..." },
@@ -380,8 +380,6 @@ const ReadMe = () => {
     //   { sectionIndex : 3, excludeSection : false,level: 2, name : "Overview" ,title: "#Overview", content: "..." },
     //   ...
     // ]
-
-    // 마크다운을 섹션으로 나누는 함수
     const parseSections = (markdown) => {
       const lines = markdown.split('\n');
       const sections = [];
@@ -445,6 +443,7 @@ const ReadMe = () => {
 
     const initialSections = parseSections(markdownText);
     setSectionsReadMe(initialSections);
+    console.log("😂😂😂😂😂 READ  ME : ", markdownText)
   }, [markdownText]);
 
 
@@ -495,12 +494,6 @@ const ReadMe = () => {
     );
   }, [tableContent]);
 
-  const {
-    data: content,
-    isLoading,
-    isError,
-    error
-  } = useMarkdown('readMeId');
 
   if (isLoading) return <LoadingSpinner />;
 
@@ -680,7 +673,7 @@ const ReadMe = () => {
    */
   const exportToMd = (markdownText, filename = 'document.md') => {
     try {
-      const blob = new Blob([content], { type: 'text/markdown' });
+      const blob = new Blob([markdownText], { type: 'text/markdown' });
       const url = URL.createObjectURL(blob);
 
       const link = document.createElement('a');

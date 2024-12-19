@@ -6,7 +6,7 @@ export const Container = styled.div`
   display: flex;
   height: 100%;
   /* width: 50%; */
-  width: ${(props) => props.splitterWidth};
+  width: ${(props) => props.$width};
   /* background-color: rgb(39 39 42); */
   transition: background-color 0.2s ease;
 `;
@@ -20,7 +20,7 @@ export const Panel = styled.div`
 export const NarrowPanel = styled(Panel)`
   flex: 0 0 ${(props) => props.width}px;
   width: ${(props) => props.width}px;
-  transition: ${(props) => (props.isDragging ? 'none' : 'all 0.1s ease')};
+  transition: ${(props) => (props.$isDragging ? 'none' : 'all 0.1s ease')};
 `;
 
 export const WidePanel = styled(Panel)`
@@ -61,7 +61,7 @@ export const DividerLine = styled.div`
 
   &::after {
     content: '︙';
-    color: ${(props) => (props.isDragging ? '#fff' : '#adb5bd')};
+    color: ${(props) => (props.$isDragging ? '#fff' : '#adb5bd')};
     font-size: 12px;
     font-weight: bold;
   }

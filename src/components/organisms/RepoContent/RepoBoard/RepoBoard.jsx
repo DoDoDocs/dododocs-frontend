@@ -40,20 +40,21 @@ const ProjectBoard = ({
         name: "README 만들기",
         status: item.readmeComplete ? "completed" : "waiting",
       },
+
       {
         id: 2,
-        title: "chatting",
-        name: "Chatting 만들기",
-        status: item.chatbotComplete ? "completed" :
+        title: "docs",
+        name: "Docs 만들기",
+        status: item.docsComplete ? "completed" :
           (item.readmeComplete ? "in-progress" : "waiting"),
       },
       {
         id: 3,
-        title: "docs",
-        name: "Docs 만들기",
-        status: item.docsComplete ? "completed" :
-          (item.chatbotComplete ? "in-progress" : "waiting"),
-      }
+        title: "chatting",
+        name: "Chatting 만들기",
+        status: item.chatbotComplete ? "completed" :
+          (item.docsComplete ? "in-progress" : "waiting"),
+      },
     ],
     completed: item.readmeComplete && item.chatbotComplete && item.docsComplete,
     createdAt: item.createdAt
@@ -142,7 +143,9 @@ const ProjectBoard = ({
           <ProjectCard>
             {/* // isSelected={selectedCard === project.registeredRepoId} */}
             {/* > */}
-            <CloseButton onClick={(e) => handleDeleteClick(e, project.registeredRepoId)}>
+            <CloseButton onClick={(e) => handleDeleteClick(e, dataSource.find(
+              (repo) => repo.registeredRepoId === project.registeredRepoId,
+            ))}>
               <X />
             </CloseButton>
             <CardContent isExpanded={expandedStates[project.registeredRepoId]}>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import bg_img from "../../../assets/images/bg_img.jpg"
-import { Bell, Search, Grid, RefreshCw, Camera, Layout, PlayCircle, Pen, Box, MessageSquare, Sun } from 'lucide-react';
+import { Moon, Sun } from 'lucide-react';
 import {
   Image, Typo, Button, TextBox, Select,
 } from "../../index.js";
@@ -100,11 +100,38 @@ const Header = styled.div`
   white-space: nowrap;
 `;
 
+const ThemeToggle = styled.div`
+display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid #f9fafb;
+  background: transparent;
+  color: #f9fafb;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-left: 22px;
+
+  &:hover {
+    background: rgba(249, 250, 251, 0.1);
+  }
+
+  svg {
+    transition: transform 0.3s ease;
+  }
+
+  &:hover svg {
+    transform: rotate(45deg);
+  }`
+
 const MenuCircleWrapper = styled.div`
 width : auto;
 height : auto;
 flex : 1 ;
 display: flex;
+align-items: center;
 gap : 0.5rem;
   `
 
@@ -128,7 +155,12 @@ const MenuCircle = styled.button`
   flex-shrink: 0;
 `;
 
-
+const AppRepoTitle = styled.div`
+display:flex;
+justify-content:start;
+margin-left   : .5rem;
+margin-top : .2rem;
+`
 
 const MainHeader = styled.div`
   display: flex;
@@ -239,7 +271,8 @@ background-color : #10121b66;
 // Main App Component
 const App = ({ onClose }) => {
 
-  const { isAppModalOpen } = useAppModalStore();
+  const { isAppModalOpen, AppRepo } = useAppModalStore();
+
 
   const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -284,18 +317,25 @@ const App = ({ onClose }) => {
               <MenuCircle type={'red'} onClick={onClose}></MenuCircle>
               <MenuCircle type={'yellow'}></MenuCircle>
               <MenuCircle type={'green'} onClick={toggleFullscreen}></MenuCircle>
-            </MenuCircleWrapper>
+              <AppRepoTitle>
+                dfsdf
+              </AppRepoTitle>
 
+            </MenuCircleWrapper>
             <HeaderProfile>
               {/* <NotificationIcon>
-                <Bell size={22} />
-              <span>3</span>
-            </NotificationIcon> */}
-              <ProfileImage
-                src="https://images.unsplash.com/photo-1600353068440-6361ef3a86e8?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
-                alt="Profile"
-                onClick={() => { setIsImgMode((prevImgMode) => !prevImgMode) }}
-              />
+                <Sun size={22} />
+                <span>3</span>
+              </NotificationIcon> */}
+              <ThemeToggle onClick={() => { setIsImgMode((prevImgMode) => !prevImgMode) }}
+              >
+                {isImgMode ? (
+                  <Sun size={'1rem'} className="theme-icon" />
+                ) : (
+                  <Moon size={'1rem'} className="theme-icon" />
+                )}
+              </ThemeToggle>
+
             </HeaderProfile>
           </Header>
           {/* Add remaining content components here */}
@@ -330,53 +370,7 @@ const App = ({ onClose }) => {
                     null
             )}
 
-            {/* 
-               <LeftSide>
-                <SideWrapper>
-                  <SideTitle>Apps</SideTitle>
-                  <SideMenu>
-                    <span href="#"><Grid size={16} /> All Apps</span>
-                    <span ><RefreshCw size={16} /> Updates <span className="notification-number updates">3</span></span>
-                  </SideMenu>
-                </SideWrapper>
 
-                <SideWrapper>
-                  <SideTitle>Categories</SideTitle>
-                  <SideMenu>
-                    <span ><Camera size={16} /> Photography</span>
-                    <span ><Pen size={16} /> Graphic Design</span>
-                    <span ><PlayCircle size={16} /> Video</span>
-                    <span ><Layout size={16} /> Illustrations</span>
-                    <span ><Box size={16} /> UI/UX</span>
-                    <span ><MessageSquare size={16} /> 3D/AR</span>
-                  </SideMenu>
-                </SideWrapper>
-              </LeftSide> 
-
-              <MainContainer>
-                <ContentWrapper>
-                  <ContentSection>
-                    
-                    <h3>Installed</h3>
-                    <AppsCard>
-                      <AppCard>
-                        <div className="app-card__title">
-                          <Camera size={28} />
-                          <span>Photoshop</span>
-                        </div>
-                        <div className="app-card__subtext">
-                          Edit, master and create powerful images
-                        </div>
-                        <div className="app-card-buttons">
-                          <button className="content-button status-button">Update</button>
-                        </div>
-                      </AppCard>
-                    </AppsCard> 
-
-
-                  </ContentSection>
-                </ContentWrapper>
-              </MainContainer> */}
           </Wrapper>
         </AppContainer>
       </AppWrapper>

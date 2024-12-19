@@ -1,5 +1,5 @@
 // src/hooks/useRepoManagement.js
-import { useCallback, useState } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useModal from './useModal';
 import { useAddRepo } from './useAddRepo';
@@ -28,11 +28,10 @@ export const useRepoManagement = () => {
 
   //TODO 지울거 Store Actions
   // const setSelectedCard = useRepoStore((state) => state.setSelectedCard);
-  const setRepoToDelete = useRepoStore((state) => state.setRepoToDelete);
-  const deleteRepo = useRepoStore((state) => state.deleteRepo);
 
   //NOTE Store
-  const { setActiveRepositoryId, repositoryToRemove } = useRegisteredRepoStore();
+  const { setActiveRepositoryId, setRepositoryToRemove, repositoryToRemove } =
+    useRegisteredRepoStore();
 
   /**
    * @axios React Query를 사용한 레포지토리 데이터 페칭
@@ -164,15 +163,26 @@ export const useRepoManagement = () => {
   const deleteRepoModal = useModal();
 
   // Add Repository Form Management with success callback
+
+  const [extendedLoading, setExtendedLoading] = useState(false);
+  useEffect(() => {
+    return () => {
+      setExtendedLoading(false);
+    };
+  }, []);
   const {
     formData,
     validationErrors,
-    isLoading: isAddingRepoLoading,
+    // isLoading,
+    isPending: isAddingRepoLoading,
     error: addRepoError,
     handleChange,
     handleSubmit,
     resetForm,
   } = useAddRepo(async (newRepo) => {
+    // 확장된 로딩 상태 시작
+    setExtendedLoading(true);
+
     try {
       // React Query 캐시 무효화 및 즉시 새로고침
       await queryClient.invalidateQueries({
@@ -193,11 +203,10 @@ export const useRepoManagement = () => {
       setIsPolling(true);
 
       console.log('✅ Repository added and list refreshed successfully:', newRepo);
-      // 폼 리셋
-      resetForm();
 
-      // 모든 데이터 작업이 완료된 후 모달 닫기
+      setExtendedLoading(false);
       modalHandlers.addRepo.close();
+      // 모든 데이터 작업이 완료된 후 모달 닫기
     } catch (error) {
       console.error('Failed to refresh repository list:', error);
       // TODO: 에러 토스트 메시지 표시
@@ -236,9 +245,8 @@ export const useRepoManagement = () => {
       }, [resetForm, addRepoModal]),
 
       close: useCallback(() => {
-        resetForm(); // 폼 초기화
         addRepoModal.closeModal();
-      }, [resetForm, addRepoModal]),
+      }, [addRepoModal]),
     },
   };
   //!SECTION - 모달관리
@@ -249,6 +257,7 @@ export const useRepoManagement = () => {
   const eventHandlers = {
     handleCardClick: useCallback(
       (cardId) => {
+        console.log('useRepoManagement cardClick', cardId);
         setActiveRepositoryId(cardId);
         modalHandlers.app.open(cardId);
       },
@@ -260,10 +269,10 @@ export const useRepoManagement = () => {
     handleDeleteClick: useCallback(
       (e, repo) => {
         e.stopPropagation();
-        setRepoToDelete(repo);
+        setRepositoryToRemove(repo);
         deleteRepoModal.openModal();
       },
-      [deleteRepoModal, setRepoToDelete],
+      [deleteRepoModal, setRepositoryToRemove],
     ),
 
     // handleConfirmDelete: useCallback(async () => {
@@ -282,6 +291,7 @@ export const useRepoManagement = () => {
     //   }
     // }, [deleteRepoModal, deleteRepo, queryClient]),
     handleConfirmDelete: useCallback(async () => {
+      console.log(repositoryToRemove);
       if (!repositoryToRemove) {
         console.error('No repository selected for deletion');
         return;
@@ -289,7 +299,7 @@ export const useRepoManagement = () => {
 
       try {
         // API를 통한 레포지토리 삭제
-        await registerAPI.deleteRegisteredRepo(repositoryToRemove);
+        await registerAPI.deleteRegisteredRepo(repositoryToRemove.registeredRepoId);
 
         // React Query 캐시 무효화 및 즉시 새로고침
         await queryClient.invalidateQueries({
@@ -308,7 +318,7 @@ export const useRepoManagement = () => {
         console.log('✅ Repository deleted successfully');
 
         // 상태 초기화
-        setRepoToDelete(null);
+        setRepositoryToRemove(null);
 
         // 모든 작업이 완료된 후 모달 닫기
         deleteRepoModal.closeModal();
@@ -316,12 +326,12 @@ export const useRepoManagement = () => {
         console.error('Failed to delete repository:', error);
         // TODO: 에러 토스트 메시지 표시
       }
-    }, [deleteRepoModal, repositoryToRemove, queryClient]),
+    }, [deleteRepoModal, repositoryToRemove, queryClient, setRepositoryToRemove]),
 
     handleCancelDelete: useCallback(() => {
-      setRepoToDelete(null);
+      setRepositoryToRemove(null);
       deleteRepoModal.closeModal();
-    }, [deleteRepoModal, setRepoToDelete]),
+    }, [deleteRepoModal, setRepositoryToRemove]),
   };
 
   return {
@@ -351,7 +361,7 @@ export const useRepoManagement = () => {
     addRepoForm: {
       formData,
       validationErrors,
-      isLoading: isAddingRepoLoading,
+      isAddingRepoLoading: isAddingRepoLoading || extendedLoading,
       error: addRepoError,
       handleChange,
       handleSubmit,

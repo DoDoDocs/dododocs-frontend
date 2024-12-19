@@ -75,9 +75,9 @@ const StyledButton = styled(Button)`
 `;
 
 const DeleteRepo = ({ isOpen, onClose, onConfirm, repository }) => {
-
+  console.log(repository)
   const [confirmText, setConfirmText] = React.useState('');
-  const expectedText = repository?.Repository || '';
+  const expectedText = repository?.repositoryName || '';
   const isDeleteEnabled = confirmText === expectedText;
 
   const handleDelete = () => {
@@ -104,7 +104,7 @@ const DeleteRepo = ({ isOpen, onClose, onConfirm, repository }) => {
           <WarningText>
             Repository를 삭제하면 만들어진 모든 데이터가 삭제됩니다.
             <br />
-            정말 <strong>{repository?.Repository}</strong> repository를 삭제하시겠어요?
+            정말 <strong>{repository?.repositoryName}</strong> repository를 삭제하시겠어요?
           </WarningText>
 
           <InputLabel>

@@ -4,7 +4,7 @@ import { Image, Typo, Button, TextBox, Table, Pagination, Select, } from "../../
 import bgShapeFive from "../../../assets/images/bg-shape-five.png";
 import bgShapeFour from "../../../assets/images/bg-shape-four.png";
 import { Search, Plus } from 'lucide-react';
-import { useRepoStore, useRegisteredRepoStore } from '../../../store/store.js'
+import { useRepoStore, useRegisteredRepoStore, useUserStore } from '../../../store/store.js'
 import { useRepoManagement } from '../../../hooks/useRepoManagement'
 
 import BoardTest from './RepoBoard/RepoBoard.jsx';
@@ -39,6 +39,7 @@ import { RepoDetailContent } from "../../index.js";;
  */
 const RepoContent = () => {
 
+
   // SECTION
   // 레포지토리 관리 관련 커스텀 훅
   const {
@@ -59,6 +60,10 @@ const RepoContent = () => {
     repos,
     setSearchValue,
   } = useRepoStore();
+
+  const {
+    userNickname
+  } = useUserStore();
 
   //NOTE 
   const {
@@ -91,7 +96,7 @@ const RepoContent = () => {
               size="3rem"
               style={{ letterSpacing: '-0.025em' }}
             >
-              User Name
+              {userNickname || `User Name`}
             </Typo>
           </TitleWrapper>
 
@@ -107,7 +112,7 @@ const RepoContent = () => {
               color="#a1a1aa"
               size="1.1rem"
             >
-              Earn 1 month for free for each 3 new paid subscribers
+              Boost your productivity with Dododocs! Add repositories and get started now.
             </Typo>
           </TitleWrapper>
 

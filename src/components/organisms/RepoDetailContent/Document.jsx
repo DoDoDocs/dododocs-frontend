@@ -4,9 +4,10 @@ import styled from 'styled-components';
 import { Camera, Pencil, Video, Palette, Layout, Box, MoreVertical } from 'lucide-react';
 import api from "../../../api/axios.js";
 import { Splitter } from "../../index.js"
-import { useMarkdown } from '../../../hooks/useAppReadMe.js';
 import { MarkdownRenderer, LoadingSpinner } from '../../index.js';
 import documentText from './documentText.jsx';
+import { useDocument } from '../../../hooks/RepoDetailContent/useDocument.js';
+import { useRegisteredRepoStore } from "../../../store/store.js"
 
 const Container = styled.div`
   display: flex;
@@ -159,174 +160,153 @@ const MainContent = styled.div`
 }
 `;
 
-const ContentArea = styled.div`
-  padding: 2rem;
-  color: #a1a1aa;
-`;
 
 
-const markdownText = `
-## 2. Strategy Pattern Implementation
-
-### Strategy Pattern Overview
-
-The strategy pattern is implemented through the use of interfaces for OAuth clients and URI providers, allowing for different implementations based on the OAuth provider.
-
-### Strategy Interface and Concrete Classes
-
-- **OAuthClient**: Interface for OAuth clients that defines methods for retrieving OAuth member information.
-- **OAuthMember**: Interface representing an OAuth member with methods to get social login ID, email, and profile image URL.
-- **OAuthProvider**: Interface that provides methods to get specific OAuth clients and URI providers based on the provider name.
-- **OAuthUriProvider**: Interface for generating OAuth URIs.
-
-### Context Class
-
-- **AuthService**: Acts as the context that uses the strategy interfaces to perform authentication tasks.
-
-### Class Diagram
-
-\`\`\`mermaid
-classDiagram
-    class OAuthClient {
-        +getOAuthMember(code: String): OAuthMember
-        +isSame(oAuthProviderName: String): boolean
-    }
-
-    class OAuthMember {
-        +getSocialLoginId(): String
-        +getEmail(): String
-        +getProfileImageUrl(): String
-    }
-
-    class OAuthProvider {
-        +getOauthClient(providerName: String): OAuthClient
-        +getOAuthUriProvider(providerName: String): OAuthUriProvider
-        +getSocialType(provider: String): SocialType
-    }
-
-    class OAuthUriProvider {
-        +generateUri(): String
-        +isSame(provider: String): boolean
-    }
-
-    class AuthService {
-        +generateTokenWithCode(code: String, providerName: String): MemberToken
-        +generateUri(providerName: String): String
-    }
-
-    AuthService --> OAuthProvider
-    OAuthProvider --> OAuthClient
-    OAuthProvider --> OAuthUriProvider
-    OAuthClient --> OAuthMember
-\`\`\`
-`;
-
-
-const NavItem = ({ onClick, icon: Icon, children, active, badge }) => (
+const NavItem = ({ onClick, icon: Icon, children, active }) => (
   <NavItemWrapper active={active} onClick={onClick}>
     <IconWrapper>
       <Icon size={20} />
     </IconWrapper>
     <span>{children}</span>
-    {badge && <Badge>{badge}</Badge>}
   </NavItemWrapper>
 );
 
-const ReadMe = () => {
+const Document = () => {
+  //SECTION Document 
+  const { activeRepositoryId } = useRegisteredRepoStore();
 
+
+  const {
+    data: docsData,
+    isLoading,
+    isError,
+    error
+  } = useDocument(activeRepositoryId);
+
+  useEffect(() => {
+    console.log('docsData', docsData)
+  }, [docsData])
 
   const [selectedDoc, setSelectedDoc] = useState('AuthController'); // 선택된 문서 상태 추가
   const [content, setContent] = useState(documentText[0]); // 현재 표시될 내용
 
   // 문서 메뉴 데이터 정의
-  const controllerDocs = [
-    { id: 'AuthController', name: 'AuthController.md', content: documentText[0] },
-    { id: 'KeywordController', name: 'KeywordController.md', content: documentText[1] },
-    { id: 'LiveInformationController', name: 'LiveInformationController.md', content: documentText[2] },
-    { id: 'MemberController', name: 'MemberController.md', content: documentText[0] },
-    { id: 'MemberLiveInformationController', name: 'MemberLiveInformationController.md', content: documentText[0] },
-    { id: 'PlannerController', name: 'PlannerController.md', content: documentText[0] },
-    { id: 'RecommendController', name: 'RecommendController.md', content: documentText[0] },
-    { id: 'TripController', name: 'TripController.md', content: documentText[0] },
-    { id: 'TripScheduleController', name: 'TripScheduleController.md', content: documentText[0] }
-  ];
+  // const controllerDocs = [
+  //   { id: 'AuthController', fileName: 'AuthController.md', content: documentText[0] },
+  //   { id: 'KeywordController', fileName: 'KeywordController.md', content: documentText[1] },
+  //   { id: 'LiveInformationController', fileName: 'LiveInformationController.md', content: documentText[2] },
+  //   { id: 'MemberController', fileName: 'MemberController.md', content: documentText[0] },
+  //   { id: 'MemberLiveInformationController', fileName: 'MemberLiveInformationController.md', content: documentText[0] },
+  //   { id: 'PlannerController', fileName: 'PlannerController.md', content: documentText[0] },
+  //   { id: 'RecommendController', fileName: 'RecommendController.md', content: documentText[0] },
+  //   { id: 'TripController', fileName: 'TripController.md', content: documentText[0] },
+  //   { id: 'TripScheduleController', fileName: 'TripScheduleController.md', content: documentText[0] }
+  // ];
+
+
+
 
   // 문서 선택 핸들러
-  const handleDocSelect = (docId) => {
-    if (docId === "summary") {
-      setContent(documentText[2]);
-      return;
-    }
-    setSelectedDoc(docId);
-    const selectedContent = controllerDocs.find(doc => doc.id === docId)?.content;
-    if (selectedContent) {
-      setContent(selectedContent);
-    }
+  // const handleDocSelect = (fileName) => {
+  //   setSelectedDoc(fileName);
+  //   const selectedContent = controllerDocs.find(doc => doc.fileName === fileName)?.content;
+  //   if (selectedContent) {
+  //     setContent(selectedContent);
+  //   }
 
+  // };
+
+
+  // 선택된 파일명과 내용을 관리하는 상태
+  const [selectedFileName, setSelectedFileName] = useState('');
+  const [currentContent, setCurrentContent] = useState('');
+
+  // 컨트롤러 문서와 테스트 문서 분리
+  const [controllerDocs, setControllerDocs] = useState([]);
+  const [summaryDocs, setSummaryDocs] = useState([]);
+
+  // docsData가 변경될 때마다 문서 목록 업데이트
+  useEffect(() => {
+    if (!docsData) return;
+
+    // Controller 문서 필터링 (Test 파일 제외)
+    const controllers = docsData.regularFiles
+
+    // Summary 문서 설정
+    const summaries = docsData.summaryFiles || [];
+
+    setControllerDocs(controllers);
+    setSummaryDocs(summaries);
+
+    // 초기 선택된 문서 설정
+    if (controllers.length && !selectedFileName) {
+      setSelectedFileName(controllers[0].fileName);
+      setCurrentContent(controllers[0].fileContents);
+    }
+  }, [docsData]);
+
+  // 문서 선택 핸들러
+  const handleDocSelect = (fileName, content) => {
+    setSelectedFileName(fileName);
+    setCurrentContent(content);
   };
 
-
-  console.log(documentText)
-  const {
-    // data: content,
-    isLoading,
-    isError,
-    error
-  } = useMarkdown('readMeId');
-
   if (isLoading) return <LoadingSpinner />;
-  if (content) console.log('Document content', content);
+
+
+
   return (
-    <Container >
+    <Container>
       <Splitter
         splitterWidth={'100%'}
         initialLeftWidth={250}
         minWidth={200}
         maxWidth={400}
       >
-        <SideBar >
-          <Section flex={7} mb={0.75}>
-            <SectionTitle>Controller Docs</SectionTitle>
+        <SideBar>
+          <Section flex={7} mb={1.5}>
+            <SectionTitle>regular Docs</SectionTitle>
             <SectionContent>
               {controllerDocs.map(doc => (
                 <NavItem
-                  key={doc.id}
+                  key={doc.fileName}
                   icon={Box}
-                  active={selectedDoc === doc.id}
-                  onClick={() => handleDocSelect(doc.id)}
+                  active={selectedFileName === doc.fileName}
+                  onClick={() => handleDocSelect(doc.fileName, doc.fileContents)}
                 >
-                  {doc.name}
+                  {doc.fileName}
                 </NavItem>
               ))}
             </SectionContent>
           </Section>
-          <Section flex={3}>
-            <SectionTitle>Controller Summary</SectionTitle>
+          <Section flex={2}>
+            <SectionTitle>Summary DOCS</SectionTitle>
             <SectionContent>
-              <NavItem icon={Pencil} onClick={() => handleDocSelect('summary')}>Controller_summery.md</NavItem>
+              {summaryDocs.map(doc => (
+                <NavItem
+                  key={doc.fileName}
+                  icon={Pencil}
+                  active={selectedFileName === doc.fileName}
+                  onClick={() => handleDocSelect(doc.fileName, doc.fileContents)}
+                >
+                  {doc.fileName}
+                </NavItem>
+              ))}
             </SectionContent>
-            {/* <NavItem icon={Video}>Video</NavItem>
-            <NavItem icon={Palette}>Illustrations</NavItem>
-            <NavItem icon={Layout}>UI/UX</NavItem>
-            <NavItem icon={Box}>3D/AR</NavItem> */}
           </Section>
         </SideBar>
 
         <MainContent>
-          {
-            isLoading ? <LoadingSpinner /> :
-              isError ?
-                // <div className="text-red-500 p-4">
-                //   Error: {error.message}
-                // </div>
-                <MarkdownRenderer content={content} />
-                :
-                <MarkdownRenderer content={content} />
-          }
+          {isError ? (
+            <MarkdownRenderer content={"Error fetching document: " + error.message} />
+
+          ) : (
+            <MarkdownRenderer content={currentContent} />
+          )}
         </MainContent>
       </Splitter>
     </Container>
   );
 };
 
-export default ReadMe;
+export default Document;

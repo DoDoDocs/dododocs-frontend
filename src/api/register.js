@@ -39,18 +39,45 @@ export const registerAPI = {
     }
   },
 
+  // deleteRegisteredRepo: async (repoId) => {
+  //   try {
+  //     console.log('🏃 레포지터리 삭제 ,,,');
+  //     console.log('🏃 레포지터리 삭제하는 ID', repoId);
+
+  //     const response = await api.delete(`/api/register`, {
+  //       registeredRepoId: repoId,
+  //     });
+  //     return response.data;
+  //   } catch (error) {
+  //     console.error('failed Delete Repo :', error);
+  //     throw new Error(error.response?.data?.message || '❌ failed Delete Repo ');
+  //   }
+  // },
+
   deleteRegisteredRepo: async (repoId) => {
     try {
-      console.log('🏃 레포지터리 삭제 ,,,');
-      console.log('🏃 레포지터리 삭제하는 ID', repoId);
+      console.log('🏃 레포지터리 삭제 중...');
+      console.log('🏃 삭제할 레포지토리 ID:', repoId);
 
-      const response = await api.post(`/api/register`, {
-        registeredRepoId: repoId,
+      const response = await api.delete('/api/register', {
+        data: {
+          registeredRepoId: repoId,
+        },
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+          Accept: 'application/json',
+        },
       });
+
+      if (response.status === 204) {
+        console.log('✅ 레포지토리 삭제 성공');
+        return true;
+      }
+
       return response.data;
     } catch (error) {
-      console.error('failed Delete Repo :', error);
-      throw new Error(error.response?.data?.message || '❌ failed Delete Repo ');
+      console.error('❌ 레포지토리 삭제 실패:', error);
+      throw new Error(error.response?.data?.message || '레포지토리 삭제에 실패했습니다.');
     }
   },
 };

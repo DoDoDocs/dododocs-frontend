@@ -6,7 +6,7 @@ import { docsAPI } from '../api/index.js';
 const initialFormState = {
   name: null,
   branch: '',
-  korean: false,
+  korean: '',
   isTestFile: false,
 };
 
@@ -18,6 +18,7 @@ export const useAddRepo = (onSuccess) => {
   const {
     mutate: addRepo,
     isLoading,
+    isPending, // isLoading 대신 isPending 사용
     error,
     reset: resetMutation, // react-query의 reset 함수
   } = useMutation({
@@ -34,7 +35,6 @@ export const useAddRepo = (onSuccess) => {
       queryClient.invalidateQueries({ queryKey: ['addRepositories'] });
 
       // 폼 초기화 및 성공 콜백
-      resetForm();
       onSuccess?.(response);
     },
     onError: (error) => {
@@ -92,10 +92,13 @@ export const useAddRepo = (onSuccess) => {
     resetMutation(); // mutation 상태 초기화
   }, [resetMutation]);
 
+  console.log('skjfslkejfjklsefjkl', isPending, isPending, isLoading);
+
   return {
     formData,
     validationErrors,
     isLoading,
+    isPending,
     error: error?.message,
     handleChange,
     handleSubmit,

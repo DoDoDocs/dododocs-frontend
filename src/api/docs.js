@@ -15,7 +15,7 @@ export const docsAPI = {
       const response = await api.post('/api/upload/s3', {
         repositoryName: uploadRepo.repositoryName,
         branchName: uploadRepo.branchName,
-        korean: (uploadRepo.language === 'korean' ? true : false) ?? false, // default to true if not specified
+        korean: uploadRepo.korean, // default to true if not specified
         includeTest: uploadRepo.includeTest ?? true, // default to true if not specified
       });
 

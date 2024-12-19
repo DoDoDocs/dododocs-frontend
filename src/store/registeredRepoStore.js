@@ -87,7 +87,7 @@ const useRegisteredRepoStore = create(
         set(
           (state) => ({
             ...state,
-            activeRepository: repositoryId,
+            activeRepositoryId: repositoryId,
           }),
           false,
           'setActiveRepository',

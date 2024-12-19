@@ -213,7 +213,8 @@ const AddRepo = ({ isOpen, onClose,
 
   useEffect(() => {
     console.log(formData);
-  }, [formData]);
+    console.log("isAddingRepoLoading", isAddingRepoLoading)
+  }, [formData, isAddingRepoLoading]);
 
 
   const userRepositories = repositories.length !== 0 ? repositories : [];
@@ -326,7 +327,7 @@ const AddRepo = ({ isOpen, onClose,
                       checked={formData.korean === false}
                       onChange={() => handleChange('korean', false)}
                     />
-                    <RadioLabel checked={formData.korean === true}>
+                    <RadioLabel checked={formData.korean === false}>
                       English
                     </RadioLabel>
                   </RadioWrapper>

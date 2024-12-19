@@ -125,7 +125,7 @@ const HomeHeader = ({ role }) => {
 
                 {
                   userNickname ?
-                    <Col md={8} span={9} justify={"flex-end"} align={"center"} style={{ paddingRight: "2rem" }}>
+                    <Col md={7} span={9} justify={"flex-end"} align={"center"} style={{ paddingRight: "2rem" }}>
                       <Typo size={'1.2rem'} color={"#545454"}>환영합니다. {userNickname}님 </Typo>
                     </Col>
                     :
