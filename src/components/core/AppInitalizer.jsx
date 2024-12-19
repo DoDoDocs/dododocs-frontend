@@ -44,15 +44,12 @@ const AppInitializer = ({ children }) => {
     if (userDataError) {
       console.log(`🏃🏃앱 초기화 : ❌ ${userDataError}`);
       clearAuth();
-
     }
     if (authError) {
       console.log(`🏃🏃앱 초기화 : ❌ ${authError}`);
       clearAuth();
-
     }
     if (isUserDataSuccess) {
-
       console.log('🏃🏃앱 초기화 : 사용자 데이터 로딩 완료');
     }
   }, [

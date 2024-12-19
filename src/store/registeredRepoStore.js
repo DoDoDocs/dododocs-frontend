@@ -10,6 +10,7 @@ import { devtools } from 'zustand/middleware';
 const initialState = {
   repositoryToRemove: null, // 삭제할 레포지토리
   activeRepositoryId: null, // 현재 활성화된(선택된) 레포지토리
+  activeRepositoryName: null,
   registeredRepoList: [
     {
       registeredRepoId: 0,

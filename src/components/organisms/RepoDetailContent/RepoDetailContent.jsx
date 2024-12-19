@@ -318,7 +318,7 @@ const App = ({ onClose }) => {
               <MenuCircle type={'yellow'}></MenuCircle>
               <MenuCircle type={'green'} onClick={toggleFullscreen}></MenuCircle>
               <AppRepoTitle>
-                dfsdf
+                {AppRepo?.repositoryName || ''}
               </AppRepoTitle>
 
             </MenuCircleWrapper>

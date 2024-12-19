@@ -49,7 +49,7 @@ export const useRepoManagement = () => {
     if (!pollingStartTime) return false;
     const timeElapsed = Date.now() - pollingStartTime;
     // return timeElapsed >= 5 * 60 * 1000; // 5분
-    return timeElapsed >= 1 * 30 * 1000; // 5분
+    return timeElapsed >= 1 * 60 * 1000; // 5분
   }, [pollingStartTime]);
 
   const {
@@ -197,6 +197,7 @@ export const useRepoManagement = () => {
         type: 'active',
         exact: true,
       });
+      modalHandlers.addRepo.close();
 
       // 폴링 상태 초기화 및 시작
       setPollingStartTime(Date.now());
@@ -205,7 +206,6 @@ export const useRepoManagement = () => {
       console.log('✅ Repository added and list refreshed successfully:', newRepo);
 
       setExtendedLoading(false);
-      modalHandlers.addRepo.close();
       // 모든 데이터 작업이 완료된 후 모달 닫기
     } catch (error) {
       console.error('Failed to refresh repository list:', error);

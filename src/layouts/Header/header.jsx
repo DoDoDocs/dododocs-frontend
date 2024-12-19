@@ -72,15 +72,7 @@ const HomeHeader = ({ role }) => {
     logout();
     navigate('/');
   }
-
-
   //!SECTION
-
-
-
-
-
-
 
   //SECTION - return JSX
   return (

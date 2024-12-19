@@ -1,0 +1,804 @@
+diff --git a/public/index.html b/public/index.html
+index 08863ec..6923a20 100644
+--- a/public/index.html
++++ b/public/index.html
+@@ -31,7 +31,7 @@
+     <!-- styles reset-->
+     <link rel="stylesheet" href="reset.css" />
+ 
+-    <title>React App</title>
++    <title>Dododocs</title>
+   </head>
+   <body>
+     <noscript>You need to enable JavaScript to run this app.</noscript>
+diff --git a/src/assets/images/iman_3452.PNG b/src/assets/images/iman_3452.PNG
+deleted file mode 100644
+index e31ec6e..0000000
+Binary files a/src/assets/images/iman_3452.PNG and /dev/null differ
+diff --git a/src/assets/svg/addCart.svg b/src/assets/svg/addCart.svg
+deleted file mode 100644
+index ea15f9e..0000000
+--- a/src/assets/svg/addCart.svg
++++ /dev/null
+@@ -1,10 +0,0 @@
+-
+-
+-<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-shopping-cart-plus" width="current" height="current" color="rgb(13,112,0)" viewBox="0 0 24 24" stroke-width="1.3" stroke="currentColor" fill="current" stroke-linecap="round" stroke-linejoin="round">
+-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+-   <circle cx="6" cy="19" r="2"></circle>
+-   <circle cx="17" cy="19" r="2"></circle>
+-   <path d="M17 17h-11v-14h-2"></path>
+-   <path d="M6 5l6.005 .429m7.138 6.573l-.143 .998h-13"></path>
+-   <path d="M15 6h6m-3 -3v6"></path>
+-</svg>
+\ No newline at end of file
+diff --git a/src/assets/svg/cartIcon.svg b/src/assets/svg/cartIcon.svg
+deleted file mode 100644
+index ff8f60c..0000000
+--- a/src/assets/svg/cartIcon.svg
++++ /dev/null
+@@ -1,7 +0,0 @@
+-<svg xmlns="http://www.w3.org/2000/svg" color="#545454" class="icon icon-tabler icon-tabler-shopping-cart" width="2.8rem" height="2.8rem" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+-   <circle cx="6" cy="19" r="2"></circle>
+-   <circle cx="17" cy="19" r="2"></circle>
+-   <path d="M17 17h-11v-14h-2"></path>
+-   <path d="M6 5l14 1l-1 7h-13"></path>
+-</svg>
+\ No newline at end of file
+diff --git a/src/assets/svg/kakaoPayIcon.svg b/src/assets/svg/kakaoPayIcon.svg
+deleted file mode 100644
+index be428c7..0000000
+--- a/src/assets/svg/kakaoPayIcon.svg
++++ /dev/null
+@@ -1,5 +0,0 @@
+-<svg width="50" height="20" xmlns="http://www.w3.org/2000/svg">
+-    <g fill="#000" fillRule="evenodd">
+-        <path d="M7.515 2.8C3.365 2.8 0 5.445 0 8.707c0 1.938 1.187 3.657 3.021 4.734-.191.768-.684 2.742-.75 2.957-.083.266-.103 1.046.702.512.634-.42 2.479-1.7 3.57-2.348.318.033.642.051.972.051 4.15 0 7.515-2.644 7.515-5.906 0-3.262-3.365-5.907-7.515-5.907M21.048 4.113c1.517-1.313 3.468-1.508 4.893-.585 1.707 1.106 2.168 2.754 2.168 4.892 0 2.4-1.115 3.968-1.642 4.46-.526.493-1.673 1.292-2.88 1.292H21.42v3.784h-2.911V3.282h2.106s.26.548.433.83zm1.951 1.153c-.697 0-1.153.177-1.533.477v6.306h1.138c.558 0 2.547-.507 2.547-3.383 0-.677-.09-1.385-.278-1.9-.357-.977-1.247-1.5-1.874-1.5zM33.817 3.046c2.085 0 2.942.718 3.448 1.354.481.604.862 1.497.862 2.8v6.68h-2.26v-.954s-.442.42-1.379.831c-.98.43-2.653.877-4.041-.184-1.397-1.068-1.2-3.471-.852-4.154.48-.938 1.363-1.968 3.716-1.968h2.029v-.908c0-.554-.583-1.107-1.73-1.107-1.28 0-1.833.192-2.817.635l-.996-1.943s1.496-1.082 4.02-1.082zm1.477 6.25h-1.415c-.599 0-1.961.216-1.961 1.477 0 1.283 1.09 1.26 1.448 1.23 1.089-.091 1.938-.794 1.938-.794l-.01-1.913zM47.061 3.046l-2.291 8.111-2.54-8.11-2.849.82s3.5 9.383 3.624 9.783c.123.4-.005.858-.28 1.322-.371.63-1.826 2.03-1.826 2.03l1.878 1.663s.857-.688 1.745-1.755c.743-.892 1.636-2.83 1.938-3.577.859-2.119 3.42-9.466 3.42-9.466l-2.819-.82z"/>
+-    </g>
+-</svg>
+diff --git a/src/assets/svg/searchIcon.svg b/src/assets/svg/searchIcon.svg
+deleted file mode 100644
+index 3af066b..0000000
+--- a/src/assets/svg/searchIcon.svg
++++ /dev/null
+@@ -1,6 +0,0 @@
+-<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" 
+-width="24" height="24" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+-   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+-   <circle cx="10" cy="10" r="7"></circle>
+-   <line x1="21" y1="21" x2="15" y2="15"></line>
+-</svg>
+\ No newline at end of file
+diff --git a/src/assets/svg/truck.svg b/src/assets/svg/truck.svg
+deleted file mode 100644
+index 908aa51..0000000
+--- a/src/assets/svg/truck.svg
++++ /dev/null
+@@ -1,6 +0,0 @@
+-<svg xmlns="http://www.w3.org/2000/svg" width="5rem" height="5rem" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+-    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+-    <path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+-    <path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+-    <path d="M5 17h-2v-11a1 1 0 0 1 1 -1h9v12m-4 0h6m4 0h2v-6h-8m0 -5h5l3 5"></path>
+-</svg>
+\ No newline at end of file
+diff --git a/src/components/core/AppInitalizer.jsx b/src/components/core/AppInitalizer.jsx
+index 05aab63..6bf2159 100644
+--- a/src/components/core/AppInitalizer.jsx
++++ b/src/components/core/AppInitalizer.jsx
+@@ -44,15 +44,12 @@ const AppInitializer = ({ children }) => {
+     if (userDataError) {
+       console.log(`🏃🏃앱 초기화 : ❌ ${userDataError}`);
+       clearAuth();
+-
+     }
+     if (authError) {
+       console.log(`🏃🏃앱 초기화 : ❌ ${authError}`);
+       clearAuth();
+-
+     }
+     if (isUserDataSuccess) {
+-
+       console.log('🏃🏃앱 초기화 : 사용자 데이터 로딩 완료');
+     }
+   }, [
+diff --git a/src/components/organisms/RepoDetailContent/RepoDetailContent.jsx b/src/components/organisms/RepoDetailContent/RepoDetailContent.jsx
+index 94fc9d6..fd055e0 100644
+--- a/src/components/organisms/RepoDetailContent/RepoDetailContent.jsx
++++ b/src/components/organisms/RepoDetailContent/RepoDetailContent.jsx
+@@ -318,7 +318,7 @@ const App = ({ onClose }) => {
+               <MenuCircle type={'yellow'}></MenuCircle>
+               <MenuCircle type={'green'} onClick={toggleFullscreen}></MenuCircle>
+               <AppRepoTitle>
+-                dfsdf
++                {AppRepo?.repositoryName || ''}
+               </AppRepoTitle>
+ 
+             </MenuCircleWrapper>
+diff --git a/src/hooks/useRepoManagement.js b/src/hooks/useRepoManagement.js
+index 8af98b6..f11a571 100644
+--- a/src/hooks/useRepoManagement.js
++++ b/src/hooks/useRepoManagement.js
+@@ -49,7 +49,7 @@ export const useRepoManagement = () => {
+     if (!pollingStartTime) return false;
+     const timeElapsed = Date.now() - pollingStartTime;
+     // return timeElapsed >= 5 * 60 * 1000; // 5분
+-    return timeElapsed >= 1 * 30 * 1000; // 5분
++    return timeElapsed >= 1 * 60 * 1000; // 5분
+   }, [pollingStartTime]);
+ 
+   const {
+@@ -197,6 +197,7 @@ export const useRepoManagement = () => {
+         type: 'active',
+         exact: true,
+       });
++      modalHandlers.addRepo.close();
+ 
+       // 폴링 상태 초기화 및 시작
+       setPollingStartTime(Date.now());
+@@ -205,7 +206,6 @@ export const useRepoManagement = () => {
+       console.log('✅ Repository added and list refreshed successfully:', newRepo);
+ 
+       setExtendedLoading(false);
+-      modalHandlers.addRepo.close();
+       // 모든 데이터 작업이 완료된 후 모달 닫기
+     } catch (error) {
+       console.error('Failed to refresh repository list:', error);
+diff --git a/src/layouts/Header/header.jsx b/src/layouts/Header/header.jsx
+index 6e22029..4024dab 100644
+--- a/src/layouts/Header/header.jsx
++++ b/src/layouts/Header/header.jsx
+@@ -72,16 +72,8 @@ const HomeHeader = ({ role }) => {
+     logout();
+     navigate('/');
+   }
+-
+-
+   //!SECTION
+ 
+-
+-
+-
+-
+-
+-
+   //SECTION - return JSX
+   return (
+     <>
+diff --git a/src/service/api/get/get_account_my_info.js b/src/service/api/get/get_account_my_info.js
+deleted file mode 100644
+index e1bacdd..0000000
+--- a/src/service/api/get/get_account_my_info.js
++++ /dev/null
+@@ -1,44 +0,0 @@
+-import _ from '../../../config/config.js';
+-import { notification } from 'antd';
+-
+-/**
+- * @description 내 정보 가져오기
+- * @method GET
+- */
+-
+-const get_my_info = () => {
+-  return fetch(`${_.SERVER_URL}/api/account/v1/me/info`, {
+-    method: 'GET',
+-    headers: {
+-      Authorization: 'Bearer ' + localStorage.getItem('young-dong'),
+-    },
+-  })
+-    .then((res) => {
+-      if (res.status === 500)
+-        throw Promise.resolve({ errorCode: 500, errorName: 'Server error' });
+-      if (!res.ok) throw res.json();
+-      let data = res.json();
+-      return data;
+-    })
+-    .catch(async (error) => {
+-      let err = await error.then();
+-      console.log(err);
+-      notification['error']({
+-        message: `내 정보 가져오기 ❌`,
+-        description: err.errorName || err.errorCode,
+-        duration: 2,
+-      });
+-      console.log(
+-        '내 정보 가져오기 ❌\n' +
+-          err.error.message +
+-          '\n' +
+-          err.error.status +
+-          '\n' +
+-          err.error.code,
+-      );
+-      //에러처리
+-      throw err;
+-    });
+-};
+-
+-export default get_my_info;
+diff --git a/src/service/api/get/get_kakao_login.js b/src/service/api/get/get_kakao_login.js
+deleted file mode 100644
+index cf9290f..0000000
+--- a/src/service/api/get/get_kakao_login.js
++++ /dev/null
+@@ -1,56 +0,0 @@
+-import _ from '../../../config/config.js';
+-import { notification } from 'antd';
+-
+-/**
+- * @description 카카오 로그인
+- * @returns {Promise<Object>} 로그인 결과
+- */
+-const getKakaoLogin = async () => {
+-  try {
+-    const response = await fetch(`${_.SERVER_URL}/oauth2/authorization/kakao`, {
+-      method: 'GET',
+-    });
+-
+-    if (response.status === 500) {
+-      throw new Error('Server error');
+-    }
+-
+-    if (!response.ok) {
+-      const errorData = await response.json();
+-      throw errorData;
+-    }
+-
+-    console.log('response', response);
+-    return await response.json();
+-  } catch (error) {
+-    handleLoginError(error);
+-    throw error; // 에러를 상위로 전파
+-  }
+-};
+-
+-/**
+- * 로그인 에러 처리
+- * @param {Error|Object} error - 에러 객체
+- */
+-const handleLoginError = (error) => {
+-  const errorMessage = error.error?.message || error.message || 'Unknown error occurred';
+-  const errorStatus = error.error?.status || error.status || 'Unknown status';
+-
+-  notification.error({
+-    message: '카카오 로그인 실패 ❌',
+-    description: errorMessage,
+-    duration: 2,
+-  });
+-
+-  console.error('카카오 로그인 실패 ❌', {
+-    message: errorMessage,
+-    status: errorStatus,
+-    code: error.error?.code,
+-  });
+-
+-  if (errorStatus === 401) {
+-    window.location.replace(_.HOST_URL + '/');
+-  }
+-};
+-
+-export default getKakaoLogin;
+diff --git a/src/service/api/get/get_logout.js b/src/service/api/get/get_logout.js
+deleted file mode 100644
+index e69de29..0000000
+diff --git a/src/service/api/get/get_order_admin_all_orders.js b/src/service/api/get/get_order_admin_all_orders.js
+deleted file mode 100644
+index d3af53c..0000000
+--- a/src/service/api/get/get_order_admin_all_orders.js
++++ /dev/null
+@@ -1,51 +0,0 @@
+-import _ from '../../../config/config.js';
+-import { notification } from 'antd';
+-
+-/**
+- * @description 관리자 전체 주문내역 가져오기
+- * @method GET
+- * @request @headers youngdong token
+- * @param {number} pageNumber
+- * 😀
+- */
+-const get_order_admin_all_orders = (pageNumber = 0) => {
+-  return fetch(`${_.SERVER_URL}/api/order/v1/admin/orders/?page=${pageNumber}`, {
+-    method: 'GET',
+-    headers: {
+-      Authorization: 'Bearer ' + localStorage.getItem('young-dong'),
+-      'Content-type': 'application/json',
+-    },
+-  })
+-    .then((res) => {
+-      if (res.status === 500)
+-        throw Promise.resolve({ errorCode: 500, errorName: 'Server error' });
+-      if (!res.ok) throw res.json();
+-      let data = res.json();
+-
+-      return data;
+-    })
+-    .catch(async (error) => {
+-      let err = await error.then();
+-      console.log(err);
+-      notification['error']({
+-        message: `관리자 전체 주문내역 가져오기 실패 ❌`,
+-        description: err.error.message || err.error.status,
+-        duration: 2,
+-      });
+-      console.log(
+-        '관리자 전체 주문내역 가져오기 실패 ❌\n' +
+-          err.error.message +
+-          '\n' +
+-          err.error.status +
+-          '\n' +
+-          err.error.code,
+-      );
+-      if (err.error.status === 401) {
+-        return window.location.replace(_.HOST_URL + '/' + _.BASE_URL);
+-      }
+-      //에러처리
+-      throw err;
+-    });
+-};
+-
+-export default get_order_admin_all_orders;
+diff --git a/src/service/api/get/get_product_all_goods.js b/src/service/api/get/get_product_all_goods.js
+deleted file mode 100644
+index c2c296a..0000000
+--- a/src/service/api/get/get_product_all_goods.js
++++ /dev/null
+@@ -1,35 +0,0 @@
+-import _ from '../../../config/config.js';
+-import { notification } from 'antd';
+-
+-/**
+- * @description 전체 goods 가져오기
+- * @method GET
+- * @param {number} pageNumber
+- *  😀
+- */
+-const get_product_all_goods = async (pageNumber = 0) => {
+-  try {
+-    const res = await fetch(
+-      `${_.SERVER_URL}/api/product/v1/products/?page=${pageNumber}`,
+-      {
+-        method: 'GET',
+-      },
+-    );
+-    if (!res.ok) throw res.json();
+-
+-    return res.json();
+-  } catch (error) {
+-    let err = await error.then();
+-    console.log(err);
+-    notification['error']({
+-      message: `전체 goods 가져오기 ❌`,
+-      description: err.error || err.status,
+-      duration: 2,
+-    });
+-    console.log('Error from get_product_all_goods\n' + err.error + '\n' + err.status);
+-    //에러처리
+-    throw err;
+-  }
+-};
+-
+-export default get_product_all_goods;
+diff --git a/src/service/api/get/get_product_all_questions.js b/src/service/api/get/get_product_all_questions.js
+deleted file mode 100644
+index 967141a..0000000
+--- a/src/service/api/get/get_product_all_questions.js
++++ /dev/null
+@@ -1,50 +0,0 @@
+-import _ from '../../../config/config.js';
+-import { notification } from 'antd';
+-
+-/**
+- * @description 전체 문의 가져오기
+- * @method GET
+- * @request @headers youngdong token
+- * @auth admin
+- * 😀
+- */
+-const get_product_all_questions = (pageNumber = 0) => {
+-  return fetch(`${_.SERVER_URL}/api/product/v1/products/questions/?page=${pageNumber}`, {
+-    method: 'GET',
+-    headers: {
+-      Authorization: 'Bearer ' + localStorage.getItem('young-dong'),
+-      'Content-type': 'application/json',
+-    },
+-  })
+-    .then((res) => {
+-      if (res.status === 500)
+-        throw Promise.resolve({ errorCode: 500, errorName: 'Server error' });
+-      if (!res.ok) throw res.json();
+-      let data = res.json();
+-
+-      return data;
+-    })
+-    .catch(async (error) => {
+-      let err = await error.then();
+-      console.log(err);
+-      notification['error']({
+-        message: `전체 문의 가져오기 실패 ❌`,
+-      });
+-      console.log(
+-        '전체 문의 가져오기 실패 ❌\n' +
+-          err.error.code +
+-          '\n' +
+-          err.error.message +
+-          '\n' +
+-          err.error.status +
+-          '\n',
+-      );
+-      if (err.error.status === 401) {
+-        return window.location.replace(_.HOST_URL + '/' + _.BASE_URL);
+-      }
+-      //에러처리
+-      throw err;
+-    });
+-};
+-
+-export default get_product_all_questions;
+diff --git a/src/service/api/get/get_product_category.js b/src/service/api/get/get_product_category.js
+deleted file mode 100644
+index 71cf5f9..0000000
+--- a/src/service/api/get/get_product_category.js
++++ /dev/null
+@@ -1,56 +0,0 @@
+-import { SERVER_URL } from '../config'; // 서버 URL을 별도의 설정 파일에서 관리
+-import { notification } from 'antd';
+-
+-const fetchCategoryProducts = async ({ category, subCategory }) => {
+-  const endpoint = new URL(`${SERVER_URL}/api/product/v1/products/category/`);
+-
+-  endpoint.searchParams.append('keyword', category);
+-  if (subCategory) {
+-    endpoint.searchParams.append('sub', subCategory);
+-  }
+-
+-  const token = localStorage.getItem('young-dong');
+-
+-  try {
+-    const response = await fetch(endpoint, {
+-      method: 'GET',
+-      headers: {
+-        Authorization: `Bearer ${token}`,
+-        'Content-Type': 'application/json',
+-      },
+-    });
+-
+-    if (!response.ok) {
+-      throw new Error(`HTTP error! status: ${response.status}`);
+-    }
+-
+-    const data = await response.json();
+-    return data;
+-  } catch (error) {
+-    let err = await error.then();
+-    console.log(err);
+-    notification['error']({
+-      message: `카테고리 상품 불러오기 실패 ❌`,
+-      description: err.error.message || err.error.status,
+-      duration: 2,
+-    });
+-    console.log(
+-      '카테고리 상품 불러오기 실패 ❌\n' +
+-        err.error.message +
+-        '\n' +
+-        err.error.status +
+-        '\n' +
+-        err.error.code,
+-    );
+-    throw err;
+-  }
+-};
+-
+-/**
+- * @description 카테고리 상품 불러오기
+- * @param {Object} params
+- * @param {string} params.category - SNACK, WINE, DAIRY, MEAT 중 하나
+- * @param {string} [params.subCategory] - CHOCOJELLY, REDWINE, WHITEWINE, MILK, ICECREAM, BEEF, PORK 중 하나 (선택적)
+- * @returns {Promise<Object>} 카테고리 상품 데이터
+- */
+-export const getCategoryProducts = (params) => fetchCategoryProducts(params);
+diff --git a/src/service/api/patch/patch_edit_grade.js b/src/service/api/patch/patch_edit_grade.js
+deleted file mode 100644
+index 067602e..0000000
+--- a/src/service/api/patch/patch_edit_grade.js
++++ /dev/null
+@@ -1,49 +0,0 @@
+-import _ from '../../../config/config.js';
+-import { notification } from 'antd';
+-
+-/**
+- * @description 시그니처 수정
+- * @method PATCH
+- * @request @headers youngdong token
+- * @param {string} grade
+- * @param {Number} productId
+- */
+-const PatchEditGrade = (grade, productId) => {
+-  return fetch(`${_.SERVER_URL}/api/product/v1/product/grade`, {
+-    method: 'PATCH',
+-    headers: {
+-      Authorization: 'Bearer ' + localStorage.getItem('young-dong'),
+-      'Content-type': 'application/json',
+-    },
+-    body: JSON.stringify({
+-      grade: grade,
+-      productId: productId,
+-    }),
+-  })
+-    .then((res) => {
+-      if (res.status === 500)
+-        throw Promise.resolve({ errorCode: 500, errorName: 'Server error' });
+-      if (!res.ok) throw res.json();
+-      let data = res.json();
+-      return data;
+-    })
+-    .catch(async (error) => {
+-      notification['error']({
+-        message: `시그니처 수정 실패 ❌`,
+-      });
+-      let err = await error.then();
+-      console.log(err);
+-      if (err.error.status === 401) {
+-        notification['error']({
+-          message: `로그인을 다시해 주세요 ❌`,
+-          description: err.error.code,
+-        });
+-      }
+-      console.log('시그니처 수정 실패 ❌\n' + err.error.message);
+-      console.log(err.error.code);
+-      //에러처리
+-      throw err;
+-    });
+-};
+-
+-export default PatchEditGrade;
+diff --git a/src/service/api/patch/patch_order_product_delivery.js b/src/service/api/patch/patch_order_product_delivery.js
+deleted file mode 100644
+index 70a49d9..0000000
+--- a/src/service/api/patch/patch_order_product_delivery.js
++++ /dev/null
+@@ -1,57 +0,0 @@
+-import _ from '../../../config/config.js';
+-import { notification } from 'antd';
+-
+-/**
+- * @description 관리자가 해당 주문 제품에 대한 배송 정보 입력
+- * @method PATCH
+- * @request @headers youngdong token
+- * @param {FormData}
+- * @property {object} deliveryInfo
+- * @property {string} deliveryInfo.deliveryCompany
+- * @property {string} deliveryInfo.trackingNumber
+- */
+-const PatchOrderProductDelivery = (orderProductId, deliveryInfo) => {
+-  return fetch(
+-    `${_.SERVER_URL}/api/order/v1/admin/order/product/${orderProductId}/delivery`,
+-    {
+-      method: 'PATCH',
+-      headers: {
+-        Authorization: 'Bearer ' + localStorage.getItem('young-dong'),
+-        'Content-type': 'application/json',
+-      },
+-      body: JSON.stringify(deliveryInfo),
+-    },
+-  )
+-    .then((res) => {
+-      if (res.status === 500)
+-        throw Promise.resolve({ errorCode: 500, errorName: 'Server error' });
+-      if (!res.ok) throw res.json();
+-      notification['success']({
+-        message: `배송정보 입력 완료`,
+-      });
+-      let data = res.json();
+-      return data;
+-    })
+-    .catch(async (error) => {
+-      let err = await error.then();
+-      console.log(err);
+-      notification['error']({
+-        message: `배송정보 입력 실패 `,
+-      });
+-
+-      if (err.error.status === 401) {
+-        //UNAUTHORIZED
+-        notification['error']({
+-          message: `로그인을 다시해 주세요 `,
+-          description: err.error.code,
+-        });
+-        return window.location.replace(_.HOST_URL + '/' + _.BASE_URL);
+-      }
+-      console.log('배송정보 입력 실패 ❌\n' + err.error);
+-      console.log(err.error.code);
+-      //에러처리
+-      throw err;
+-    });
+-};
+-
+-export default PatchOrderProductDelivery;
+diff --git a/src/service/api/patch/patch_product_answer.js b/src/service/api/patch/patch_product_answer.js
+deleted file mode 100644
+index b5d29d6..0000000
+--- a/src/service/api/patch/patch_product_answer.js
++++ /dev/null
+@@ -1,53 +0,0 @@
+-import _ from '../../../config/config.js';
+-import { notification } from 'antd';
+-
+-/**
+- * @description 질문 답변 입력
+- * @method PATCH
+- * @request @headers youngdong token
+- * @param {FormData}
+- * @property {string} content
+- */
+-const Patch_product_answer = (questionId, AnswerContent) => {
+-  return fetch(`${_.SERVER_URL}/api/product/v1/questions/${questionId}/answers`, {
+-    method: 'PATCH',
+-    headers: {
+-      Authorization: 'Bearer ' + localStorage.getItem('young-dong'),
+-      'Content-type': 'application/json',
+-    },
+-    body: JSON.stringify({ content: AnswerContent }),
+-  })
+-    .then((res) => {
+-      if (res.status === 500)
+-        throw Promise.resolve({ errorCode: 500, errorName: 'Server error' });
+-      if (!res.ok) throw res.json();
+-      notification['success']({
+-        message: `질문 답변 입력 완료`,
+-      });
+-      let data = res.json();
+-
+-      return data;
+-    })
+-    .catch(async (error) => {
+-      let err = await error.then();
+-      console.log(err);
+-      notification['error']({
+-        message: `질문 답변 입력 실패 `,
+-      });
+-
+-      if (err.error.status === 401) {
+-        //UNAUTHORIZED
+-        notification['error']({
+-          message: `로그인을 다시해 주세요 `,
+-          description: err.error.code,
+-        });
+-        return window.location.replace(_.HOST_URL + '/' + _.BASE_URL);
+-      }
+-      console.log('질문 답변 입력 실패 ❌\n' + err.error);
+-      console.log(err.error.code);
+-      //에러처리
+-      throw err;
+-    });
+-};
+-
+-export default Patch_product_answer;
+diff --git a/src/service/api/post/post_product.js b/src/service/api/post/post_product.js
+deleted file mode 100644
+index 1428cb1..0000000
+--- a/src/service/api/post/post_product.js
++++ /dev/null
+@@ -1,40 +0,0 @@
+-import { notification } from 'antd';
+-
+-const PostProduct = () => {
+-  return fetch(`${process.env.REACT_APP_API_BASE_URL}/api/analyze/result`, {
+-    method: 'GET',
+-    headers: {
+-      Authorization: 'Bearer ' + localStorage.getItem('young-dong'),
+-    },
+-    body: JSON.stringify({
+-      repositoryName: 'Gatsby-Starter-Haon',
+-    }),
+-  })
+-    .then((res) => {
+-      if (res.status === 500)
+-        throw Promise.resolve({ errorCode: 500, errorName: 'Server error' });
+-      if (!res.ok) throw res.json();
+-
+-      let data = res.json();
+-      return data;
+-    })
+-    .catch(async (error) => {
+-      notification['error']({
+-        message: `왜  ❌`,
+-      });
+-      let err = await error.then();
+-
+-      if (err.error.status === 401) {
+-        notification['error']({
+-          message: `로그인을 다시해 주세요 ❌`,
+-          description: err.error.code,
+-        });
+-      }
+-      console.log('왜  ❌\n' + err.error);
+-      console.log(err.error.code);
+-      //에러처리
+-      throw err;
+-    });
+-};
+-
+-export default PostProduct;
+diff --git a/src/service/monkApi/get_product_search.jsx b/src/service/monkApi/get_product_search.jsx
+deleted file mode 100644
+index f295768..0000000
+--- a/src/service/monkApi/get_product_search.jsx
++++ /dev/null
+@@ -1,63 +0,0 @@
+-class Product {
+-  constructor(id, name, description, originalPrice, discount, thumbnailImg) {
+-    this.id = id;
+-    this.name = name;
+-    this.description = description;
+-    this.originalPrice = originalPrice;
+-    this.discount = discount;
+-    this.thumbnailImg = thumbnailImg;
+-    this.sellingPrice = this.calculateSellingPrice();
+-  }
+-
+-  calculateSellingPrice() {
+-    return Math.floor(this.originalPrice * (100 - this.discount) / 100);
+-  }
+-}
+-
+-const monkData = [new Product(
+-  14,
+-  "킷캣 미니 오리지널 초코 웨이퍼 405g",
+-  "넉넉히 즐기는 달콤한 간식",
+-  13980,
+-  12,
+-  "https://raw.githubusercontent.com/Kakaotech-18-Ecommerce/Kakaotech-18-AI/develop/data_image/image_14_1.JPG"
+-), new Product(
+-  20,
+-  "김보람 생 초콜릿 추천 4종",
+-  "사르르 녹는 달콤한",
+-  11000,
+-  12,
+-  "https://raw.githubusercontent.com/Kakaotech-18-Ecommerce/Kakaotech-18-AI/develop/data_image/image_20_1.JPG"
+-), new Product(
+-  18,
+-  "킨더 초콜릿바 미니 20개입",
+-  "한입 크기로 완성한 달콤한",
+-  4780,
+-  35,
+-  "https://raw.githubusercontent.com/Kakaotech-18-Ecommerce/Kakaotech-18-AI/develop/data_image/image_18_1.JPG"
+-), new Product(
+-  11,
+-  "쁘티첼 과일젤리 오거젤리 큰컵 6종 골라담기",
+-  "사르르 녹는 달콤한",
+-  2000,
+-  20,
+-  "https://raw.githubusercontent.com/Kakaotech-18-Ecommerce/Kakaotech-18-AI/develop/data_image/image_11_1.JPG"
+-), new Product(
+-  17,
+-  "부샤드 밸지안 초콜릿 3종",
+-  "오득오득 식감의 진한 초콜릿",
+-  6480,
+-  0,
+-  "https://raw.githubusercontent.com/Kakaotech-18-Ecommerce/Kakaotech-18-AI/develop/data_image/image_17_1.JPG"
+-), new Product(
+-  15,
+-  "닥터유 프로미니 단백갑 280g 2종",
+-  "달콤하게 즐기는 단백질 간식",
+-  7780,
+-  0,
+-  "https://raw.githubusercontent.com/Kakaotech-18-Ecommerce/Kakaotech-18-AI/develop/data_image/image_15_1.JPG"
+-)
+-
+-];
+-
+-export default monkData;
+\ No newline at end of file
+diff --git a/src/store/registeredRepoStore.js b/src/store/registeredRepoStore.js
+index a7b63a1..b405c9c 100644
+--- a/src/store/registeredRepoStore.js
++++ b/src/store/registeredRepoStore.js
+@@ -10,6 +10,7 @@ import { devtools } from 'zustand/middleware';
+ const initialState = {
+   repositoryToRemove: null, // 삭제할 레포지토리
+   activeRepositoryId: null, // 현재 활성화된(선택된) 레포지토리
++  activeRepositoryName: null,
+   registeredRepoList: [
+     {
+       registeredRepoId: 0,
