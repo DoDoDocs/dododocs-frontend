@@ -8,6 +8,7 @@ import {
 
 
 const FlexSplitter = ({
+  splitterWidth = '100%',
   initialLeftWidth = 250,
   minWidth = 150,
   maxWidth = 800,
@@ -53,7 +54,7 @@ const FlexSplitter = ({
   }, [isDragging, handleMouseMove, handleMouseUp]);
 
   return (
-    <Container>
+    <Container splitterWidth={splitterWidth}>
       {
         position === 'left' ?
           <>

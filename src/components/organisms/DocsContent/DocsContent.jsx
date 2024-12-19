@@ -79,7 +79,7 @@ const DocsContent = () => {
     <>
       <ContentStyle>
         <div style={{ height: '98%', width: '98% ', paddingTop: '1.5dvh', display: 'flex', justifyContent: "space-between", gap: '1rem' }}>
-          <FlexSplitter>
+          <FlexSplitter >
             <LeftPanelContent>
               <RightTitle>왼쪽 패널</RightTitle>
               <RightContentWrapper>
@@ -111,6 +111,7 @@ const DocsContent = () => {
             </RightPanelContent>
           </FlexSplitter>
 
+          {/* 오른쪽 splitter */}
           <FlexSplitter position={'right'}>
             <LeftPanelContent>
               <RightTitle>왼쪽 패널</RightTitle>

@@ -16,11 +16,24 @@ import {
   MainFeatureSectionWrapper, MainFeatureSection, FeatureContentText, FeatureContentImage
 } from "./HomeContent.styles.js"
 
+import useAuthStore from '../../../store/authStore.js';
+
+
 const DocsContent = () => {
   const navigate = useNavigate();
 
+  //Zustand store에서 현재 사용자 정보를 가져옵니다.
+  const {
+    isAuthenticated
+  } = useAuthStore();
+
   const handleStartClick = () => {
-    console.log("dkjdkd")
+    console.log("handleStartClick")
+    // 로그인시 메인페이지로 이동
+    // 로그인 안했으면 로그인 페이지로 이동
+    if (isAuthenticated) {
+      return navigate('/repositories')
+    }
     return navigate('/login')
   }
 
@@ -46,7 +59,7 @@ const DocsContent = () => {
 
                 </Col>
                 <Col span={12} justify={'center'} style={{ marginTop: "4rem" }}>
-                  <Button btnType={"gradient"} size={'large'} style={{ width: "30%", padding: "20px 0", zIndex: "1000" }}
+                  <Button btnType={"gradient"} size={'large'} style={{ width: "30%", padding: "20px 0" }}
                     onClick={handleStartClick}
                   >
                     Dododocs 시작하기
@@ -67,8 +80,8 @@ const DocsContent = () => {
             {/* !SECTION - main Image section */}
 
             <BgShape>
-              <Image src={bgShapeFour} width={'640px'} height={'949px'} style={{ position: 'absolute', top: '5dvh', left: '0', loading: 'lazy', filter: 'brightness(0.4) opacity(90%)' }} />
-              <Image src={bgShapeFive} width={'626px'} height={'1004px'} style={{ position: 'absolute', top: '5dvh', right: '0', loading: 'lazy', filter: 'brightness(0.7)' }} />
+              <Image src={bgShapeFour} width={'640px'} height={'949px'} style={{ position: 'absolute', top: '5dvh', left: '0', loading: 'lazy', filter: 'brightness(0.4) opacity(90%)', pointerEvents: "none" }} />
+              <Image src={bgShapeFive} width={'626px'} height={'1004px'} style={{ position: 'absolute', top: '5dvh', right: '0', loading: 'lazy', filter: 'brightness(0.7)', pointerEvents: "none" }} />
 
 
             </BgShape>

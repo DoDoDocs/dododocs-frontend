@@ -10,6 +10,21 @@ export { default as TextAreaBox } from './atoms/TextAreaBox';
 export { default as RotateTypo } from './atoms/RotateTypo/RotateTypo.jsx';
 export { default as Table } from './atoms/Table';
 export { default as Pagination } from './atoms/Pagination';
+export { default as Select } from './atoms/Select';
+export { default as Splitter } from './atoms/Splitter/FlexSplitter.jsx';
+export { default as LoadingSpinner } from './atoms/LoadingSpinner/index.jsx';
+export { default as MarkdownRenderer } from './atoms/MarkdownRenderer/index.jsx';
+export { default as MarkdownEditor } from './atoms/MarkdownEditor/index.jsx';
+export { default as TypingMarkdownRenderer } from './atoms/TypingMarkdownRenderer/index.jsx';
+export { default as Checkbox } from './atoms/CheckBox';
+export {
+  Modal,
+  ModalHeader,
+  ModalTitle,
+  ModalDescription,
+  ModalContent,
+  ModalFooter,
+} from './atoms/Modal';
 //MOLECULE
 
 //ORGANiSM
@@ -19,3 +34,5 @@ export { default as LoginContent } from './organisms/LoginContent/LoginContent.j
 export { default as OAuthCallback } from './organisms/OAuthCallback/OAuthCallback.jsx';
 export { default as ChattingContent } from './organisms/ChattingContent/ChattingContent.jsx';
 export { default as RepoContent } from './organisms/RepoContent/RepoContent.jsx';
+export { default as RepoDetailContent } from './organisms/RepoDetailContent/RepoDetailContent.jsx';
+export { default as DashboardContent } from './organisms/DashboardContent/DashboardContent.jsx';

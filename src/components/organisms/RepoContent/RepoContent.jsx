@@ -1,196 +1,193 @@
-import React, { useState } from 'react';
-import { Image, Typo, Button, TextBox, Table, Pagination } from "../../index.js"
-import DododocsIcon from "../../../assets/icons/dododocs_Icon.png"
+// src/components/organisms/RepoContent/RepoContent.jsx
+import React from 'react';
+import { Image, Typo, Button, TextBox, Table, Pagination, Select, } from "../../index.js";
+import bgShapeFive from "../../../assets/images/bg-shape-five.png";
+import bgShapeFour from "../../../assets/images/bg-shape-four.png";
+import { Search, Plus } from 'lucide-react';
+import { useRepoStore, useRegisteredRepoStore, useUserStore } from '../../../store/store.js'
+import { useRepoManagement } from '../../../hooks/useRepoManagement'
+
+import BoardTest from './RepoBoard/RepoBoard.jsx';
+import Board from './Board.jsx';
+
 import {
-  ContentStyle, TitleWrapper, ContentWrapper, RepoBoxWrapper, Divider, ButtonWrapper,
+  BgShape,
+  ContentStyle,
+  TitleWrapper,
+  RepoContentWrapper,
+  RepoBoxWrapper,
+  Divider,
+  ButtonWrapper,
   SearchTextWrapper,
-  DeleteBtn,
-} from "./RepoContent.style.js"
+  SearchInput,
+  PaginationWrapper,
+} from "./RepoContent.style.js";
 
-import styled, { css } from "styled-components"
-import { Trash2 } from 'lucide-react';
+import AddRepo from './RepoContentModal/AddRepoModal.jsx';
+import DeleteRepo from './RepoContentModal/DeleteRepoModal.jsx';
 
 
+import { RepoDetailContent } from "../../index.js";;
 
+
+/**
+ * 레포지토리 목록 및 관리 컴포넌트
+ * 
+ * @component
+ * @description 레포지토리 목록을 표시하고 관리하는 메인 컴포넌트
+ * 검색, 추가, 삭제, 상세보기 등의 기능을 제공
+ */
 const RepoContent = () => {
 
-  const [searchValue, setSearchValue] = useState();
 
-  const searchOnChange = (e) => {
-    setSearchValue(e.target.value);
-  }
-
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const totalItems = 100;
-  const itemsPerPage = 10;
-
-  const data = [
-    {
-      key: '1',
-      Repository: 'spring-boot_test',
-      Status: 'Code Imported',
-      Branch: 'main',
-      Action: 'Delete'
+  // SECTION
+  // 레포지토리 관리 관련 커스텀 훅
+  const {
+    RegisteredRepositories: {
+      registeredRepositoriesList,
     },
-    {
-      key: '2',
-      Repository: 'Deploy_DiscordBot',
-      Status: 'Code Imported',
-      Branch: 'main',
-      Action: 'Delete'
+    modals: { app, addRepo, deleteRepo },
+    handlers,
+    addRepoForm,
+    deleteRepoHandlers
+  } = useRepoManagement()
 
-    },
-    {
-      key: '3',
-      Repository: 'moheng',
-      Status: 'Code Imported',
-      Branch: ['main', 'develop'],
-      Action: 'Delete'
+  // Zustand store에서 필요한 상태와 액션 가져오기
+  const {
+    searchValue,
+    selectedCard,
+    repoToDelete,
+    repos,
+    setSearchValue,
+  } = useRepoStore();
 
-    },
-  ];
+  const {
+    userNickname
+  } = useUserStore();
 
-
-  // 태그 렌더링 핸들러
-  const renderTags = (tags, colors) => {
-    if (!tags) return null;
-    if (typeof tags === 'string') {
-      return <span className="tag" style={{ color: `${colors}` }}>{tags}</span>;
-    }
-    if (Array.isArray(tags)) {
-      return tags.map((tag, index) => (
-        <span key={index} className="tag" style={{ marginRight: '0.5rem' }}>
-          {tag}
-        </span>
-      ));
-    }
-    return tags;
-  };
-
-  const renderAction = (actions) => {
-    if (actions === 'Delete') {
-      return (
-        <>
-          <DeleteBtn>
-            <Trash2 style={{ width: '0.875rem', height: '0.875rem', verticalAlign: 'middle' }} />
-            <span >Delete</span>
-          </DeleteBtn>
-        </>
-      );
-    } else if (actions === 'Import') {
-      return (
-        <div>
-          <Button
-            style={{
-              backgroundColor: '#8B5CF6',
-              color: '#FFFFFF',
-              border: '1px solid #D9D9D9',
-              borderRadius: '4px',
-
-            }} />
-        </div>
-      )
-    }
-  }
-
-  const columns = [
-    {
-      key: 'Repository',
-      title: 'Repository'
-    },
-    {
-      key: 'Branch',
-      title: 'Branch',
-      render: (value) => renderTags(value, '#8b5cf6')
-    },
-    {
-      key: 'Status',
-      title: 'Status',
-      render: (value) => renderTags(value, '#d923ff')
-
-    },
-    {
-      key: 'Action',
-      title: ' ',
-      render: (value) => renderAction(value)
-    },
-  ];
-
-
-
-  /**SECTION 체크박스상태관리 
-   * @체크박스상태관리 
-   */
-  // 단일 선택 상태 관리
-  const [selectedRow, setSelectedRow] = useState(null);
-
-  // 선택 핸들러
-  const handleSelectionChange = (key) => {
-    setSelectedRow(key);
-  };
-
-  const handleRowClick = (row) => {
-    setSelectedRow(row.key); // 행 클릭시에도 선택 처리
-    console.log('Selected row:', row);
-  };
-
-
-
+  //NOTE 
+  const {
+    activeRepository,
+    repositoryToRemove,
+  } = useRegisteredRepoStore();
 
   return (
     <>
       <ContentStyle>
-
         <RepoBoxWrapper>
+          {/*NOTE 레포지토리 추가 모달 */}
+          <AddRepo isOpen={addRepo.isOpen} onClose={addRepo.close} {...addRepoForm}>
+          </AddRepo>
+
+          <DeleteRepo
+            isOpen={deleteRepo.isOpen}
+            onClose={deleteRepoHandlers.handleCancelDelete}
+            onConfirm={deleteRepoHandlers.handleConfirmDelete}
+            repository={repositoryToRemove}
+          />
+
+          <RepoDetailContent onClose={app.close}>
+          </RepoDetailContent>
+
           <TitleWrapper>
-            <Typo color={'#ffffff'} weight={600} size={"3rem"}>User Name</Typo>
+            <Typo
+              color="#ffffff"
+              weight={600}
+              size="3rem"
+              style={{ letterSpacing: '-0.025em' }}
+            >
+              {userNickname || `User Name`}
+            </Typo>
           </TitleWrapper>
 
           <TitleWrapper>
-            <Typo color={'#ffffff'} weight={600} size={"1.3rem"}>Import from your GitHub organizations</Typo>
-            <Typo color={'##a1a1aa'} size={"1.1rem"}>Earn 1 month for free for each 3 new paid subscribers</Typo>
+            <Typo
+              color="#ffffff"
+              weight={600}
+              size="1.3rem"
+            >
+              Import from your GitHub organizations
+            </Typo>
+            <Typo
+              color="#a1a1aa"
+              size="1.1rem"
+            >
+              Boost your productivity with Dododocs! Add repositories and get started now.
+            </Typo>
           </TitleWrapper>
 
-          <ContentWrapper>
+          <RepoContentWrapper>
             <ButtonWrapper>
-              <Button btnType={'gradient'} style={{ padding: "1rem 1.6rem ", fontSize: "1.1rem", color: "#000000" }} >Add Repository</Button>
+              <Button
+                btnType="gradient"
+                style={{
+                  padding: "0.875rem 1.5rem",
+                  fontSize: "1.1rem",
+                  color: "#000000",
+                  fontWeight: 600,
+                  borderRadius: "0.5rem",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.5rem"
+                }}
+                onClick={addRepo.open}
+              >
+                <Plus size={20} />
+                Add Repository
+              </Button>
             </ButtonWrapper>
+
             <Divider />
+
             <SearchTextWrapper>
-              {/* <SearchTextBox> */}
-              <TextBox value={searchValue} onChange={searchOnChange}
-                placeholder={"Search Here..."}
-                plane={true}
-              ></TextBox>
-              {/* </SearchTextBox> */}
+              <SearchInput>
+                <TextBox
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  placeholder="Search repositories..."
+                  plane={true}
+                />
+                <Search />
+              </SearchInput>
             </SearchTextWrapper>
 
-            <Table
-              dataSource={data}
-              columns={columns}
-              onRowClick={handleRowClick}
-              selectedRow={selectedRow}
-              onSelectionChange={handleSelectionChange}
-              tagKeysArr={['tag', 'Branch', 'Status']}
+            <BoardTest
+              dataSource={registeredRepositoriesList}
+              onCardClick={handlers.handleCardClick}
+              selectedCard={activeRepository}
+              handleDeleteClick={deleteRepoHandlers.handleDeleteClick}
+              MAX_PROJECTS={3}
+              onAddClick={addRepo.open}
             />
 
-            <Pagination
-              itemsPerPage={itemsPerPage}
-              totalItems={totalItems}
-              currentPage={currentPage}
-              onPageChange={setCurrentPage}
-              showQuickJumper
-              maxPageButtons={5}
+            <Board
+              dataSource={repos}
+              onCardClick={handlers.handleCardClick}
+              selectedCard={selectedCard}
+              handleDeleteClick={deleteRepoHandlers.handleDeleteClick}
+              MAX_PROJECTS={3}
+              onAddClick={addRepo.open}
             />
-          </ContentWrapper>
 
 
-        </RepoBoxWrapper>
+
+            <PaginationWrapper>
+            </PaginationWrapper>
+          </RepoContentWrapper >
+
+
+
+        </RepoBoxWrapper >
+
       </ContentStyle >
 
+      <BgShape>
+        <Image src={bgShapeFour} width={'640px'} height={'949px'} style={{ position: 'absolute', top: '5dvh', left: '0', loading: 'lazy', filter: 'brightness(0.4) opacity(90%)', pointerEvents: "none" }} />
+        <Image src={bgShapeFive} width={'626px'} height={'1004px'} style={{ position: 'absolute', top: '5dvh', right: '0', loading: 'lazy', filter: 'brightness(0.7)', pointerEvents: "none" }} />
+      </BgShape>
     </>
-  )
-}
+  );
+};
 
 export default RepoContent;
+

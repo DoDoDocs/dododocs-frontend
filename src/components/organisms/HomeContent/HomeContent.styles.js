@@ -62,7 +62,7 @@ export const TextSectionWrapper = styled.div`
   margin-top: ${_.HEADER.TOTAL_DVH}dvh;
   position: relative;
   width: 95dvw;
-  height: 60dvh;
+  height: auto;
   display: flex;
   align-items: center;
   justify-content: center;

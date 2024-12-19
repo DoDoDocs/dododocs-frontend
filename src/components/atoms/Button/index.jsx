@@ -21,6 +21,7 @@ const SIZE_STYLES = {
 const BUTTON_VARIANTS = {
   gradient: css`
     background:${({ theme }) => theme.gradients.values.primary};
+    /* background : linear-gradient(to right, #a25cff, #d923ff); */
     border: 0 solid transparent;
     border-radius: 8px;
     color: #FFFFFF;
@@ -29,20 +30,68 @@ const BUTTON_VARIANTS = {
     letter-spacing : .5px;
 
   `,
+
   primary: css`
-  background-color: #470070;
-    border: #470070 1px solid;
+   background-color: #a25cff;
+    border: 1px solid #a25cff;
     border-radius: 3px;
     outline: 0;
+    color: #000000;
+    
+    &:hover {
+      background-color: #b573ff;
+      border-color: #b573ff;
+    }
+
+    &:active {
+      background-color: #9145ff;
+      border-color: #9145ff;
+    }
+
+  `,
+
+  secondary: css`
+    background-color: transparent;
+    border: 1px solid #3f3f46;
+    color: #fafafa;
+    
+    &:hover:not(:disabled) {
+      background-color: #27272a;
+      border-color: #52525b;
+    }
+
+    &:active:not(:disabled) {
+      background-color: #3f3f46;
+    }
+
+    &:focus-visible {
+      outline: 2px solid #71717a;
+      outline-offset: 2px;
+    }
+  `,
+
+  danger: css`
+    background-color: #991b1b;
+    border: 1px solid #991b1b;
     color: #ffffff;
+    
+    &:hover:not(:disabled) {
+      background-color: #b91c1c;
+      border-color: #b91c1c;
+    }
+
+    &:active:not(:disabled) {
+      background-color: #7f1d1d;
+      border-color: #7f1d1d;
+    }
+
+    &:disabled {
+      background-color: #581111;
+      border-color: #581111;
+      color : black;
+    }
   `,
-  text: css`
-    background-color: rgba(255, 255, 255, 0);
-    border: #0d7000 1px solid;
-    border-radius: 3px;
-    outline: 0;
-    color: #063600;
-  `,
+
   black: css`
     background-color: #020202;
     border: #020202 1px solid;
@@ -50,6 +99,7 @@ const BUTTON_VARIANTS = {
     outline: 0;
     color: #ffffff;
   `,
+
   gradientLine: css`
     position: relative;
     background: transparent;
@@ -99,6 +149,7 @@ const BUTTON_VARIANTS = {
       }
     }
   `,
+
   default: css`
     background-color: #e9e9e9;
     border: none;

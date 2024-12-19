@@ -4,7 +4,8 @@ import styled from 'styled-components';
 export const Container = styled.div`
   display: flex;
   height: 100%;
-  width: 50%;
+  width: ${(props) => props.splitterWidth};
+  /* width: 50%; */
   background-color: rgb(39 39 42);
   border-radius: 0.75rem;
   transition: background-color 0.2s ease;
