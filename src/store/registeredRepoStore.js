@@ -9,7 +9,7 @@ import { devtools } from 'zustand/middleware';
 // NOTE 레포지토리 스토어 초기 상태
 const initialState = {
   repositoryToRemove: null, // 삭제할 레포지토리
-  activeRepository: null, // 현재 활성화된(선택된) 레포지토리
+  activeRepositoryId: null, // 현재 활성화된(선택된) 레포지토리
   registeredRepoList: [
     {
       registeredRepoId: 0,
@@ -38,7 +38,7 @@ const initialState = {
  * 레포지토리 관리를 위한 Zustand 스토어.
  *
  * @store
- * @property {Object|null} activeRepository - 현재 선택된 레포지토리.
+ * @property {Number|null} activeRepositoryId - 현재 선택된 레포지토리 Id.
  * @property {Object|null} repositoryToRemove - 삭제 예정인 레포지토리.
  * @property {Array} registeredRepoList - 등록된 레포지토리 목록.
  */
@@ -81,13 +81,13 @@ const useRegisteredRepoStore = create(
 
       /** NOTE 레포지터리 선택(활성화)
        * @desc 활성화된 레포지토리를 설정합니다.
-       * @param {Object} repository - 활성화할 레포지토리.
+       * @param {Number} repository - 활성화할 레포지토리 id.
        */
-      setActiveRepository: (repository) =>
+      setActiveRepositoryId: (repositoryId) =>
         set(
           (state) => ({
             ...state,
-            activeRepository: repository,
+            activeRepository: repositoryId,
           }),
           false,
           'setActiveRepository',

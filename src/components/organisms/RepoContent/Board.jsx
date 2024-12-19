@@ -253,7 +253,7 @@ const ProjectBoard = ({
           <ProjectCard
             key={project.key}
             onClick={() => onCardClick?.(project)}
-            isSelected={selectedCard === project.key}
+            isSelected={selectedCard === project.registeredRepoId}
           >
             <CardContent>
               <HeaderSection>

@@ -13,6 +13,8 @@ import {
   StatusIconWrapper, TimeLineStatusText, EmptySlot, EmptySlotIcon, EmptySlotText, SlotCounter
 } from "./RepoBoard.styles.js"
 
+import styled from 'styled-components';
+
 
 
 const ProjectBoard = ({
@@ -59,11 +61,16 @@ const ProjectBoard = ({
 
   const emptySlots = Math.max(0, MAX_PROJECTS - transformedData.length);
   const [expandedStates, setExpandedStates] = useState(
-    transformedData.reduce((acc, item) => ({
+    transformedData?.reduce((acc, item) => ({
       ...acc,
       [item.registeredRepoId]: item.completed
-    }), {})
+    })
+      , {})
   );
+
+  const areAllProjectsCompleted = () => {
+    return transformedData.every(project => project.completed);
+  };
 
   useEffect(() => {
     console.log(expandedStates);
@@ -129,12 +136,13 @@ const ProjectBoard = ({
   return (
     <BoardWrapper>
       {transformedData.map((project, index) => (
-        <ProjectCardWrapper key={project.registeredRepoId}>
-          <ProjectCard
-            onClick={() => onCardClick?.(project)}
-          // isSelected={selectedCard === project.registeredRepoId}
-          >
-            <CloseButton onClick={(e) => handleDeleteClick(e, project)}>
+        <ProjectCardWrapper key={project.registeredRepoId}
+          onClick={() => onCardClick(project.registeredRepoId)}
+        >
+          <ProjectCard>
+            {/* // isSelected={selectedCard === project.registeredRepoId} */}
+            {/* > */}
+            <CloseButton onClick={(e) => handleDeleteClick(e, project.registeredRepoId)}>
               <X />
             </CloseButton>
             <CardContent isExpanded={expandedStates[project.registeredRepoId]}>
@@ -224,7 +232,7 @@ const ProjectBoard = ({
       {emptySlots > 0 && Array(emptySlots)
         .fill(null)
         .map((_, index) => (
-          <ProjectCardWrapper>
+          <ProjectCardWrapper empty={true} key={`empty-${index}`}>
             <EmptySlot
               key={`empty-${index}`}
               onClick={() => {

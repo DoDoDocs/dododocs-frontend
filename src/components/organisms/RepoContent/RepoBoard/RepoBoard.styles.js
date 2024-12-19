@@ -30,24 +30,6 @@ export const BoardWrapper = styled.div`
     grid-template-columns: repeat(3, 1fr);
   }
 `;
-export const ProjectCardWrapper = styled.div`
-  /* width : 100%; */
-  flex: 1;
-  overflow: hidden;
-
-  transition: all 0.2s ease;
-  @media (min-width: 768px) {
-    &:nth-child(3) {
-      grid-column: 1 / -1;
-    }
-  }
-  @media (min-width: 1024px) {
-    &:nth-child(3) {
-      grid-column: auto;
-    }
-  }
-`;
-
 export const ProjectCard = styled.div`
   flex-direction: column;
   display: flex;
@@ -60,6 +42,30 @@ export const ProjectCard = styled.div`
   position: relative;
 
   overflow: hidden;
+  cursor: pointer;
+`;
+
+export const ProjectCardWrapper = styled.div`
+  /* width : 100%; */
+  flex: 1;
+  overflow: hidden;
+  border-radius: 0.5rem;
+
+  transition: all 0.2s ease;
+  @media (min-width: 768px) {
+    &:nth-child(3) {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (min-width: 1024px) {
+    &:nth-child(3) {
+      grid-column: auto;
+    }
+  }
+  &:hover {
+    border-color: ${(props) => (props.empty ? 'null' : '#3f3f46')};
+    box-shadow: ${(props) => (props.empty ? 'null' : '0 0 0 2px #8b5cf6')};
+  }
 `;
 
 export const CloseButton = styled.div`

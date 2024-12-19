@@ -27,13 +27,12 @@ export const useRepoManagement = () => {
    */
 
   //TODO 지울거 Store Actions
-  const setSelectedCard = useRepoStore((state) => state.setSelectedCard);
+  // const setSelectedCard = useRepoStore((state) => state.setSelectedCard);
   const setRepoToDelete = useRepoStore((state) => state.setRepoToDelete);
   const deleteRepo = useRepoStore((state) => state.deleteRepo);
-  const repos = useRepoStore((state) => state.repos);
 
   //NOTE Store
-  // const { setRegisteredRepositories, setIsLoadingRepository } = useRegisteredRepoStore();
+  const { setActiveRepositoryId, repositoryToRemove } = useRegisteredRepoStore();
 
   /**
    * @axios React Query를 사용한 레포지토리 데이터 페칭
@@ -173,17 +172,36 @@ export const useRepoManagement = () => {
     handleChange,
     handleSubmit,
     resetForm,
-  } = useAddRepo((newRepo) => {
-    // 성공 시 처리
-    resetForm();
-    modalHandlers.addRepo.close();
-    // TODO: 토스트 메시지 추가
-    console.log('Repository added successfully:', newRepo);
+  } = useAddRepo(async (newRepo) => {
+    try {
+      // React Query 캐시 무효화 및 즉시 새로고침
+      await queryClient.invalidateQueries({
+        queryKey: ['registeredRepos'],
+        refetchType: 'active',
+        exact: true,
+      });
 
-    // React Query 캐시 갱신
-    queryClient.invalidateQueries({ queryKey: ['addRepositories'] });
+      // 새로운 데이터 즉시 페칭
+      await queryClient.refetchQueries({
+        queryKey: ['registeredRepos'],
+        type: 'active',
+        exact: true,
+      });
 
-    // NOTE: registeredRepoStore 레포지토리 스토어 업데이트
+      // 폴링 상태 초기화 및 시작
+      setPollingStartTime(Date.now());
+      setIsPolling(true);
+
+      console.log('✅ Repository added and list refreshed successfully:', newRepo);
+      // 폼 리셋
+      resetForm();
+
+      // 모든 데이터 작업이 완료된 후 모달 닫기
+      modalHandlers.addRepo.close();
+    } catch (error) {
+      console.error('Failed to refresh repository list:', error);
+      // TODO: 에러 토스트 메시지 표시
+    }
   });
 
   /**
@@ -192,15 +210,17 @@ export const useRepoManagement = () => {
   const modalHandlers = {
     app: {
       open: useCallback(
-        (card) => {
-          const repo = repos.find((r) => r.registeredRepoId === card.registeredRepoId);
+        (registeredRepoId) => {
+          const repo = registeredRepositoriesList.find(
+            (repo) => repo.registeredRepoId === registeredRepoId,
+          );
           if (repo) {
             setAppRepo(repo);
             setOpenAppModal();
-            navigate(`/repositories/${repo.Repository}`);
+            navigate(`/repositories/${repo.repositoryName}`);
           }
         },
-        [navigate, setOpenAppModal, setAppRepo, repos],
+        [navigate, setOpenAppModal, setAppRepo, registeredRepositoriesList],
       ),
 
       close: useCallback(() => {
@@ -228,11 +248,11 @@ export const useRepoManagement = () => {
    */
   const eventHandlers = {
     handleCardClick: useCallback(
-      (card) => {
-        setSelectedCard(card);
-        modalHandlers.app.open(card);
+      (cardId) => {
+        setActiveRepositoryId(cardId);
+        modalHandlers.app.open(cardId);
       },
-      [setSelectedCard, modalHandlers.app],
+      [setActiveRepositoryId, modalHandlers.app],
     ),
   };
 
@@ -246,21 +266,57 @@ export const useRepoManagement = () => {
       [deleteRepoModal, setRepoToDelete],
     ),
 
+    // handleConfirmDelete: useCallback(async () => {
+    //   try {
+    //     const success = deleteRepo();
+    //     if (success) {
+    //       // React Query 캐시 갱신
+    //       queryClient.invalidateQueries({ queryKey: ['repositories'] });
+    //       deleteRepoModal.closeModal();
+    //       // TODO: 성공 토스트 메시지 표시
+    //       console.log('Repository deleted successfully');
+    //     }
+    //   } catch (error) {
+    //     console.error('Failed to delete repository:', error);
+    //     // TODO: 에러 토스트 메시지 표시
+    //   }
+    // }, [deleteRepoModal, deleteRepo, queryClient]),
     handleConfirmDelete: useCallback(async () => {
+      if (!repositoryToRemove) {
+        console.error('No repository selected for deletion');
+        return;
+      }
+
       try {
-        const success = deleteRepo();
-        if (success) {
-          // React Query 캐시 갱신
-          queryClient.invalidateQueries({ queryKey: ['repositories'] });
-          deleteRepoModal.closeModal();
-          // TODO: 성공 토스트 메시지 표시
-          console.log('Repository deleted successfully');
-        }
+        // API를 통한 레포지토리 삭제
+        await registerAPI.deleteRegisteredRepo(repositoryToRemove);
+
+        // React Query 캐시 무효화 및 즉시 새로고침
+        await queryClient.invalidateQueries({
+          queryKey: ['registeredRepos'],
+          refetchType: 'active',
+          exact: true,
+        });
+
+        // 새로운 데이터 즉시 페칭
+        await queryClient.refetchQueries({
+          queryKey: ['registeredRepos'],
+          type: 'active',
+          exact: true,
+        });
+
+        console.log('✅ Repository deleted successfully');
+
+        // 상태 초기화
+        setRepoToDelete(null);
+
+        // 모든 작업이 완료된 후 모달 닫기
+        deleteRepoModal.closeModal();
       } catch (error) {
         console.error('Failed to delete repository:', error);
         // TODO: 에러 토스트 메시지 표시
       }
-    }, [deleteRepoModal, deleteRepo, queryClient]),
+    }, [deleteRepoModal, repositoryToRemove, queryClient]),
 
     handleCancelDelete: useCallback(() => {
       setRepoToDelete(null);

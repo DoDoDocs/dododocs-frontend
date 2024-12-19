@@ -13,6 +13,7 @@ const initialState = {
     {
       registeredRepoId: '0',
       Repository: 'spring-boot_test',
+      repositoryName: 'spring-boot_test',
       Status: 'Code Imported',
       Branch: 'main',
       Action: 'Delete',
@@ -20,6 +21,7 @@ const initialState = {
     {
       registeredRepoId: '1',
       Repository: 'moheng',
+      repositoryName: 'moheng',
       Status: 'Code Imported',
       Branch: 'main',
       Action: 'Delete',

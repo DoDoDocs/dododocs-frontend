@@ -68,7 +68,6 @@ const RepoContent = () => {
 
   return (
     <>
-
       <ContentStyle>
         <RepoBoxWrapper>
           {/*NOTE 레포지토리 추가 모달 */}

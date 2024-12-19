@@ -39,10 +39,11 @@ export const registerAPI = {
     }
   },
 
-  deleteRegisteredRepo: async (repo) => {
-    const repoId = repo.registeredRepoId;
+  deleteRegisteredRepo: async (repoId) => {
     try {
       console.log('🏃 레포지터리 삭제 ,,,');
+      console.log('🏃 레포지터리 삭제하는 ID', repoId);
+
       const response = await api.post(`/api/register`, {
         registeredRepoId: repoId,
       });
