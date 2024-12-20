@@ -3,8 +3,11 @@ import styled, { css, keyframes } from 'styled-components';
 import { Send, User, Bot, Sparkles, RefreshCw, EllipsisVertical } from 'lucide-react';
 import { Typo } from "../../index.js";
 import useClickAway from '../../../hooks/useClickAway.js';
+import { useChatbot } from '../../../hooks/RepoDetailContent/useChatbot.js';
 import { TypingMarkdownRenderer, MarkdownRenderer } from '../../index.js';
 import { chattingText } from "./chattingText.jsx";
+import { useRegisteredRepoStore, useAuthStore } from "../../../store/store.js"
+
 
 // Animations
 const fadeIn = keyframes`
@@ -409,20 +412,183 @@ const LoadingDots = styled.div`
 `;
 
 const ChatbotUI = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const menuRef = useRef(null);  // 메뉴 ref 생성
+  const { activeRepositoryId } = useRegisteredRepoStore();
+  const token = useAuthStore(state => state.token);
+
+  const {
+    chatHistory,
+    isLoading: isChatLoading,
+    isError,
+    error,
+    sendMessage,
+    resetChat
+  } = useChatbot(activeRepositoryId);
+
+  const [streamingResponse, setStreamingResponse] = useState('');
 
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef(null);  // 메뉴 ref 생성
+
 
   const [isTest, setIsTest] = useState(0);
-  const [completedMessages, setCompletedMessages] = useState(new Set());
 
-  const handleMessageComplete = (messageId) => {
-    setCompletedMessages(prev => new Set([...prev, messageId]));
+
+  // SSE 설정
+  useEffect(() => {
+    if (!activeRepositoryId) return;
+
+
+    const eventSource = new EventSource(
+      `${process.env.REACT_APP_API_BASE_URL}api/chatbot/stream-and-save/${activeRepositoryId}`,
+    );
+
+    eventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        setStreamingResponse(prevResponse => prevResponse + data.answer);
+      } catch (error) {
+        console.error('스트리밍 데이터 파싱 에러:', error);
+      }
+    };
+
+
+    eventSource.onerror = (error) => {
+      console.error('SSE 연결 에러:', error);
+      eventSource.close();
+    };
+
+    return () => {
+      eventSource.close();
+    };
+  }, [activeRepositoryId]);// token이 변경될 때마다 재연결
+
+
+
+  // 채팅 히스토리 동기화
+  useEffect(() => {
+    if (chatHistory) {
+      const formattedMessages = chatHistory.flatMap(chat => [
+        { id: `q-${chat.id}`, text: chat.question, isUser: true },
+        { id: `a-${chat.id}`, text: chat.text, isUser: false }
+      ]);
+      setMessages(formattedMessages);
+    }
+  }, [chatHistory]);
+
+  // 스트리밍 응답이 업데이트될 때마다 메시지 업데이트
+  useEffect(() => {
+    if (streamingResponse) {
+      console.log("스트리밍 응답이 업데이트될 때마다 메시지 업데이트", streamingResponse)
+      const lastMessage = messages[messages.length - 1];
+      if (!lastMessage || lastMessage.isUser) {
+        // 새로운 AI 응답 메시지 추가
+        setMessages(prev => [...prev, {
+          id: `stream-${Date.now()}`,
+          text: streamingResponse,
+          isUser: false
+        }]);
+      } else {
+        // 기존 AI 응답 메시지 업데이트
+        setMessages(prev => {
+          const newMessages = [...prev];
+          newMessages[newMessages.length - 1] = {
+            ...newMessages[newMessages.length - 1],
+            text: streamingResponse
+          };
+          return newMessages;
+        });
+      }
+    }
+  }, [streamingResponse]);
+
+  // 메시지 전송 핸들러
+  const handleSend = async () => {
+    if (!inputText.trim() || isChatLoading || !token || !activeRepositoryId) return;
+
+    const userMessageId = Date.now();
+    setMessages(prev => [...prev, {
+      id: `q-${userMessageId}`,
+      text: inputText,
+      isUser: true
+    }]);
+
+    // API 요청 설정
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", `Bearer ${token}`);
+
+    const requestBody = {
+      question: inputText
+    };
+
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: JSON.stringify(requestBody),
+      redirect: "follow"
+    };
+
+
+    setInputText('');
+    setStreamingResponse(''); // 스트리밍 응답 초기화
+
+    try {
+      await fetch(`${process.env.REACT_APP_API_BASE_URL}api/chatbot/stream-and-save/${activeRepositoryId}`,
+        requestOptions);
+
+
+      // const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}api/chatbot/stream-and-save`, requestOptions);
+
+      // if (!response.ok) {
+      //   throw new Error(`HTTP error! status: ${response.status}`);
+      // }
+
+      // // SSE 연결 설정
+      // const eventSource = new EventSource(
+      //   `${process.env.REACT_APP_API_BASE_URL}/api/chatbot/stream?token=${token}&repositoryId=${activeRepositoryId}`
+      // );
+
+      // eventSource.onmessage = (event) => {
+      //   try {
+      //     const data = JSON.parse(event.data);
+      //     setStreamingResponse(prevResponse => prevResponse + data.answer);
+      //   } catch (error) {
+      //     console.error('스트리밍 데이터 파싱 에러:', error);
+      //   }
+      // };
+
+      // eventSource.onerror = (error) => {
+      //   console.error('SSE 연결 에러:', error);
+      //   eventSource.close();
+      // };
+    } catch (error) {
+      setMessages(prev => [...prev, {
+        id: `error-${userMessageId}`,
+        text: "죄송합니다. 오류가 발생했습니다. 다시 시도해 주세요.",
+        isUser: false,
+        isError: true
+      }]);
+      console.error('채팅 요청 에러:', error);
+    }
+
+
+
+
+
   };
+
+  // 대화 초기화 핸들러
+  const handleReset = async () => {
+    await resetChat();
+    setMessages([]);
+    setStreamingResponse('');
+
+  };
+
+
 
   useClickAway(menuRef, () => {
     if (isMenuOpen) {
@@ -439,62 +605,7 @@ const ChatbotUI = () => {
     console.log(messages)
   }, [messages]);
 
-  const handleSend = async () => {
-    if (!inputText.trim() || isLoading) return;
 
-    // Add user message
-    setMessages(prev => [...prev, {
-      id: Date.now(),
-      text: inputText,
-      isUser: true
-    }]);
-    setInputText('');
-    setIsLoading(true);
-
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      if (isTest === 0) {
-        setMessages(prev => [...prev, {
-          id: Date.now(),
-          text: chattingText[0],
-          isUser: false
-        }]);
-        setIsTest((state) => state + 1);
-      }
-      if (isTest === 1) {
-        setMessages(prev => [...prev, {
-          id: Date.now(),
-          text: chattingText[1],
-          isUser: false
-        }]);
-        setIsTest((state) => state + 1);
-      }
-
-      if (isTest > 1) {
-        setMessages(prev => [...prev, {
-          id: Date.now(),
-          text: chattingText[2],
-          isUser: false
-        }]);
-        setIsTest((state) => state + 1);
-      }
-
-    } catch (error) {
-      setMessages(prev => [...prev, {
-        id: Date.now(),
-        text: "죄송합니다. 오류가 발생했습니다. 다시 시도해 주세요.",
-        isUser: false,
-        isError: true
-      }]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleReset = () => {
-    setMessages([]);
-  };
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -502,7 +613,6 @@ const ChatbotUI = () => {
       handleSend();
     }
   };
-  console.log(messages.length === 0)
   return (
     <ChatWrapper>
       <EllipsisMenuWrapper>
@@ -522,8 +632,11 @@ const ChatbotUI = () => {
           </EllipsisMenu>
         </EllipsisVerticalIcon>
       </EllipsisMenuWrapper>
+
+
       <ChatContainer>
         <MessageContainer>
+          {/* Welcome message */}
           <WelcomeTitle>
             <Typo fontFamily={'Roboto'} weight={100} size={'2.25rem'} cursor={"pointer"} $isGradient style={{
               display: 'flex',
@@ -566,7 +679,7 @@ const ChatbotUI = () => {
               : null
           }
 
-
+          {/* Chat messages */}
           <ChatMessages>
             {messages.map(message => (
               <MessageBubble key={message.id} isUser={message.isUser}>
@@ -591,7 +704,7 @@ const ChatbotUI = () => {
                 </Message>
               </MessageBubble>
             ))}
-            {isLoading && (
+            {isChatLoading && (
               <MessageBubble isUser={false}>
                 <Avatar isUser={false}>
                   <Bot size={18} />
@@ -616,8 +729,8 @@ const ChatbotUI = () => {
               placeholder="코드에 대해 궁금한 점을 물어보세요..."
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              onKeyPress={handleKeyPress}
-              disabled={isLoading}
+              onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
+              disabled={isChatLoading}
             />
             <ActionButton
               onClick={handleReset}
@@ -628,7 +741,7 @@ const ChatbotUI = () => {
             </ActionButton>
             <ActionButton
               onClick={handleSend}
-              disabled={!inputText.trim() || isLoading}
+              disabled={!inputText.trim() || isChatLoading}
             >
               <Send size={18} />
             </ActionButton>

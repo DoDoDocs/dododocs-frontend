@@ -1,7 +1,7 @@
 // src/api/download.js
 import api from './axios.js';
 
-export const chatBotAPI = {
+export const chatbotAPI = {
   // chatbot 대화 내역 불러오기 API
   getChatbotHistory: async (registeredRepoId) => {
     try {
