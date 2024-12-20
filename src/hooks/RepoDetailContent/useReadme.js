@@ -1,6 +1,7 @@
 // src/hooks/RepoDetailContent/useReadme.js
 import { useQuery } from '@tanstack/react-query';
 import { downloadAPI } from '../../api/index.js';
+import { readmeGuideText } from '../../constants/guides/readmeGuide.js';
 
 export const useReadme = (registeredRepoId) => {
   console.log('useReadme hook called with ID:', registeredRepoId);
@@ -10,6 +11,12 @@ export const useReadme = (registeredRepoId) => {
     queryFn: async () => {
       if (!registeredRepoId) {
         throw new Error('Repository ID is required');
+      }
+      if (registeredRepoId === 'guide') {
+        console.log('Returning readme guide');
+        return {
+          contents: readmeGuideText,
+        };
       }
       const response = await downloadAPI.postDownloadReadme(registeredRepoId);
       console.log('API Response:', response);

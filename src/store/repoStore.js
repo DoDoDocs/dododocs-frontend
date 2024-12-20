@@ -27,6 +27,15 @@ const initialState = {
       Action: 'Delete',
     },
   ],
+  testRepo: {
+    registeredRepoId: 1,
+    repositoryName: 'testREpo',
+    branchName: 'main',
+    createdAt: '2024-12-18',
+    readmeComplete: true,
+    chatbotComplete: true,
+    docsComplete: true,
+  },
 };
 
 /**

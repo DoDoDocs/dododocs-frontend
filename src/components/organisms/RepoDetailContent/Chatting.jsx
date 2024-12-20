@@ -200,7 +200,7 @@ const WelcomeMessage = styled.div`
   transform: translate(-50%, -10%); // 초기 위치를 최종 위치와 동일하게 설정
   backdrop-filter: blur(10px);
   animation: ${WelcomeFadeIn} 0.6s ease-out;
-  max-width: 90%;
+  max-width: calc(100% - 36px - 36px - 24px);
   width : 60%;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
 `;
@@ -295,8 +295,8 @@ const MessageBubble = styled.div`
 `;
 
 const Avatar = styled.div`
-  width: 36px;
-  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -436,6 +436,7 @@ const ChatbotUI = () => {
 
   useEffect(() => {
     scrollToBottom();
+    console.log(messages)
   }, [messages]);
 
   const handleSend = async () => {

@@ -6,7 +6,7 @@ import bgShapeFour from "../../../assets/images/bg-shape-four.png";
 import { Search, Plus } from 'lucide-react';
 import { useRepoStore, useRegisteredRepoStore, useUserStore } from '../../../store/store.js'
 import { useRepoManagement } from '../../../hooks/useRepoManagement'
-
+import RepositoryGuide from './RepositoryGuide.jsx';
 import BoardTest from './RepoBoard/RepoBoard.jsx';
 import Board from './Board.jsx';
 
@@ -137,19 +137,9 @@ const RepoContent = () => {
               </Button>
             </ButtonWrapper>
 
-            <Divider />
-
-            <SearchTextWrapper>
-              <SearchInput>
-                <TextBox
-                  value={searchValue}
-                  onChange={(e) => setSearchValue(e.target.value)}
-                  placeholder="Search repositories..."
-                  plane={true}
-                />
-                <Search />
-              </SearchInput>
-            </SearchTextWrapper>
+            <RepositoryGuide
+              onCardClick={handlers.handleCardClick}
+            />
 
             <BoardTest
               dataSource={registeredRepositoriesList}

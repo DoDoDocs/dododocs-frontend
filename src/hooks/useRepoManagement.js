@@ -83,8 +83,11 @@ export const useRepoManagement = () => {
         throw error;
       }
     },
-    refetchInterval: (queryInfo) => {
-      const data = queryInfo?.state?.data;
+    refetchInterval: (query) => {
+      console.log('실제 fetch 횟수:', query.state.fetchCount);
+      console.log('refetch 횟수:', query);
+
+      const data = query?.state?.data;
       if (!data) return false;
       // if (!pollingStartTime) {
       //   setPollingStartTime(Date.now());
@@ -220,6 +223,23 @@ export const useRepoManagement = () => {
     app: {
       open: useCallback(
         (registeredRepoId) => {
+          console.log(registeredRepoId, registeredRepoId);
+          if (registeredRepoId === 'guide') {
+            setAppRepo({
+              registeredRepoId: 'guide',
+              repositoryName: 'guide',
+              branchName: 'main',
+              createdAt: '2024-12-18',
+              readmeComplete: true,
+              chatbotComplete: true,
+              docsComplete: true,
+            });
+
+            setOpenAppModal();
+
+            navigate(`/repositories/${`guide`}`);
+            return;
+          }
           const repo = registeredRepositoriesList.find(
             (repo) => repo.registeredRepoId === registeredRepoId,
           );

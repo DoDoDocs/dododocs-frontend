@@ -187,36 +187,6 @@ const Document = () => {
     console.log('docsData', docsData)
   }, [docsData])
 
-  const [selectedDoc, setSelectedDoc] = useState('AuthController'); // 선택된 문서 상태 추가
-  const [content, setContent] = useState(documentText[0]); // 현재 표시될 내용
-
-  // 문서 메뉴 데이터 정의
-  // const controllerDocs = [
-  //   { id: 'AuthController', fileName: 'AuthController.md', content: documentText[0] },
-  //   { id: 'KeywordController', fileName: 'KeywordController.md', content: documentText[1] },
-  //   { id: 'LiveInformationController', fileName: 'LiveInformationController.md', content: documentText[2] },
-  //   { id: 'MemberController', fileName: 'MemberController.md', content: documentText[0] },
-  //   { id: 'MemberLiveInformationController', fileName: 'MemberLiveInformationController.md', content: documentText[0] },
-  //   { id: 'PlannerController', fileName: 'PlannerController.md', content: documentText[0] },
-  //   { id: 'RecommendController', fileName: 'RecommendController.md', content: documentText[0] },
-  //   { id: 'TripController', fileName: 'TripController.md', content: documentText[0] },
-  //   { id: 'TripScheduleController', fileName: 'TripScheduleController.md', content: documentText[0] }
-  // ];
-
-
-
-
-  // 문서 선택 핸들러
-  // const handleDocSelect = (fileName) => {
-  //   setSelectedDoc(fileName);
-  //   const selectedContent = controllerDocs.find(doc => doc.fileName === fileName)?.content;
-  //   if (selectedContent) {
-  //     setContent(selectedContent);
-  //   }
-
-  // };
-
-
   // 선택된 파일명과 내용을 관리하는 상태
   const [selectedFileName, setSelectedFileName] = useState('');
   const [currentContent, setCurrentContent] = useState('');
