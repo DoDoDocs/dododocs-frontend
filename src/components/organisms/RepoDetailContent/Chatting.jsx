@@ -436,35 +436,6 @@ const ChatbotUI = () => {
   const [isTest, setIsTest] = useState(0);
 
 
-  // SSE 설정
-  useEffect(() => {
-    if (!activeRepositoryId) return;
-
-
-    const eventSource = new EventSource(
-      `${process.env.REACT_APP_API_BASE_URL}api/chatbot/stream-and-save/${activeRepositoryId}`,
-    );
-
-    eventSource.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        setStreamingResponse(prevResponse => prevResponse + data.answer);
-      } catch (error) {
-        console.error('스트리밍 데이터 파싱 에러:', error);
-      }
-    };
-
-
-    eventSource.onerror = (error) => {
-      console.error('SSE 연결 에러:', error);
-      eventSource.close();
-    };
-
-    return () => {
-      eventSource.close();
-    };
-  }, [activeRepositoryId]);// token이 변경될 때마다 재연결
-
 
 
   // 채팅 히스토리 동기화
@@ -515,55 +486,37 @@ const ChatbotUI = () => {
       isUser: true
     }]);
 
-    // API 요청 설정
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${token}`);
-
-    const requestBody = {
-      question: inputText
-    };
-
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify(requestBody),
-      redirect: "follow"
-    };
-
-
     setInputText('');
-    setStreamingResponse(''); // 스트리밍 응답 초기화
+    setStreamingResponse('');
 
     try {
-      await fetch(`${process.env.REACT_APP_API_BASE_URL}api/chatbot/stream-and-save/${activeRepositoryId}`,
-        requestOptions);
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}api/chatbot/stream-and-save/${activeRepositoryId}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            question: inputText
+          })
+        }
+      );
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-      // const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}api/chatbot/stream-and-save`, requestOptions);
+      const result = await response.text();
+      console.log(result);
 
-      // if (!response.ok) {
-      //   throw new Error(`HTTP error! status: ${response.status}`);
-      // }
+      setMessages(prev => [...prev, {
+        id: `a-${userMessageId}`,
+        text: result,
+        isUser: false
+      }]);
 
-      // // SSE 연결 설정
-      // const eventSource = new EventSource(
-      //   `${process.env.REACT_APP_API_BASE_URL}/api/chatbot/stream?token=${token}&repositoryId=${activeRepositoryId}`
-      // );
-
-      // eventSource.onmessage = (event) => {
-      //   try {
-      //     const data = JSON.parse(event.data);
-      //     setStreamingResponse(prevResponse => prevResponse + data.answer);
-      //   } catch (error) {
-      //     console.error('스트리밍 데이터 파싱 에러:', error);
-      //   }
-      // };
-
-      // eventSource.onerror = (error) => {
-      //   console.error('SSE 연결 에러:', error);
-      //   eventSource.close();
-      // };
     } catch (error) {
       setMessages(prev => [...prev, {
         id: `error-${userMessageId}`,
@@ -573,11 +526,6 @@ const ChatbotUI = () => {
       }]);
       console.error('채팅 요청 에러:', error);
     }
-
-
-
-
-
   };
 
   // 대화 초기화 핸들러

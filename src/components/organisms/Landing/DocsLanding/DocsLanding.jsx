@@ -25,7 +25,7 @@ import {
   StepIcon,
   CTASection,
   Badge,
-} from './ReadMeLanding.styles';
+} from './DocsLanding.styles';
 
 
 
@@ -42,7 +42,7 @@ const Feature = ({ icon: Icon, title, description }) => (
 );
 
 
-const ReadmeLanding = () => {
+const DocsLanding = () => {
   return (
     <PageWrapper>
       <PageContainer>
@@ -51,25 +51,25 @@ const ReadmeLanding = () => {
             <HeroGrid>
               <div>
                 <Badge className="mb-6 bg-purple-500/20 text-purple-300 py-1 px-4">
-                  README Maker
+                  Docs Maker
                 </Badge>
                 <h1 className="text-5xl font-bold mb-6">
                   Create Beautiful{' '}
                   <GradientText>Documentation</GradientText>
                 </h1>
                 <p className="text-xl text-purple-200 mb-8">
-                  Generate comprehensive, well-structured README files for your projects
+                  Generate comprehensive, well-structured Docs files for your projects
                   with our intelligent documentation maker.
                 </p>
                 <ButtonGroup>
                   <Button primary>
-                    Try README Maker <ArrowRight size={20} />
+                    Try Docs Maker <ArrowRight size={20} />
                   </Button>
                   <Button secondary>View Examples</Button>
                 </ButtonGroup>
               </div>
               <div className="flex justify-center">
-                {/* <ReadmeDemo /> */}
+                {/* <DocsDemo /> */}
               </div>
             </HeroGrid>
           </ContentWrapper>
@@ -138,7 +138,7 @@ const ReadmeLanding = () => {
                 {
                   icon: BookOpen,
                   title: "1. Choose Template",
-                  description: "Select from our collection of professional README templates"
+                  description: "Select from our collection of professional Docs templates"
                 },
                 {
                   icon: FileEdit,
@@ -173,7 +173,7 @@ const ReadmeLanding = () => {
             </h2>
             <p className="text-purple-200 mb-8">
               Join thousands of developers who are creating better documentation
-              with Dododocs README Maker.
+              with Dododocs Docs Maker.
             </p>
             <Button primary className="mx-auto">
               Start Creating <ArrowRight size={20} />
@@ -185,7 +185,7 @@ const ReadmeLanding = () => {
 
   );
 };
-export default ReadmeLanding;
+export default DocsLanding;
 
 
 

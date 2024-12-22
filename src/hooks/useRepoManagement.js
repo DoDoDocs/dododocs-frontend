@@ -200,7 +200,6 @@ export const useRepoManagement = () => {
         type: 'active',
         exact: true,
       });
-      modalHandlers.addRepo.close();
 
       // 폴링 상태 초기화 및 시작
       setPollingStartTime(Date.now());
@@ -209,6 +208,7 @@ export const useRepoManagement = () => {
       console.log('✅ Repository added and list refreshed successfully:', newRepo);
 
       setExtendedLoading(false);
+      modalHandlers.addRepo.close();
       // 모든 데이터 작업이 완료된 후 모달 닫기
     } catch (error) {
       console.error('Failed to refresh repository list:', error);
@@ -295,21 +295,6 @@ export const useRepoManagement = () => {
       [deleteRepoModal, setRepositoryToRemove],
     ),
 
-    // handleConfirmDelete: useCallback(async () => {
-    //   try {
-    //     const success = deleteRepo();
-    //     if (success) {
-    //       // React Query 캐시 갱신
-    //       queryClient.invalidateQueries({ queryKey: ['repositories'] });
-    //       deleteRepoModal.closeModal();
-    //       // TODO: 성공 토스트 메시지 표시
-    //       console.log('Repository deleted successfully');
-    //     }
-    //   } catch (error) {
-    //     console.error('Failed to delete repository:', error);
-    //     // TODO: 에러 토스트 메시지 표시
-    //   }
-    // }, [deleteRepoModal, deleteRepo, queryClient]),
     handleConfirmDelete: useCallback(async () => {
       console.log(repositoryToRemove);
       if (!repositoryToRemove) {

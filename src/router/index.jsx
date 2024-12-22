@@ -10,6 +10,7 @@ import Login from "./LoginRouter.jsx"
 import Chatting from "./ChattingRouter.jsx";
 import OAuthCallback from "./OAuthCallbackRouter.jsx"
 import Repo from "./RepoRouter.jsx"
+import Landing from "./LandingRouter.jsx"
 
 // 모달용 컴포넌트
 import { RepoDetailContent } from "../components"
@@ -33,11 +34,18 @@ function App() {
       {/* <Suspense fallback={<div>Loading...</div>}> */}
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/landing" element={<Landing />} />
+        <Route path="/landing/:serviceTitle" element={<Landing />} />
         <Route path="/docs" element={<Docs />} />
         <Route path="/login" element={<Login />} />
         <Route path='/callback/github' element={<OAuthCallback />} />
         <Route path="/repositories" element={<Repo />} />
         <Route path="/repositories/:repoTitle" element={<Repo />} />
+        {/* <Route
+          path="/repositories/:repoTitle"
+          parentPath="/chatting"  // 모달이 닫힐 때 돌아갈 경로
+          element={<RepoDetailContent />}
+        /> */}
 
         <Route path="/chatting" element={<Chatting />} />
         <Route path="/chatting/:chattingId" element={<Chatting />} />

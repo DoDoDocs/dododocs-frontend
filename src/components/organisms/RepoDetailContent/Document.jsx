@@ -198,9 +198,9 @@ const Document = () => {
   // docsData가 변경될 때마다 문서 목록 업데이트
   useEffect(() => {
     if (!docsData) return;
-
     // Controller 문서 필터링 (Test 파일 제외)
     const controllers = docsData.regularFiles
+    console.log('controllers', controllers)
 
     // Summary 문서 설정
     const summaries = docsData.summaryFiles || [];
@@ -209,7 +209,7 @@ const Document = () => {
     setSummaryDocs(summaries);
 
     // 초기 선택된 문서 설정
-    if (controllers.length && !selectedFileName) {
+    if (controllers?.length && !selectedFileName) {
       setSelectedFileName(controllers[0].fileName);
       setCurrentContent(controllers[0].fileContents);
     }
@@ -237,7 +237,7 @@ const Document = () => {
           <Section flex={7} mb={1.5}>
             <SectionTitle>regular Docs</SectionTitle>
             <SectionContent>
-              {controllerDocs.map(doc => (
+              {controllerDocs?.map(doc => (
                 <NavItem
                   key={doc.fileName}
                   icon={Box}
@@ -269,7 +269,6 @@ const Document = () => {
         <MainContent>
           {isError ? (
             <MarkdownRenderer content={"Error fetching document: " + error.message} />
-
           ) : (
             <MarkdownRenderer content={currentContent} />
           )}

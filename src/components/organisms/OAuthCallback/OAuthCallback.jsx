@@ -26,7 +26,7 @@ const OAuthCallback = () => {
         if (success) {
           const returnUrl = localStorage.getItem('returnUrl') || '/';
           localStorage.removeItem('returnUrl');
-          navigate('/', { replace: true });
+          // navigate('/', { replace: true });
         } else {
           // navigate('/', { replace: true });
         }

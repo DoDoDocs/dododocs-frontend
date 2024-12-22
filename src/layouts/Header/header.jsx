@@ -104,9 +104,9 @@ const HomeHeader = ({ role }) => {
                   <Typo onClick={() => navigate("/")} fontFamily={'Roboto'} weight={100} size={'32px'} cursor={"pointer"} $isGradient>Dododocs</Typo>
                 </Col>
                 <Col xs={8} sm={8} md={8} lg={8} xl={8} xxl={8} span={8} justify={"space-evenly"} align={"center"}>
-                  <CategoryBox onClick={() => navigate("/docs")}>AI Code document</CategoryBox>
-                  <CategoryBox onClick={() => navigate("/chatting")} >AI chatting</CategoryBox>
-                  <CategoryBox onClick={() => navigate("/chatting")} >Read Me Editor</CategoryBox>
+                  <CategoryBox onClick={() => navigate("/landing/docs")}>AI Code document</CategoryBox>
+                  <CategoryBox onClick={() => navigate("/landing/chatting")} >AI chatting</CategoryBox>
+                  <CategoryBox onClick={() => navigate("/landing/readme")} >Read Me Editor</CategoryBox>
 
                 </Col>
               </Row>

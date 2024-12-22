@@ -36,3 +36,4 @@ export { default as ChattingContent } from './organisms/ChattingContent/Chatting
 export { default as RepoContent } from './organisms/RepoContent/RepoContent.jsx';
 export { default as RepoDetailContent } from './organisms/RepoDetailContent/RepoDetailContent.jsx';
 export { default as DashboardContent } from './organisms/DashboardContent/DashboardContent.jsx';
+export { default as LandingContent } from './organisms/Landing/LandingContent.jsx';

@@ -25,7 +25,7 @@ import {
   StepIcon,
   CTASection,
   Badge,
-} from './ReadMeLanding.styles';
+} from './ChattingLanding.styles';
 
 
 
