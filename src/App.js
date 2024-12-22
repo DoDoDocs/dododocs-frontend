@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import './App.css';
 import DododocsRouter from './router/index.jsx';
 import AppInitializer from './components/core/AppInitalizer.jsx';
+import 'prismjs/themes/prism-tomorrow.css'; // 코드 하이라이팅 테마
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {

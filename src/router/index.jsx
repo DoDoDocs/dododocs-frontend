@@ -4,9 +4,7 @@ import React, { Suspense, lazy } from 'react';
 import { Navigate, BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import Home from './HomeRouter.jsx';
-import Docs from './DocsRouter.jsx';
 import Login from "./LoginRouter.jsx"
-import Chatting from "./ChattingRouter.jsx";
 import OAuthCallback from "./OAuthCallbackRouter.jsx"
 import Repo from "./RepoRouter.jsx"
 import Landing from "./LandingRouter.jsx"
@@ -35,7 +33,6 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/landing" element={<Landing />} />
         <Route path="/landing/:serviceTitle" element={<Landing />} />
-        <Route path="/docs" element={<Docs />} />
         <Route path="/login" element={<Login />} />
         <Route path='/callback/github' element={<OAuthCallback />} />
         <Route path="/repositories" element={<Repo />} />
@@ -45,9 +42,6 @@ function App() {
           parentPath="/chatting"  // 모달이 닫힐 때 돌아갈 경로
           element={<RepoDetailContent />}
         /> */}
-
-        <Route path="/chatting" element={<Chatting />} />
-        <Route path="/chatting/:chattingId" element={<Chatting />} />
 
         {/* <Route path="/mypage" element={
           <ProtectedRoute allowedRoles={['USER', "GUEST"]}>

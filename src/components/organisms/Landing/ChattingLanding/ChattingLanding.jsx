@@ -194,7 +194,6 @@ display: inline-block;
   color: #c084fc;
   font-size: 0.875rem;
 `;
-
 const TimelineContainer = styled.div`
   position: relative;
 `;
@@ -204,7 +203,7 @@ const ConnectionLine = styled.div`
   left: 3rem;
   top: -1rem;
   bottom: -0.5rem;
-  width: 3px;
+  width: 2csmopx;
   background: linear-gradient(
     to bottom,
     rgba(147, 51, 234, 0.5),

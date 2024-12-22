@@ -29,10 +29,8 @@ export {
 
 //ORGANiSM
 export { default as HomeContent } from './organisms/HomeContent/HomeContent.jsx';
-export { default as DocsContent } from './organisms//DocsContent/DocsContent.jsx';
 export { default as LoginContent } from './organisms/LoginContent/LoginContent.jsx';
 export { default as OAuthCallback } from './organisms/OAuthCallback/OAuthCallback.jsx';
-export { default as ChattingContent } from './organisms/ChattingContent/ChattingContent.jsx';
 export { default as RepoContent } from './organisms/RepoContent/RepoContent.jsx';
 export { default as RepoDetailContent } from './organisms/RepoDetailContent/RepoDetailContent.jsx';
 export { default as LandingContent } from './organisms/Landing/LandingContent.jsx';

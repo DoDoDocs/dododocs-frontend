@@ -6,6 +6,7 @@ import {
   Book, FileEdit, Layout, Sparkles, ArrowRight,
   Download, BookOpen, FileCode, GitBranch, Flag
 } from 'lucide-react';
+
 import {
   PageWrapper,
   PageContainer,
@@ -25,8 +26,15 @@ import {
   StepIcon,
   CTASection,
   Badge,
-} from './ReadMeLanding.styles';
+  Title,
+  Description,
+  Header,
+  FeatureCard,
 
+
+} from './ReadMeLanding.styles.js'
+import { Image } from '../../../index.js';
+import mainBannerImg from "../../../../assets/images/landing-hero-min.png"
 
 
 const Feature = ({ icon: Icon, title, description }) => (
@@ -50,17 +58,16 @@ const ReadmeLanding = () => {
           <ContentWrapper>
             <HeroGrid>
               <div>
-                <Badge className="mb-6 bg-purple-500/20 text-purple-300 py-1 px-4">
+                <Badge >
                   README Maker
                 </Badge>
-                <h1 className="text-5xl font-bold mb-6">
-                  Create Beautiful{' '}
-                  <GradientText>Documentation</GradientText>
-                </h1>
-                <p className="text-xl text-purple-200 mb-8">
+                <Title>
+                  Create Beautiful <span>Readme</span>
+                </Title>
+                <Description>
                   Generate comprehensive, well-structured README files for your projects
                   with our intelligent documentation maker.
-                </p>
+                </Description>
                 <ButtonGroup>
                   <Button primary>
                     Try README Maker <ArrowRight size={20} />
@@ -69,11 +76,63 @@ const ReadmeLanding = () => {
                 </ButtonGroup>
               </div>
               <div className="flex justify-center">
-                {/* <ReadmeDemo /> */}
+                <Image src={mainBannerImg} width={'60rem'} />
               </div>
             </HeroGrid>
           </ContentWrapper>
         </HeroSection>
+
+        {/* Features */}
+        <Section feature={'true'}>
+          <Header>
+            <Badge bg='#9333ea33' color='#d1d5db'>feature</Badge>
+          </Header>
+          <h2 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '24px' }}>코드를 이해하는 데 필요한 모든 것</h2>
+          <p style={{ color: '#a1a1aa', marginBottom: '48px', fontSize: "1.25rem" }}>
+            AI 어시스턴트가 강력한 코드 분석과 자연어 이해를 결합하여
+            코드베이스를 쉽게 탐색하고 이해할 수 있도록 도와드립니다.
+          </p>
+          <FeatureWrapper>
+            <FeatureCard>
+              <FeatureIcon>
+                <Layout size={24} />
+              </FeatureIcon>
+              <FeatureContent>
+                <h3>자연스러운 대화</h3>
+                <p>코드베이스와 자연어로 대화하세요. 질문하고 설명을 받아 복잡한 로직을 쉽게 이해하세요.</p>
+              </FeatureContent>
+            </FeatureCard>
+            <FeatureCard>
+              <FeatureIcon>
+                <Sparkles size={24} />
+              </FeatureIcon>
+              <FeatureContent>
+                <h3>깊이 있는 코드 분석</h3>
+                <p>AI 기반 분석을 통해 코드 구조, 패턴 및 관계를 이해하세요.</p>
+              </FeatureContent>
+            </FeatureCard>
+            <FeatureCard>
+              <FeatureIcon>
+                <GitBranch size={24} />
+              </FeatureIcon>
+              <FeatureContent>
+                <h3>깊이 있는 코드 분석</h3>
+                <p>AI 기반 분석을 통해 코드 구조, 패턴 및 관계를 이해하세요.</p>
+              </FeatureContent>
+            </FeatureCard>
+            <FeatureCard>
+              <FeatureIcon>
+                <Flag size={24} />
+              </FeatureIcon>
+              <FeatureContent>
+                <h3>깊이 있는 코드 분석</h3>
+                <p>AI 기반 분석을 통해 코드 구조, 패턴 및 관계를 이해하세요.</p>
+              </FeatureContent>
+            </FeatureCard>
+          </FeatureWrapper>
+        </Section>
+
+
 
         <Section>
           <ContentWrapper>

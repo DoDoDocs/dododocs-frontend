@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import styled, { css, keyframes } from 'styled-components';
 import { Send, User, Bot, Sparkles, RefreshCw, EllipsisVertical } from 'lucide-react';
 import { Typo } from "../../../index.js";
 import useClickAway from '../../../../hooks/useClickAway.js';
