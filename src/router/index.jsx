@@ -3,7 +3,6 @@
 import React, { Suspense, lazy } from 'react';
 import { Navigate, BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-// import { notification } from 'antd';
 import Home from './HomeRouter.jsx';
 import Docs from './DocsRouter.jsx';
 import Login from "./LoginRouter.jsx"

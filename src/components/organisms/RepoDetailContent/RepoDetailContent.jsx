@@ -10,7 +10,7 @@ import useAppModalStore from '../../../store/appModalStore.js';
 
 import Modal from 'react-modal';
 
-import Chatting from "./Chatting.jsx"
+import Chatting from "./CattingDetailContent/Chatting.jsx"
 import Document from "./Document.jsx"
 import ReadMe from "./ReadMe.jsx"
 

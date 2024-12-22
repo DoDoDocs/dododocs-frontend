@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from "react";
 import MarkdownIt from "markdown-it";
-import markdownItMermaid from "markdown-it-mermaid";
 import styled from "styled-components";
 import mermaid from "mermaid";
 
