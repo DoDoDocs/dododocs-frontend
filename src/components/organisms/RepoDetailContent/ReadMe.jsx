@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Camera, Pencil, Video, Palette, Layout, Box, MoreVertical, GripVertical, Check, X, Plus } from 'lucide-react';
 import api from "../../../api/axios.js";
 import { Splitter } from "../../index.js"
-import { MarkdownRenderer, LoadingSpinner, MarkdownEditor } from '../../index.js';
+import { MarkdownRenderer, LoadingSpinner } from '../../index.js';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from "../../index.js"
 import { markdownText } from './markdownText.jsx';
@@ -823,12 +823,6 @@ const ReadMe = () => {
                 })
 
           }
-          <div style={{ padding: '20px' }}>
-            {/* <MarkdownEditor
-              initialValue={initialMarkdown}
-              onChange={handleChange}
-            /> */}
-          </div>
         </MainContent>
       </Splitter>
     </Container >

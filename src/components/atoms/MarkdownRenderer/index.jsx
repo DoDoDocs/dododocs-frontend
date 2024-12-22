@@ -4,22 +4,14 @@ import { MarkdownContainer } from "./MarkdownRenderer.styles";
 import MarkdownIt from "markdown-it";
 import markdownItAnchor from 'markdown-it-anchor';
 import mermaid from "mermaid";
-import hljs from 'highlight.js/lib/core';
+import Prism from 'prismjs';
 
-// highlight.js 필요한 언어만 등록
-import javascript from 'highlight.js/lib/languages/javascript';
-import python from 'highlight.js/lib/languages/python';
-import bash from 'highlight.js/lib/languages/bash';
-import java from 'highlight.js/lib/languages/java';
-import typescript from 'highlight.js/lib/languages/typescript';
-
-
-// highlight.js 필요한 언어만 등록
-hljs.registerLanguage('javascript', javascript);
-hljs.registerLanguage('python', python);
-hljs.registerLanguage('bash', bash);
-hljs.registerLanguage('java', java);
-hljs.registerLanguage('typescript', typescript);
+// 필요한 언어 import
+import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-python';
+import 'prismjs/components/prism-bash';
+import 'prismjs/components/prism-java';
+import 'prismjs/components/prism-typescript';
 
 
 // URL에 사용할 수 있는 형태로 문자열 변환
@@ -69,17 +61,15 @@ const markdownConfig = {
   breaks: true,
   indent: true,
   highlight: function (str, lang) {
-    if (lang && hljs.getLanguage(lang)) {
+    if (lang && Prism.languages[lang]) {
       try {
-        return hljs.highlight(str, {  // highlight -> hljs.highlight
-          language: lang,
-          ignoreIllegals: true
-        }).value;
+        const html = Prism.highlight(str, Prism.languages[lang], lang);
+        return `<pre class="language-${lang}"><code class="language-${lang}">${html}</code></pre>`;
       } catch (err) {
-        console.error('Highlight error:', err);
+        console.error('Prism highlight error:', err);
       }
     }
-    return '<pre><code>' + md.utils.escapeHtml(str) + '</code></pre>';
+    return `<pre class="language-text"><code class="language-text">${md.utils.escapeHtml(str)}</code></pre>`;
   }
 };
 // markdown-it 인스턴스 생성 및 플러그인 설정
@@ -114,6 +104,8 @@ const MarkdownViewer = React.memo(({ content }) => {
     try {
       mermaid.initialize(mermaidConfig);
       mermaid.contentLoaded();
+      // Prism 수동 하이라이팅 실행
+      Prism.highlightAll();
     } catch (error) {
       console.error('Mermaid initialization error:', error);
     }
