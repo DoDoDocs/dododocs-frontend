@@ -201,9 +201,10 @@ const TimelineContainer = styled.div`
 const ConnectionLine = styled.div`
   position: absolute;
   left: 3rem;
-  top: -1rem;
-  bottom: -0.5rem;
-  width: 2csmopx;
+  top: -1.5rem;
+  bottom: -0rem;
+  width: 2px;
+  border-radius: 1rem;
   background: linear-gradient(
     to bottom,
     rgba(147, 51, 234, 0.5),
@@ -301,7 +302,7 @@ const ContentCard = styled.div`
 const ContentTitle = styled.h3`
   font-size: 1.25rem;
   font-weight: 600;
-  color: white;
+  color: rgb(168, 85, 247);
   margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
@@ -335,21 +336,21 @@ const LandingPage = () => {
       icon: FileText,
       title: "Choose Template",
       description: "Select from our collection of professional README templates",
-      gradient: "rgba(147, 51, 234, 0.2), rgba(147, 51, 234, 0.1)"
+      gradient: "rgba(147, 51, 234, 0.5), rgba(147, 51, 234, 0.4)"
     },
     {
       number: "02",
       icon: Settings,
       title: "Customize Content",
       description: "Edit and customize sections with our intuitive editor",
-      gradient: "rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.1)"
+      gradient: "rgba(59, 130, 246, 0.5), rgba(59, 130, 246, 0.4)"
     },
     {
       number: "03",
       icon: Upload,
       title: "Export & Deploy",
       description: "Export to markdown and deploy to your repository",
-      gradient: "rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1)"
+      gradient: "rgba(16, 185, 129, 0.5), rgba(16, 185, 129, 0.4)"
     }
   ];
 
