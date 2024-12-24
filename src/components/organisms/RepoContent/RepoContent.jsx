@@ -7,8 +7,7 @@ import { Search, Plus } from 'lucide-react';
 import { useRepoStore, useRegisteredRepoStore, useUserStore } from '../../../store/store.js'
 import { useRepoManagement } from '../../../hooks/useRepoManagement'
 import RepositoryGuide from './RepositoryGuide.jsx';
-import BoardTest from './RepoBoard/RepoBoard.jsx';
-import Board from './Board.jsx';
+import RepoBoard from './RepoBoard/RepoBoard.jsx';
 
 import {
   BgShape,
@@ -141,7 +140,7 @@ const RepoContent = () => {
               onCardClick={handlers.handleCardClick}
             />
 
-            <BoardTest
+            <RepoBoard
               dataSource={registeredRepositoriesList}
               onCardClick={handlers.handleCardClick}
               selectedCard={activeRepository}
@@ -150,14 +149,7 @@ const RepoContent = () => {
               onAddClick={addRepo.open}
             />
 
-            <Board
-              dataSource={repos}
-              onCardClick={handlers.handleCardClick}
-              selectedCard={selectedCard}
-              handleDeleteClick={deleteRepoHandlers.handleDeleteClick}
-              MAX_PROJECTS={3}
-              onAddClick={addRepo.open}
-            />
+
 
 
 

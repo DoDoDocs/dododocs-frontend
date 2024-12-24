@@ -23,7 +23,6 @@ export const useRepoManagement = () => {
    * @desc 페이지 진입 시 레포지터리 데이터 받아오기
    * @detail store에 setRegisteredRepositories
    * @detail 각 레포별로 readmeComplete,chatbotComplete ,docsComplete를 각각 확인해서  로딩중인 레포지터리가 있는지 확인
-   * @detail 로딩중인 레포지터리가 있으면 store에 setIsLoadingRepository
    */
 
   //TODO 지울거 Store Actions

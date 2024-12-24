@@ -259,9 +259,7 @@ const ChatbotUI = () => {
                         content={message.text}
                         // onComplete={() => handleMessageComplete(message.id)}
                         onComplete={() => console.log('타이핑 완료')} // 필요한 경우에만 사용
-
                       />
-
                   }
                   {/* <MarkdownRenderer content={message.text} /> */}
                   {/* {message.text} */}

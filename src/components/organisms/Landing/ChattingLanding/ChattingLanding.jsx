@@ -334,8 +334,8 @@ const LandingPage = () => {
     {
       number: "01",
       icon: FileText,
-      title: "Choose Template",
-      description: "Select from our collection of professional README templates",
+      title: " AI Generated README",
+      description: "Get an instant, AI-generated README based on your project's codebase",
       gradient: "rgba(147, 51, 234, 0.5), rgba(147, 51, 234, 0.4)"
     },
     {
