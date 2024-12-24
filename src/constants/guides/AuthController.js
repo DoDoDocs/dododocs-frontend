@@ -1,4 +1,27 @@
 export const AuthController = `
+
+
+## 전체 구조
+\`\`\`mermaid
+graph TD
+    A[Client] --> B[Controller Layer]
+    B --> C[Service Layer]
+    C --> D[Repository Layer]
+    D --> E[Database]
+\`\`\`
+
+## 시스템 흐름
+\`\`\`mermaid
+sequenceDiagram
+    Client->>Controller: Request
+    Controller->>Service: Process
+    Service->>Repository: Data Access
+    Repository->>Database: Query
+\`\`\`
+
+
+
+
 # 시스템 아키텍처 문서
 
 ## 전체 구조
