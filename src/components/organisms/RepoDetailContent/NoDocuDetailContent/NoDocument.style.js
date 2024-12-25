@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   height: 100%;
+  width: 100%;
   background: rgba(45, 45, 58, 0.4);
   backdrop-filter: blur(10px);
   display: flex;

@@ -1,6 +1,6 @@
 // src/components/organisms/RepoDetailContent/ReadMe.jsx
 import React, { useState, useEffect, useRef } from 'react';
-import { Camera, Pencil, Video, Palette, Layout, Box, MoreVertical, GripVertical, Check, X, Plus } from 'lucide-react';
+import { Camera, Pencil, Video, Palette, Layout, Box, Loader, GripVertical, Check, X, Plus } from 'lucide-react';
 import api from "../../../../api/axios.js";
 import { Splitter } from "../../../index.js"
 import { MarkdownRenderer, LoadingSpinner } from '../../../index.js';
@@ -15,6 +15,7 @@ import {
   DragHandle, DropIndicator, ToggleButton, NavItemContainer, NavItemWrapper,
   ExcludedSectionsContainer, RestorableNavItem, IconWrapper, Badge,
   ActionBtnWrapper, MainContent,
+  ErrorContainer, ErrorLoadingCard, ErrorIconWrapper, ErrorMessage, ErrorSubMessage
 
 } from "./ReadMe.styles.js"
 
@@ -546,21 +547,19 @@ const ReadMe = () => {
           {
             isLoading ? <LoadingSpinner /> :
               isError ?
-                // <div className="text-red-500 p-4">
-                //   Error: {error.message}
-                // </div>
-                sectionsReadMe.map((section) => {
-                  const [emoji, withoutEmoji] = hasLeadingEmoji(section.name);
-                  const sectionId = `${emoji ? emoji + '-' : ''}${withoutEmoji}`
-                    .toLowerCase()
-                    .replace(/\s+/g, '-');
-                  return (
-                    <div key={sectionId} id={sectionId}>
-                      <MarkdownRenderer content={section.title} />
-                      <MarkdownRenderer content={section.content} />
-                    </div>
-                  );
-                })
+                <ErrorContainer>
+                  <ErrorLoadingCard>
+                    <ErrorIconWrapper>
+                      <Loader size={24} />
+                    </ErrorIconWrapper>
+                    <ErrorMessage>
+                      레포지토리 결과물을 생성중입니다.
+                    </ErrorMessage>
+                    <ErrorSubMessage>
+                      잠시만 기다려주세요. 레포지토리를 분석하고 문서를 생성하는데 시간이 소요됩니다.
+                    </ErrorSubMessage>
+                  </ErrorLoadingCard>
+                </ErrorContainer>
                 :
                 sectionsReadMe.filter(section => !section.excludeSection).map((section) => {
                   const [emoji, withoutEmoji] = hasLeadingEmoji(section.name);

@@ -1,9 +1,10 @@
 import React from 'react';
 import { Coffee, ArrowRight, Code, XCircle } from 'lucide-react';
-import * as S from './NoDocument.style';
+import * as S from './NoDocument.style.js';
 
 const MoDocument = () => {
   return (
+
     <S.Container>
       <S.NoticeCard>
         <S.IconWrapper>
@@ -18,22 +19,10 @@ const MoDocument = () => {
         </S.Description>
         <S.FeatureList>
           <li>
-            <Coffee size={20} />
-            <span>Spring Boot 프로젝트 분석</span>
-          </li>
-          <li>
-            <Code size={20} />
-            <span>Java 코드 자동 문서화</span>
-          </li>
-          <li>
             <XCircle size={20} />
             <span>타 프로그래밍 언어는 현재 지원되지 않습니다</span>
           </li>
         </S.FeatureList>
-        <S.Button>
-          Java 프로젝트로 시작하기
-          <ArrowRight size={18} />
-        </S.Button>
       </S.NoticeCard>
     </S.Container>
   );

@@ -1,5 +1,5 @@
 // src/components/organisms/HomeContent/HomeContent.jsx
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { Image, RotateTypo, Button, Typo } from "../../index.js"
 import { useNavigate } from 'react-router-dom';
 
@@ -8,6 +8,9 @@ import styled from 'styled-components';
 import mainBannerImg from "../../../assets/images/landing-hero-min.png";
 import bgShapeFive from "../../../assets/images/bg-shape-five.png";
 import bgShapeFour from "../../../assets/images/bg-shape-four.png";
+import chattingLanding from "../../../assets/images/chatting-landing.png";
+import docuLanding from "../../../assets/images/docu-landing.png";
+import readmeLanding from "../../../assets/images/readme-landing.png";
 import { Check } from "lucide-react"
 import {
   HomeWrapper, MainSectionWrapper, HomeLayout,
@@ -21,6 +24,13 @@ import useAuthStore from '../../../store/authStore.js';
 
 const DocsContent = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }, []);
 
   //Zustand store에서 현재 사용자 정보를 가져옵니다.
   const {
@@ -106,12 +116,14 @@ const DocsContent = () => {
                     더 이상 수동으로 문서를 작성하지 마세요.
                   </li>
                 </ul>
-                <Button btnType={"gradient"} size={'large'} style={{ fontWeight: '400', width: "50%", padding: "1.2rem 1.2rem" }}>
+                <Button btnType={"gradient"} size={'large'} style={{ fontWeight: '400', width: "50%", padding: "1.2rem 1.2rem" }}
+                  onClick={handleStartClick}
+                >
                   시작하기
                 </Button>
               </FeatureContentText>
               <FeatureContentImage>
-                <Image src={mainBannerImg} width={'60rem'} />
+                <Image src={docuLanding} width={'60rem'} height={'100%'} fit={'cover'} style={{ objectPosition: 'left' }} />
               </FeatureContentImage>
             </MainFeatureSection>
 
@@ -129,12 +141,15 @@ const DocsContent = () => {
                     질문하고 설명을 받고 복잡한 코드를 쉽게 탐색하세요.
                   </li>
                 </ul>
-                <Button btnType={"gradient"} size={'large'} style={{ fontWeight: '400', width: "50%", padding: "1.2rem 1.2rem" }}>
+                <Button btnType={"gradient"} size={'large'} style={{ fontWeight: '400', width: "50%", padding: "1.2rem 1.2rem" }}
+                  onClick={handleStartClick}
+
+                >
                   시작하기
                 </Button>
               </FeatureContentText>
               <FeatureContentImage>
-                <Image src={mainBannerImg} width={'60rem'} />
+                <Image src={chattingLanding} width={'60rem'} height={'100%'} fit={'cover'} style={{ objectPosition: 'left' }} />
               </FeatureContentImage>
 
             </MainFeatureSection>
@@ -152,12 +167,15 @@ const DocsContent = () => {
                     체계적으로 구성된 README 파일을 손쉽게 생성하세요.
                   </li>
                 </ul>
-                <Button btnType={"gradient"} size={'large'} style={{ fontWeight: '400', width: "50%", padding: "1.2rem 1.2rem" }}>
+                <Button btnType={"gradient"} size={'large'} style={{ fontWeight: '400', width: "50%", padding: "1.2rem 1.2rem" }}
+                  onClick={handleStartClick}
+
+                >
                   시작하기
                 </Button>
               </FeatureContentText>
               <FeatureContentImage>
-                <Image src={mainBannerImg} width={'60rem'} />
+                <Image src={readmeLanding} width={'60rem'} height={'100%'} fit={'cover'} style={{ objectPosition: 'left' }} />
               </FeatureContentImage>
             </MainFeatureSection>
 

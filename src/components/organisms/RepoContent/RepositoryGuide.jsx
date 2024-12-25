@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import {
   CalendarIcon, GitBranch, Plus, ChevronUp, ChevronDown,
   FileText, MessageCircle, Book,
-  Clock, Loader2, CheckCircle2Clock, CheckCircle2, HelpCircle, X
+  Clock, Loader2, MessagesSquare, CheckCircle2, HelpCircle, X
 } from 'lucide-react';
 
 import {
@@ -79,9 +79,6 @@ const StepItem = styled.div`
   transition: all 0.3s;
   cursor: pointer;
 
-  &:hover {
-    background-color: rgba(31, 41, 55, 0.3);
-  }
 `;
 
 const StepContent = styled.div`
@@ -124,7 +121,7 @@ const RepositoryGuide = ({ onCardClick }) => {
   const transformedData = {
     Action: "delete",
     Branch: 'main',
-    repositoryName: 'testRepo?.repositoryName',
+    repositoryName: 'guide',
     Status: "Code Imported",
     registeredRepoId: 'guide',
     projectsStatus: [
@@ -160,19 +157,19 @@ const RepositoryGuide = ({ onCardClick }) => {
   const guideSteps = [
     {
       title: "README 문서 작성",
-      status: "progress",
+      status: "readme",
       description: "AI가 Repository 분석 후 최적화된 README를 생성합니다",
       hint: "Repository를 선택하고 'Create README' 버튼을 클릭하세요"
     },
     {
       title: "실시간 채팅 지원",
-      status: "waiting",
+      status: "chatting",
       description: "코드에 대해 질문하고 실시간으로 답변을 받아보세요",
       hint: "채팅 탭을 선택하고 질문을 입력하세요"
     },
     {
       title: "문서 자동화",
-      status: "waiting",
+      status: "docs",
       description: "코드 문서화를 자동으로 생성하고 관리합니다",
       hint: "문서 탭에서 자동 생성된 문서를 확인하세요"
     }
@@ -180,12 +177,12 @@ const RepositoryGuide = ({ onCardClick }) => {
 
   const getStatusGuideIcon = (status) => {
     switch (status) {
-      case 'completed':
-        return <FileText className="text-emerald-400" size={18} />;
-      case 'progress':
-        return <Loader2 className="text-purple-400 animate-spin" size={18} />;
+      case 'readme':
+        return <FileText color={'rgb(167, 139, 250)'} size={18} />;
+      case 'chatting':
+        return <MessagesSquare color={'rgb(167, 139, 250)'} size={18} />;
       default:
-        return <Clock className="text-gray-400" size={18} />;
+        return <Book color={'rgb(167, 139, 250)'} size={18} />;
     }
   };
 
@@ -265,7 +262,6 @@ const RepositoryGuide = ({ onCardClick }) => {
             {guideSteps.map((step, index) => (
               <StepItem
                 key={index}
-                isActive={currentStep === index}
                 onClick={() => setCurrentStep(index)}
               >
                 <StepContent>
@@ -281,9 +277,10 @@ const RepositoryGuide = ({ onCardClick }) => {
               </StepItem>
             ))}
           </StepsList>
-          <div style={{ padding: '1rem' }}>
+          <div style={{ padding: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <ProjectCardWrapper
               onClick={() => onCardClick('guide')}
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             >
               <ProjectCard>
                 <CloseButton>

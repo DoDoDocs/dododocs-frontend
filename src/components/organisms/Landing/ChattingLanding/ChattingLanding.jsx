@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import {
   Bot, Code, Zap, ArrowRight, Github, MessagesSquare, Sparkles,
@@ -6,7 +6,7 @@ import {
 
 } from 'lucide-react';
 import { Image, Typo } from '../../../index.js';
-import mainBannerImg from "../../../../assets/images/landing-hero-min.png"
+import mainBannerImg from "../../../../assets/images/chatting-landing.png"
 import { useNavigate } from 'react-router-dom';
 
 const fadeIn = keyframes`
@@ -268,22 +268,16 @@ const MessageContent = styled.div`
 `;
 
 
-const ContentCard = styled.div`
-  background: rgba(39, 39, 42, 0.5);
-  border-radius: 1rem;
-  padding: 1.5rem;
-  border: 1px solid rgba(147, 51, 234, 0.1);
-  transition: all 0.3s;
-
-  &:hover {
-    border-color: rgba(147, 51, 234, 0.2);
-  }
-`;
 
 const LandingPage = () => {
   const navigate = useNavigate();
 
-
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }, []);
 
   return (
     <Container>
@@ -308,7 +302,7 @@ const LandingPage = () => {
             </div>
           </HeroTitle>
           <HeroImage>
-            <Image src={mainBannerImg} width={'60rem'} />
+            <Image src={mainBannerImg} width={'50rem'} height={'30rem'} fit={'cover'} style={{ objectPosition: 'left' }} />
           </HeroImage>
         </HeroGrid>
       </HeroSection>

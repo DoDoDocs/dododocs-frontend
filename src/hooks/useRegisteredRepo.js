@@ -152,7 +152,7 @@ export const useRepoManagement = () => {
       formData,
       validationErrors,
       isLoading: isAddingRepoLoading,
-      error: addRepoError,
+      addRepoError,
       handleChange,
       handleSubmit,
       resetForm,

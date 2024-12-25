@@ -7,6 +7,7 @@ import { Splitter } from "../../index.js"
 import { MarkdownRenderer, LoadingSpinner } from '../../index.js';
 import { useDocument } from '../../../hooks/RepoDetailContent/useDocument.js';
 import { useRegisteredRepoStore, useAppModalStore } from "../../../store/store.js"
+import NoDocument from "./NoDocuDetailContent/NoDocument.jsx"
 
 const Container = styled.div`
   display: flex;
@@ -206,6 +207,9 @@ const Document = () => {
 
     setControllerDocs(controllers);
     setSummaryDocs(summaries);
+    if (controllers.length === 0 && summaries.length === 0) {
+      console.log("둘다 ----0000")
+    }
 
     // 초기 선택된 문서 설정
     if (controllers?.length && !selectedFileName) {
@@ -222,6 +226,9 @@ const Document = () => {
 
   if (isLoading) return <LoadingSpinner />;
 
+  if (controllerDocs.length === 0 && summaryDocs.length === 0) {
+    return <NoDocument />;
+  }
 
 
   return (

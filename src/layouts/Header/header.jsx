@@ -14,6 +14,8 @@ import { useAuthStore, useUserStore } from "../../store/store.js"
 const HomeHeader = ({ role }) => {
   // 여러 상태 한번에 가져오기
   const { userNickname } = useUserStore()
+
+
   const {
     isAuthenticated
   } = useAuthStore();
@@ -21,36 +23,6 @@ const HomeHeader = ({ role }) => {
   const location = useLocation();
 
   const { logout } = useAuth();
-
-  //SECTION 스크롤 
-  const [scrolled, setScrolled] = useState(false);
-  const sentinelRef = useRef(null);
-
-  useEffect(() => {
-    const sentinel = sentinelRef.current;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setScrolled(!entry.isIntersecting);
-      },
-      {
-        threshold: 0,
-        rootMargin: `0px 0px 0px 0px`
-      }
-    );
-
-    if (sentinel) {
-      observer.observe(sentinel);
-    }
-
-    return () => {
-      if (sentinel) {
-        observer.unobserve(sentinel);
-      }
-    };
-  }, [location.pathname]);
-
-  console.log(scrolled)
 
 
   //!SECTION
@@ -78,8 +50,8 @@ const HomeHeader = ({ role }) => {
   return (
     <>
 
-      <div ref={sentinelRef} style={{ position: 'absolute', top: '2.5dvh', height: '1px', width: '100%' }} />
-      <SenHeader data-scrolled={scrolled} $isHome={location.pathname !== '/'}>
+      <div style={{ position: 'absolute', top: '2.5dvh', height: '1px', width: '100%' }} />
+      <SenHeader data-scrolled={true} $isHome={location.pathname !== '/'}>
 
         {/* SECTION - jsx 장바구니 | 로그인 | 회원가입 */}
         <LoginBtnBox>
@@ -95,7 +67,7 @@ const HomeHeader = ({ role }) => {
 
 
       </SenHeader>
-      <LayoutHeaderWrapper data-scrolled={scrolled} >
+      <LayoutHeaderWrapper data-scrolled={true} >
         <HeaderWrapper>
           <Row align={"center"} justify={"space-between"}>
             <Col span={7} align={"center"}>
@@ -124,10 +96,19 @@ const HomeHeader = ({ role }) => {
                     null
                 }
                 <Col md={3} span={2} justify={"flex-end"} align={"center"}>
-                  <Button onClick={() => { navigate("/repositories") }}
-                    btnType={"gradientLine"} size={'large'} $bold style={{ minWidth: '10rem', wordBreak: 'keep-all' }}
-                  >Repo 관리
-                  </Button>
+                  {
+                    isAuthenticated ?
+                      <Button onClick={() => { navigate("/repositories") }}
+                        btnType={"gradientLine"} size={'large'} $bold style={{ minWidth: '10rem', wordBreak: 'keep-all' }}
+                      >Repo 관리
+                      </Button>
+                      :
+                      <Button onClick={() => { navigate("/login") }}
+                        btnType={"gradientLine"} size={'large'} $bold style={{ minWidth: '10rem', wordBreak: 'keep-all' }}
+                      >로그인
+                      </Button>
+                  }
+
                 </Col>
               </Row>
             </Col>

@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 export const Container = styled.div`
   display: flex;
@@ -220,7 +220,9 @@ export const MainContent = styled.div`
   scroll-behavior: smooth;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
-
+  will-change: transform; // 스크롤 성능 향상
+  transform: translateZ(0); // GPU 가속
+  -webkit-overflow-scrolling: touch; // iOS 스크롤 성능 향상
   &::-webkit-scrollbar {
     width: 6px;
   }
@@ -237,4 +239,57 @@ export const MainContent = styled.div`
       background-color: rgba(255, 255, 255, 0.5);
     }
   }
+`;
+
+export const ErrorContainer = styled.div`
+  height: 100%;
+  background: rgba(45, 45, 58, 0.4);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+`;
+
+export const ErrorLoadingCard = styled.div`
+  background: rgba(39, 39, 42, 0.5);
+  border: 1px solid rgba(63, 63, 70, 0.3);
+  border-radius: 1rem;
+  padding: 2.5rem;
+  max-width: 32rem;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+`;
+
+const pulse = keyframes`
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+`;
+
+export const ErrorIconWrapper = styled.div`
+  width: 3.5rem;
+  height: 3.5rem;
+  background: rgba(147, 51, 234, 0.2);
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  color: #e9d5ff;
+  animation: ${pulse} 2s infinite;
+`;
+
+export const ErrorMessage = styled.p`
+  color: #e9d5ff;
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+`;
+
+export const ErrorSubMessage = styled.p`
+  color: #a1a1aa;
+  font-size: 1rem;
+  line-height: 1.5;
 `;

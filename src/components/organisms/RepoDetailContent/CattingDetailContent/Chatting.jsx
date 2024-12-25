@@ -167,7 +167,9 @@ const ChatbotUI = () => {
 
     } catch (error) {
       console.error('메시지 전송 에러:', error);
-      setSendError(error.message);
+      // setSendError(error.message);
+      setSendError(`잠시만 기다려주세요. 레포지토리를 분석하고 챗봇을 생성하는데 시간이 소요됩니다.`);
+
       setMessages(prev => [...prev, {
         id: `error-${userMessageId}`,
         text: "죄송합니다. 오류가 발생했습니다. 다시 시도해 주세요.",
@@ -255,6 +257,7 @@ const ChatbotUI = () => {
         {/* 에러 메시지 표시 */}
         {displayError && (
           <ErrorBanner>
+            `잠시만 기다려주세요. 레포지토리를 분석하고 챗봇을 생성하는데 시간이 소요됩니다.`
             {displayError}
           </ErrorBanner>
         )}

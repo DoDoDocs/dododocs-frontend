@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Boxes, Code, Book, ArrowRight, Github, Coffee, Sparkles,
   FileText, Settings, Upload, GitBranch,
   Flag, Layout,
 } from 'lucide-react';
 import { Image, Typo } from '../../../index.js';
-import mainBannerImg from "../../../../assets/images/landing-hero-min.png"
+import mainBannerImg from "../../../../assets/images/docu-landing.png"
 import {
   Container, HeroSection, HeroGrid, HeroTitle, HeroImage, Section, Header, Title, Description,
   PreviewCard, PreviewHeader, PreviewTitle, PreviewContent, FileHeader, FileContent,
@@ -16,7 +16,12 @@ import { useNavigate } from 'react-router-dom';
 
 const LandingReadme = () => {
   const navigate = useNavigate();
-
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }, []);
   const steps = [
     {
       number: "01",
@@ -70,7 +75,7 @@ const LandingReadme = () => {
             </div>
           </HeroTitle>
           <HeroImage>
-            <Image src={mainBannerImg} width={'60rem'} />
+            <Image src={mainBannerImg} width={'50rem'} height={'30rem'} fit={'cover'} style={{ objectPosition: 'left' }} />
           </HeroImage>
         </HeroGrid>
         <div style={{ display: 'flex', width: '100%', alignContent: 'center', justifyContent: 'center', gap: '16px' }}>

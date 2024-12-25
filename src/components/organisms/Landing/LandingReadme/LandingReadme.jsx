@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Bot, Code, Zap, ArrowRight, Github, MessagesSquare, Sparkles,
   FileText, Settings, Upload, GitBranch,
   Flag, Layout,
 } from 'lucide-react';
 import { Image, Typo } from '../../../index.js';
-import mainBannerImg from "../../../../assets/images/landing-hero-min.png"
+import mainBannerImg from "../../../../assets/images/readme-landing.png"
 import {
   Container, HeroSection, HeroGrid, HeroTitle, HeroImage, Section, Header, Title, Description,
   Button, FeatureWrapper, FeatureCard, FeatureIcon, FeatureContent, TimelineContainer, ConnectionLine, StepsList, StepItem, NumberBox, GradientBorder, NumberContent, StepLabel, StepNumber, IconBox, ContentBox, ContentCard, ContentTitle, ArrowIcon, ContentDescription, Badge
@@ -13,6 +13,12 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 const LandingReadme = () => {
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }, []);
   const navigate = useNavigate();
 
   const steps = [
@@ -65,7 +71,7 @@ const LandingReadme = () => {
             </div>
           </HeroTitle>
           <HeroImage>
-            <Image src={mainBannerImg} width={'60rem'} />
+            <Image src={mainBannerImg} width={'50rem'} height={'30rem'} fit={'cover'} style={{ objectPosition: 'left' }} />
           </HeroImage>
         </HeroGrid>
       </HeroSection>
