@@ -79,12 +79,13 @@ const ChatbotUI = () => {
     if (streamingResponse) {
       try {
         // 'data:' 부분 제거 및 JSON 파싱
-        console.log('streamingResponse', streamingResponse)
-        // const cleanedStr = streamingResponse.split('data:')[1] || streamingResponse;
-        // const parsedResponse = JSON.parse(cleanedStr);
-        const answer = streamingResponse;
+        console.log('1  😇streamingResponse', streamingResponse)
+        const cleanedStr = streamingResponse.split('data:')[1] || streamingResponse;
+        console.log(cleanedStr)
+        const parsedResponse = JSON.parse(cleanedStr);
+        const answer = parsedResponse.answer;
 
-        console.log('answer', answer)
+        console.log('🙃 answer', answer)
         // 누적된 응답 업데이트
         setAccumulatedResponse(prev => prev + answer);
 

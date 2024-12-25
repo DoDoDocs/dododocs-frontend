@@ -205,10 +205,8 @@ const WelcomeMessage = styled.div`
   border: 1px solid rgba(217, 35, 255, 0.1);
   padding: 1.5rem;
   border-radius: 1rem;
-  position: absolute;
   bottom: 0;
   left: 50%;
-  transform: translate(-50%, -10%); // 초기 위치를 최종 위치와 동일하게 설정
   backdrop-filter: blur(10px);
   max-width: calc(100% - 36px - 36px - 24px);
   width: 60%;
@@ -421,9 +419,9 @@ const LandingPage = () => {
         <Header>
           <Badge bg='#9333ea33' color='#d1d5db'>How It Works</Badge>
         </Header>
-        <h2 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '24px' }}>Create documentation in minutes</h2>
+        <h2 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '24px' }}>Interacting chatbot with AI</h2>
         <p style={{ color: '#a1a1aa', marginBottom: '48px', fontSize: "1.25rem" }}>
-          Our simple three-step process makes documentation creation effortless
+          AI 코드 어시스턴트와 대화를 시작하세요.
         </p>
         <WelcomeMessage>
           <WelcomeMessageTitle>
@@ -456,9 +454,9 @@ const LandingPage = () => {
         <Header>
           <Badge bg='#9333ea33' color='#d1d5db'>Get Started</Badge>
         </Header>
-        <h2 style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '24px' }}>Ready to transform how you understand code?</h2>
+        <h2 style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '24px' }}>Get Clear Answers to Your Code Questions!</h2>
         <p style={{ color: 'rgb(233 213 255)', marginBottom: '48px', fontSize: "1.25rem" }}>
-          Join thousands of developers who are using Dododocs to understand and document their code more effectively.
+          복잡한 코드도 AI chatbot 의 도움으로 쉽게 이해할 수 있습니다. 지금 바로 시작해보세요.
         </p>
         <div style={{ display: 'flex', gap: '16px' }}>
           <Button primary>
