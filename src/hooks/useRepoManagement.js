@@ -27,7 +27,7 @@ export const useRepoManagement = () => {
   const checkPollingTimeout = useCallback(() => {
     if (!pollingStartTime) return false;
     const timeElapsed = Date.now() - pollingStartTime;
-    return timeElapsed >= 5 * 60 * 1000; // 5분 ()
+    return timeElapsed >= 10 * 60 * 1000; // 5분 ()
   }, [pollingStartTime]);
 
   // React Query로 레포지토리 데이터 페칭

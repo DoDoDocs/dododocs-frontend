@@ -194,98 +194,80 @@ display: inline-block;
   color: #c084fc;
   font-size: 0.875rem;
 `;
-const TimelineContainer = styled.div`
-  position: relative;
-`;
 
-const ConnectionLine = styled.div`
-  position: absolute;
-  left: 3rem;
-  top: -1.5rem;
-  bottom: -0rem;
-  width: 2px;
-  border-radius: 1rem;
-  background: linear-gradient(
-    to bottom,
-    rgba(147, 51, 234, 0.5),
-    rgba(59, 130, 246, 0.5),
-    rgba(16, 185, 129, 0.5)
-  );
-`;
 
-const StepsList = styled.div`
+const WelcomeMessage = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 5rem;
+  gap: 0.5rem;
+  align-items: flex-start;
+  background: rgba(105, 14, 124, 0.05);
+  border: 1px solid rgba(217, 35, 255, 0.1);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, -10%); // 초기 위치를 최종 위치와 동일하게 설정
+  backdrop-filter: blur(10px);
+  max-width: calc(100% - 36px - 36px - 24px);
+  width: 60%;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
 `;
 
-const StepItem = styled.div`
-  position: relative;
+const WelcomeMessageTitle = styled.div`
   display: flex;
-  align-items: flex-start;
-  gap: 2rem;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+`;
 
-  &:hover {
-    ${props => props.hoverEffects}
+const BotIcon = styled.div`
+  width: 2.5rem;
+  height: 2.5rem;
+  background: linear-gradient(135deg, #d923ff, #a78bfa);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 10px rgba(217, 35, 255, 0.2);
+`;
+
+const MessageContent = styled.div`
+  color: #e4e4e7;
+  font-size: 0.95rem;
+  line-height: 1.6;
+
+  strong {
+    color: white;
+    font-size: 1.3rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    /* margin-bottom: 0.5rem; */
+  }
+
+  ul {
+    margin-top: 0.75rem;
+    padding-left: 3.5rem;
+    li {
+      margin: 0.5rem 0;
+      padding-left: 1rem;
+      position: relative;
+
+      &:before {
+        content: '•';
+        color: #d923ff;
+        position: absolute;
+        left: 0;
+      }
+    }
   }
 `;
 
-const NumberBox = styled.div`
-  position: relative;
-  z-index: 10;
-`;
-
-const GradientBorder = styled.div`
-  width: 6rem;
-  height: 6rem;
-  border-radius: 1rem;
-  background: linear-gradient(to bottom right, ${props => props.gradient});
-  padding: 1px;
-`;
-
-const NumberContent = styled.div`
-  width: 100%;
-  height: 100%;
-  border-radius: 1rem;
-  background: rgb(24, 24, 27);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`;
-
-const StepLabel = styled.span`
-  font-size: 0.875rem;
-  color: rgb(113, 113, 122);
-  font-family: monospace;
-`;
-
-const StepNumber = styled.span`
-  font-size: 1.5rem;
-  font-weight: bold;
-  background: linear-gradient(to right, #a855f7, #9333ea);
-  -webkit-background-clip: text;
-  color: transparent;
-`;
-
-const IconBox = styled.div`
-  position: absolute;
-  bottom: -0.5rem;
-  right: -0.5rem;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 0.5rem;
-  background: rgb(24, 24, 27);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: rgb(168, 85, 247);
-`;
-
-const ContentBox = styled.div`
-  flex: 1;
-  padding-top: 1rem;
-`;
 
 const ContentCard = styled.div`
   background: rgba(39, 39, 42, 0.5);
@@ -443,36 +425,31 @@ const LandingPage = () => {
         <p style={{ color: '#a1a1aa', marginBottom: '48px', fontSize: "1.25rem" }}>
           Our simple three-step process makes documentation creation effortless
         </p>
-        <TimelineContainer>
-          <ConnectionLine />
-          <StepsList>
-            {steps.map((step) => (
-              <StepItem key={step.number}>
-                <NumberBox>
-                  <GradientBorder gradient={step.gradient}>
-                    <NumberContent>
-                      <StepLabel>STEP</StepLabel>
-                      <StepNumber>{step.number}</StepNumber>
-                    </NumberContent>
-                  </GradientBorder>
-                  <IconBox>
-                    <step.icon size={20} />
-                  </IconBox>
-                </NumberBox>
-
-                <ContentBox>
-                  <ContentCard>
-                    <ContentTitle>
-                      {step.title}
-                      <ArrowIcon size={20} />
-                    </ContentTitle>
-                    <ContentDescription>{step.description}</ContentDescription>
-                  </ContentCard>
-                </ContentBox>
-              </StepItem>
-            ))}
-          </StepsList>
-        </TimelineContainer>
+        <WelcomeMessage>
+          <WelcomeMessageTitle>
+            <BotIcon>
+              <Bot size={20} color="white" />
+            </BotIcon>
+            <MessageContent>
+              <strong>
+                <span>DODODOCS AI</span>
+                {/* <Badge>AI 챗봇</Badge> */}
+              </strong>
+              <p style={{ wordBreak: 'keep-all' }}>
+                안녕하세요! GitHub 레포지토리의 코드에 대해 궁금하신 점을 물어보세요.
+                자세한 분석과 함께 답변해드리겠습니다.
+              </p>
+            </MessageContent>
+          </WelcomeMessageTitle>
+          <MessageContent>
+            <ul>
+              <li>코드 구조와 아키텍처 분석</li>
+              <li>함수와 클래스의 역할 설명</li>
+              <li>코드 개선 방안 제안</li>
+              <li>버그 해결 방안 제시</li>
+            </ul>
+          </MessageContent>
+        </WelcomeMessage>
       </Section>
 
       <Section feature={'true'} bg={'rgba(39, 39, 42, 0.5)'}>
