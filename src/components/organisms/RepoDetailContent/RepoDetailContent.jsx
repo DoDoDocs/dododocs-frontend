@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import bg_img from "../../../assets/images/bg_img.jpg"
 import { Moon, Sun } from 'lucide-react';
-import {
-  Image, Typo, Button, TextBox, Select,
-} from "../../index.js";
+
 
 // import useAppModalStore from '../../../store/appModalStore.js';
 import { useAppModalStore } from '../../../store/store.js';
@@ -15,11 +13,10 @@ import Modal from 'react-modal';
 
 import Chatting from "./CattingDetailContent/Chatting.jsx"
 import Document from "./Document.jsx"
-import ReadMe from "./ReadMe.jsx"
+import ReadMe from "./ReadMeDetailContent/ReadMe.jsx"
 
 
 // Styled Components
-
 const modalStyles = {
   content: {
     border: 'none',
@@ -63,7 +60,7 @@ const AppWrapper = styled.div`
       content: "";
       /* opacity: 0.5; */
       opacity: 1;
-       ${props => props.isImgMode ? `background-image: url(${bg_img});` : null} 
+      ${props => props.isImgMode ? `background-image: url(${bg_img});` : null} 
       background-size: cover;
       background-position: center; 
       position: absolute;

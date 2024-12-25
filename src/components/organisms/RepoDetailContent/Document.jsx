@@ -5,7 +5,6 @@ import { Camera, Pencil, Video, Palette, Layout, Box, MoreVertical } from 'lucid
 import api from "../../../api/axios.js";
 import { Splitter } from "../../index.js"
 import { MarkdownRenderer, LoadingSpinner } from '../../index.js';
-import documentText from './documentText.jsx';
 import { useDocument } from '../../../hooks/RepoDetailContent/useDocument.js';
 import { useRegisteredRepoStore, useAppModalStore } from "../../../store/store.js"
 

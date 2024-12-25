@@ -4,7 +4,6 @@ import { Typo } from "../../../index.js";
 import useClickAway from '../../../../hooks/useClickAway.js';
 import { useChatbot } from '../../../../hooks/RepoDetailContent/useChatbot.js';
 import { TypingMarkdownRenderer, MarkdownRenderer } from '../../../index.js';
-import { chattingText } from "../chattingText.jsx";
 import { useRegisteredRepoStore, useAuthStore } from "../../../../store/store.js"
 
 import {
