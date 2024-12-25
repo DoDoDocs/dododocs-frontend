@@ -121,12 +121,12 @@ const DocsContent = () => {
                 <ul>
                   <li>
                     <Check style={{ minWidth: '2rem' }} />
-                    Automated AI-powered tools to generate Code & Api documentation from your source code files
+                    Dododocs의 지능형 채팅 어시스턴트와 함께 코드베이스를 즉시 이해하세요.
                   </li>
 
                   <li>
                     <Check style={{ minWidth: '2rem' }} />
-                    Conditional Generative Models
+                    질문하고 설명을 받고 복잡한 코드를 쉽게 탐색하세요.
                   </li>
                 </ul>
                 <Button btnType={"gradient"} size={'large'} style={{ fontWeight: '400', width: "50%", padding: "1.2rem 1.2rem" }}>

@@ -390,10 +390,10 @@ const LandingPage = () => {
         <Header>
           <Badge bg='#9333ea33' color='#d1d5db'>feature</Badge>
         </Header>
-        <h2 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '24px' }}>코드를 이해하는 데 필요한 모든 것</h2>
+        <h2 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '24px' }}>AI chatbot이 도와주는 코드 분석</h2>
         <p style={{ color: '#a1a1aa', marginBottom: '48px', fontSize: "1.25rem" }}>
-          AI 어시스턴트가 강력한 코드 분석과 자연어 이해를 결합하여
-          코드베이스를 쉽게 탐색하고 이해할 수 있도록 도와드립니다.
+          복잡한 코드도 쉽게 이해할 수 있습니다.
+          DODODOCS AI 챗봇이 코드의 모든 측면을 분석하고 명확한 설명을 제공합니다.
         </p>
         <FeatureWrapper>
           <FeatureCard>
@@ -401,8 +401,8 @@ const LandingPage = () => {
               <MessagesSquare size={24} />
             </FeatureIcon>
             <FeatureContent>
-              <h3>자연스러운 대화</h3>
-              <p>코드베이스와 자연어로 대화하세요. 질문하고 설명을 받아 복잡한 로직을 쉽게 이해하세요.</p>
+              <h3>코드 분석              </h3>
+              <p>GitHub 저장소의 코드를 자동으로 분석하여 구조를 파악하고, 복잡한 로직도 쉽게 설명해드립니다.</p>
             </FeatureContent>
           </FeatureCard>
           <FeatureCard>

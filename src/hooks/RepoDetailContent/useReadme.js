@@ -24,6 +24,7 @@ export const useReadme = (registeredRepoId) => {
     staleTime: 1000 * 60 * 5,
     cacheTime: 1000 * 60 * 30,
     retry: 1,
+    refetchOnWindowFocus: false, // 윈도우 포커스 시 리패치 방지
     onError: (error) => {
       console.error('README 데이터 불러오기 실패:', error);
     },
