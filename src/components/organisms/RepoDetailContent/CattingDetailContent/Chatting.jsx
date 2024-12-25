@@ -257,7 +257,6 @@ const ChatbotUI = () => {
         {/* 에러 메시지 표시 */}
         {displayError && (
           <ErrorBanner>
-            `잠시만 기다려주세요. 레포지토리를 분석하고 챗봇을 생성하는데 시간이 소요됩니다.`
             {displayError}
           </ErrorBanner>
         )}

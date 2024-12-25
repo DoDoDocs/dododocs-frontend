@@ -184,6 +184,7 @@ export const FeatureContentText = styled.div`
   }
 
   li {
+    color: rgb(233, 213, 255);
     display: flex;
     align-items: center;
     gap: 1rem;
