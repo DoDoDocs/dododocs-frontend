@@ -23,7 +23,6 @@ export const useReadme = (registeredRepoId) => {
       return response;
     },
     select: (data) => {
-      console.log('Processing data:', data);
       // API 응답에서 content 필드를 추출하고 유효성 검사
       if (!data?.contents) return '';
       return data.contents;

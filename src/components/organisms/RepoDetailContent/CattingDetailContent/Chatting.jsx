@@ -1,3 +1,4 @@
+// src/components/organisms/RepoDetailContent/CattingDetailContent/Chatting.jsx
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, User, Bot, Sparkles, RefreshCw, EllipsisVertical } from 'lucide-react';
 import { Typo } from "../../../index.js";
