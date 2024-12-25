@@ -1,193 +1,222 @@
-
-
-// ReadmeLanding.jsx
 import React from 'react';
 import {
-  Book, FileEdit, Layout, Sparkles, ArrowRight,
-  Download, BookOpen, FileCode, GitBranch, Flag
+  Boxes, Code, Book, ArrowRight, Github, Coffee, Sparkles,
+  FileText, Settings, Upload, GitBranch,
+  Flag, Layout,
 } from 'lucide-react';
+import { Image, Typo } from '../../../index.js';
+import mainBannerImg from "../../../../assets/images/landing-hero-min.png"
 import {
-  PageWrapper,
-  PageContainer,
-  HeroSection,
-  ContentWrapper,
-  HeroGrid,
-  GradientText,
-  ButtonGroup,
-  Button,
-  Section,
-  FeatureWrapper,
-  FeatureIcon,
-  FeatureContent,
-  FeatureGrid,
-  StepsGrid,
-  StepCard,
-  StepIcon,
-  CTASection,
-  Badge,
-} from './DocsLanding.styles';
+  Container, HeroSection, HeroGrid, HeroTitle, HeroImage, Section, Header, Title, Description,
+  PreviewCard, PreviewHeader, PreviewTitle, PreviewContent, FileHeader, FileContent,
+  Button, FeatureWrapper, FeatureCard, FeatureIcon, FeatureContent, TimelineContainer, ConnectionLine, StepsList, StepItem, NumberBox, GradientBorder, NumberContent, StepLabel, StepNumber, IconBox, ContentBox, ContentCard, ContentTitle, ArrowIcon, ContentDescription, Badge
+} from "./DocsLanding.styles.js"
+import { useNavigate } from 'react-router-dom';
 
 
+const LandingReadme = () => {
+  const navigate = useNavigate();
 
-const Feature = ({ icon: Icon, title, description }) => (
-  <FeatureWrapper>
-    <FeatureIcon>
-      <Icon size={24} />
-    </FeatureIcon>
-    <FeatureContent>
-      <h3>{title}</h3>
-      <p>{description}</p>
-    </FeatureContent>
-  </FeatureWrapper>
-);
+  const steps = [
+    {
+      number: "01",
+      icon: Code,
+      title: "Upload Java Repository",
+      description: "Java 프로젝트의 repository를 업로드하세요",
+      gradient: "rgba(147, 51, 234, 0.5), rgba(147, 51, 234, 0.4)"
+    },
+    {
+      number: "02",
+      icon: Boxes,
+      title: "AI Analysis",
+      description: "AI가 코드를 분석하여 문서 구조를 자동으로 생성합니다",
+      gradient: "rgba(59, 130, 246, 0.5), rgba(59, 130, 246, 0.4)"
+    },
+    {
+      number: "03",
+      icon: Book,
+      title: "EView Documentation",
+      description: "생성된 문서를 확인하고 내보내세요",
+      gradient: "rgba(16, 185, 129, 0.5), rgba(16, 185, 129, 0.4)"
+    }
+  ];
 
-
-const DocsLanding = () => {
   return (
-    <PageWrapper>
-      <PageContainer>
-        <HeroSection>
-          <ContentWrapper>
-            <HeroGrid>
-              <div>
-                <Badge className="mb-6 bg-purple-500/20 text-purple-300 py-1 px-4">
-                  Docs Maker
-                </Badge>
-                <h1 className="text-5xl font-bold mb-6">
-                  Create Beautiful{' '}
-                  <GradientText>Documentation</GradientText>
-                </h1>
-                <p className="text-xl text-purple-200 mb-8">
-                  Generate comprehensive, well-structured Docs files for your projects
-                  with our intelligent documentation maker.
-                </p>
-                <ButtonGroup>
-                  <Button primary>
-                    Try Docs Maker <ArrowRight size={20} />
-                  </Button>
-                  <Button secondary>View Examples</Button>
-                </ButtonGroup>
-              </div>
-              <div className="flex justify-center">
-                {/* <DocsDemo /> */}
-              </div>
-            </HeroGrid>
-          </ContentWrapper>
-        </HeroSection>
+    <Container>
+      {/* Hero Section */}
+      <HeroSection>
+        <HeroGrid>
+          <HeroTitle>
+            <Header>
+              <Badge bg='#9333ea33' color='#d1d5db' style={{ margin: '0' }}>Java Documentation</Badge>
+              <Coffee color="rgb(216, 180, 254)" size={20} />
+            </Header>
+            <Title>
+              Create Beautiful<br></br>
 
-        <Section>
-          <ContentWrapper>
-            <div className="text-center mb-12">
-              <Badge className="mb-4 bg-purple-500/20 text-purple-300">
-                Features
-              </Badge>
-              <h2 className="text-3xl font-bold mb-4">
-                Everything you need for perfect documentation
-              </h2>
-              <p className="text-purple-200 max-w-2xl mx-auto">
-                Create comprehensive documentation with our intuitive tools and intelligent
-                suggestions, making documentation a breeze.
-              </p>
+              <span>Java Documentation</span>
+            </Title>
+            <Description>
+              AI가 Java 프로젝트를 분석하여 깔끔한 문서를 자동으로 생성합니다.<br />
+              더 이상 수동으로 문서를 작성하지 마세요.
+            </Description>
+            <div style={{ display: 'flex', gap: '16px' }}>
+              <Button primary onClick={() => navigate('/repositories')}>
+                Try It Now <ArrowRight size={20} />
+              </Button>
+              <Button onClick={() => navigate('/repositories/guide')}>
+                <Github size={20} /> View Example
+              </Button>
             </div>
+          </HeroTitle>
+          <HeroImage>
+            <Image src={mainBannerImg} width={'60rem'} />
+          </HeroImage>
+        </HeroGrid>
+        <div style={{ display: 'flex', width: '100%', alignContent: 'center', justifyContent: 'center', gap: '16px' }}>
 
-            <FeatureGrid>
-              {[
-                {
-                  icon: Layout,
-                  title: "Smart Templates",
-                  description: "Choose from various pre-built templates or customize your own structure."
-                },
-                {
-                  icon: Sparkles,
-                  title: "AI-Powered Suggestions",
-                  description: "Get intelligent recommendations based on your project type."
-                },
-                {
-                  icon: GitBranch,
-                  title: "Version Control Integration",
-                  description: "Seamlessly sync your documentation with your Git repository."
-                },
-                {
-                  icon: Flag,
-                  title: "Custom Sections",
-                  description: "Add, remove, or rearrange sections with our drag-and-drop interface."
-                }
-              ].map((feature, index) => (
-                <Feature key={index} {...feature} />
-              ))}
-            </FeatureGrid>
-          </ContentWrapper>
-        </Section>
+          <PreviewCard>
+            <PreviewHeader>
+              <FeatureIcon>
+                <FileText size={24} />
+              </FeatureIcon>
+              <PreviewTitle>
+                <h3>Java Documentation</h3>
+                <div>
+                  <Coffee size={16} /> Java 프로젝트 전용
+                </div>
+              </PreviewTitle>
+            </PreviewHeader>
 
-        <Section darker>
-          <ContentWrapper>
-            <div className="text-center mb-12">
-              <Badge className="mb-4 bg-purple-500/20 text-purple-300">
-                How It Works
-              </Badge>
-              <h2 className="text-3xl font-bold mb-4">
-                Create documentation in minutes
-              </h2>
-              <p className="text-purple-200 max-w-2xl mx-auto">
-                Our simple three-step process makes documentation creation effortless
+            <PreviewContent>
+              <FileHeader>
+                <Code size={16} />
+                <span>Controller.java</span>
+              </FileHeader>
+              <FileContent>
+                <p>- API 엔드포인트 설명</p>
+                <p>- 요청/응답 구조</p>
+                <p>- 비즈니스 로직 분석</p>
+              </FileContent>
+            </PreviewContent>
+          </PreviewCard>
+        </div>
+      </HeroSection>
+
+      {/* Features */}
+      <Section feature={'true'}>
+        <Header>
+          <Badge bg='rgba(147, 51, 234, 0.2)' color='rgb(216, 180, 254)'>feature</Badge>
+        </Header>
+        <h2 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '24px' }}>
+          AI-Powered Documentation Generation
+        </h2>
+        <p style={{ display: 'flex', flexDirection: 'column', alignContent: "center", justifyContent: 'center', color: '#a1a1aa', marginBottom: '48px', fontSize: "1.25rem" }}>
+          <p style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            Java 코드를 자동으로 분석하고 체계적인 문서로 만듭니다.
+          </p>
+          <p style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            수동 문서화의 번거로움을 AI가 해결해드립니다.
+          </p>
+        </p>
+        <FeatureWrapper>
+          <FeatureCard>
+            <FeatureIcon>
+              <Layout size={24} />
+            </FeatureIcon>
+            <FeatureContent>
+              <h3>
+                Java 전문화
+              </h3>
+              <p>
+                Java 프로젝트에 특화된 분석 엔진으로 Spring Boot, JPA 등 Java 생태계의 특성을 정확히 파악합니다.
               </p>
-            </div>
 
-            <StepsGrid>
-              {[
-                {
-                  icon: BookOpen,
-                  title: "1. Choose Template",
-                  description: "Select from our collection of professional Docs templates"
-                },
-                {
-                  icon: FileEdit,
-                  title: "2. Customize Content",
-                  description: "Edit and customize sections with our intuitive editor"
-                },
-                {
-                  icon: Download,
-                  title: "3. Export & Deploy",
-                  description: "Export to markdown and deploy to your repository"
-                }
-              ].map((step, index) => (
-                <StepCard key={index}>
-                  <StepIcon>
-                    <step.icon size={32} />
-                  </StepIcon>
-                  <h3 className="text-xl font-semibold mb-3">{step.title}</h3>
-                  <p className="text-purple-200">{step.description}</p>
-                </StepCard>
-              ))}
-            </StepsGrid>
-          </ContentWrapper>
-        </Section>
+            </FeatureContent>
+          </FeatureCard>
+          <FeatureCard>
+            <FeatureIcon>
+              <Sparkles size={24} />
+            </FeatureIcon>
+            <FeatureContent>
+              <h3>
+                체계적인 문서화
+              </h3>
+              <p>
+                API 문서, 클래스 다이어그램, 시퀀스 다이어그램 등 다양한 형태의 문서를 자동으로 생성합니다.
+              </p>
+            </FeatureContent>
+          </FeatureCard>
+        </FeatureWrapper>
+      </Section>
 
-        <Section>
-          <CTASection>
-            <Badge className="mb-4 bg-purple-500/20 text-purple-300">
-              Get Started
-            </Badge>
-            <h2 className="text-3xl font-bold mb-6">
-              Ready to create amazing documentation?
-            </h2>
-            <p className="text-purple-200 mb-8">
-              Join thousands of developers who are creating better documentation
-              with Dododocs Docs Maker.
-            </p>
-            <Button primary className="mx-auto">
-              Start Creating <ArrowRight size={20} />
-            </Button>
-          </CTASection>
-        </Section>
-      </PageContainer>
-    </PageWrapper>
+      <Section feature={'true'}>
+        <Header>
+          <Badge bg='#9333ea33' color='#d1d5db'>How It Works</Badge>
+        </Header>
+        <h2 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '24px' }}>Create documentation in minutes</h2>
+        <p style={{ color: '#a1a1aa', marginBottom: '48px', fontSize: "1.25rem" }}>
+          Java 프로젝트의 문서화를 AI와 함께 완성하세요.
+        </p>
+        <TimelineContainer>
+          <ConnectionLine />
+          <StepsList>
+            {steps.map((step) => (
+              <StepItem key={step.number}>
+                <NumberBox>
+                  <GradientBorder gradient={step.gradient}>
+                    <NumberContent>
+                      <StepLabel>STEP</StepLabel>
+                      <StepNumber>{step.number}</StepNumber>
+                    </NumberContent>
+                  </GradientBorder>
+                  <IconBox>
+                    <step.icon size={20} />
+                  </IconBox>
+                </NumberBox>
 
+                <ContentBox>
+                  <ContentCard>
+                    <ContentTitle>
+                      {step.title}
+                      <ArrowIcon size={20} />
+                    </ContentTitle>
+                    <ContentDescription>{step.description}</ContentDescription>
+                  </ContentCard>
+                </ContentBox>
+              </StepItem>
+            ))}
+          </StepsList>
+        </TimelineContainer>
+      </Section>
+
+      <Section feature={'true'} bg={'rgba(39, 39, 42, 0.5)'}>
+        <Header>
+          <Badge bg='#9333ea33' color='#d1d5db'>Get Started</Badge>
+        </Header>
+        <h2 style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '24px' }}>
+          Java 문서화의 새로운 시작
+        </h2>
+        <p style={{ color: 'rgb(233 213 255)', marginBottom: '48px', fontSize: "1.25rem" }}>
+          AI 기반 자동 문서 생성, 직관적인 인터페이스, 강력한 챗봇 기능까지. Dododocs로 스마트한 문서화를 시작하세요.
+        </p>
+        <div style={{ display: 'flex', gap: '16px' }}>
+          <Button primary
+            onClick={() => navigate('/repositories')}
+          >
+            Try It Now <ArrowRight size={20} />
+          </Button>
+        </div>
+      </Section>
+
+      <Section feature={'true'} >
+        <Typo fontFamily={'Roboto'} weight={100} size={'32px'} $isGradient>Dododocs</Typo>
+      </Section>
+
+    </Container >
   );
 };
-export default DocsLanding;
 
+export default LandingReadme;
 
-
-
-
+// linear-gradient(rgba(39, 39, 42, 0.5), rgb(24, 24, 27)

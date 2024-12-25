@@ -98,12 +98,12 @@ const DocsContent = () => {
                 <ul>
                   <li>
                     <Check style={{ minWidth: '2rem' }} />
-                    사용자의 코드를 분석해, 코드와 API 문서를 자동으로 생성해줍니다.
+                    AI가 Java 프로젝트를 분석하여 깔끔한 문서를 자동으로 생성합니다.
                   </li>
 
                   <li>
                     <Check style={{ minWidth: '2rem' }} />
-                    이를 통해 개발자는 코드에만 집중할 수 있게 됩니다.
+                    더 이상 수동으로 문서를 작성하지 마세요.
                   </li>
                 </ul>
                 <Button btnType={"gradient"} size={'large'} style={{ fontWeight: '400', width: "50%", padding: "1.2rem 1.2rem" }}>
@@ -145,12 +145,11 @@ const DocsContent = () => {
                 <ul>
                   <li>
                     <Check style={{ minWidth: '2rem' }} />
-                    Automated AI-powered tools to generate Code & Api documentation from your source code files
+                    코드베이스를 분석하여 필요한 정보를 자동으로 추출하고, 명확하고 이해하기 쉬운 문서로 정리해 드립니다.
                   </li>
-
                   <li>
                     <Check style={{ minWidth: '2rem' }} />
-                    Conditional Generative Models
+                    체계적으로 구성된 README 파일을 손쉽게 생성하세요.
                   </li>
                 </ul>
                 <Button btnType={"gradient"} size={'large'} style={{ fontWeight: '400', width: "50%", padding: "1.2rem 1.2rem" }}>

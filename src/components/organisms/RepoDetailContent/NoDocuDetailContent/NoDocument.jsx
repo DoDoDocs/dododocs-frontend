@@ -1,0 +1,42 @@
+import React from 'react';
+import { Coffee, ArrowRight, Code, XCircle } from 'lucide-react';
+import * as S from './NoDocument.style';
+
+const MoDocument = () => {
+  return (
+    <S.Container>
+      <S.NoticeCard>
+        <S.IconWrapper>
+          <Coffee size={24} />
+        </S.IconWrapper>
+        <S.Title>
+          현재 <span>Java</span> 프로젝트만 지원합니다
+        </S.Title>
+        <S.Description>
+          DODODOCS는 현재 Java 프로젝트에 대한 문서화만 지원하고 있습니다.
+          다른 언어 지원은 순차적으로 추가될 예정입니다.
+        </S.Description>
+        <S.FeatureList>
+          <li>
+            <Coffee size={20} />
+            <span>Spring Boot 프로젝트 분석</span>
+          </li>
+          <li>
+            <Code size={20} />
+            <span>Java 코드 자동 문서화</span>
+          </li>
+          <li>
+            <XCircle size={20} />
+            <span>타 프로그래밍 언어는 현재 지원되지 않습니다</span>
+          </li>
+        </S.FeatureList>
+        <S.Button>
+          Java 프로젝트로 시작하기
+          <ArrowRight size={18} />
+        </S.Button>
+      </S.NoticeCard>
+    </S.Container>
+  );
+};
+
+export default MoDocument;

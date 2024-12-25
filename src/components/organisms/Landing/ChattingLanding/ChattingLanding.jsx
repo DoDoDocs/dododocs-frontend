@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { Image, Typo } from '../../../index.js';
 import mainBannerImg from "../../../../assets/images/landing-hero-min.png"
+import { useNavigate } from 'react-router-dom';
 
 const fadeIn = keyframes`
   from {
@@ -141,8 +142,8 @@ const Button = styled.button`
 
 const FeatureWrapper = styled.div`
     display: grid;
-  grid-template-columns: repeat(2, minmax(250px, 1fr)); /* 최소 250px, 최대 동일 비율 */
-  gap: 24px;
+    grid-template-rows: repeat(auto-fit, minmax(0, 1fr)); /* 자동 행 크기 설정 */
+    gap: 24px;
   align-items: stretch; /* 카드 높이를 균일하게 맞춤 */
 `;
 
@@ -279,60 +280,10 @@ const ContentCard = styled.div`
   }
 `;
 
-const ContentTitle = styled.h3`
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: rgb(168, 85, 247);
-  margin-bottom: 0.5rem;
-  display: flex;
-  align-items: center;
-  transition: color 0.3s;
-
-  &:hover {
-    color: rgb(168, 85, 247);
-  }
-`;
-
-const ContentDescription = styled.p`
-  color: rgb(161, 161, 170);
-`;
-
-const ArrowIcon = styled(ArrowRight)`
-  margin-left: 0.5rem;
-  opacity: 0;
-  transition: opacity 0.3s;
-
-  ${ContentCard}:hover & {
-    opacity: 1;
-  }
-`;
-
-
 const LandingPage = () => {
+  const navigate = useNavigate();
 
-  const steps = [
-    {
-      number: "01",
-      icon: FileText,
-      title: " AI Generated README",
-      description: "Get an instant, AI-generated README based on your project's codebase",
-      gradient: "rgba(147, 51, 234, 0.5), rgba(147, 51, 234, 0.4)"
-    },
-    {
-      number: "02",
-      icon: Settings,
-      title: "Customize Content",
-      description: "Edit and customize sections with our intuitive editor",
-      gradient: "rgba(59, 130, 246, 0.5), rgba(59, 130, 246, 0.4)"
-    },
-    {
-      number: "03",
-      icon: Upload,
-      title: "Export & Deploy",
-      description: "Export to markdown and deploy to your repository",
-      gradient: "rgba(16, 185, 129, 0.5), rgba(16, 185, 129, 0.4)"
-    }
-  ];
+
 
   return (
     <Container>
@@ -351,11 +302,8 @@ const LandingPage = () => {
               질문하고 설명을 받고 복잡한 코드를 쉽게 탐색하세요.
             </Description>
             <div style={{ display: 'flex', gap: '16px' }}>
-              <Button primary>
+              <Button primary onClick={() => navigate('/repositories')}>
                 Try It Now <ArrowRight size={20} />
-              </Button>
-              <Button>
-                <Github size={20} /> View Example
               </Button>
             </div>
           </HeroTitle>
@@ -381,7 +329,7 @@ const LandingPage = () => {
               <MessagesSquare size={24} />
             </FeatureIcon>
             <FeatureContent>
-              <h3>코드 분석              </h3>
+              <h3>Code Analysis</h3>
               <p>GitHub 저장소의 코드를 자동으로 분석하여 구조를 파악하고, 복잡한 로직도 쉽게 설명해드립니다.</p>
             </FeatureContent>
           </FeatureCard>
@@ -390,28 +338,11 @@ const LandingPage = () => {
               <Code size={24} />
             </FeatureIcon>
             <FeatureContent>
-              <h3>깊이 있는 코드 분석</h3>
-              <p>AI 기반 분석을 통해 코드 구조, 패턴 및 관계를 이해하세요.</p>
+              <h3>Real-time Interaction</h3>
+              <p>자연스러운 대화를 통해 코드에 대한 질문을 주고받으며, 즉각적이고 정확한 답변을 받아보세요.</p>
             </FeatureContent>
           </FeatureCard>
-          <FeatureCard>
-            <FeatureIcon>
-              <Code size={24} />
-            </FeatureIcon>
-            <FeatureContent>
-              <h3>깊이 있는 코드 분석</h3>
-              <p>AI 기반 분석을 통해 코드 구조, 패턴 및 관계를 이해하세요.</p>
-            </FeatureContent>
-          </FeatureCard>
-          <FeatureCard>
-            <FeatureIcon>
-              <Code size={24} />
-            </FeatureIcon>
-            <FeatureContent>
-              <h3>깊이 있는 코드 분석</h3>
-              <p>AI 기반 분석을 통해 코드 구조, 패턴 및 관계를 이해하세요.</p>
-            </FeatureContent>
-          </FeatureCard>
+
         </FeatureWrapper>
       </Section>
 
@@ -459,7 +390,9 @@ const LandingPage = () => {
           복잡한 코드도 AI chatbot 의 도움으로 쉽게 이해할 수 있습니다. 지금 바로 시작해보세요.
         </p>
         <div style={{ display: 'flex', gap: '16px' }}>
-          <Button primary>
+          <Button primary
+            onClick={() => navigate('/repositories')}
+          >
             Try It Now <ArrowRight size={20} />
           </Button>
         </div>

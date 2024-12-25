@@ -14,7 +14,7 @@ import Modal from 'react-modal';
 import Chatting from "./CattingDetailContent/Chatting.jsx"
 import Document from "./Document.jsx"
 import ReadMe from "./ReadMeDetailContent/ReadMe.jsx"
-
+import GuideChatting from "./GuideChattingDetailContent/GuideChatting.jsx"
 
 // Styled Components
 const modalStyles = {
@@ -368,6 +368,7 @@ const App = ({ }) => {
           {/* Add remaining content components here */}
           <MainHeader>
             <MainHeaderTitle >All Apps</MainHeaderTitle>
+
             {
               ['AI Code Document', 'AI Chatting', 'Read Me Maker'].map(menu => (
                 <MainHeaderContent
@@ -386,7 +387,11 @@ const App = ({ }) => {
               //  Chatting 
               activeMenu === 'AI Chatting' ?
                 <ChattingContainer>
-                  <Chatting></Chatting>
+                  {
+                    repoTitle === 'guide' ?
+                      <GuideChatting></GuideChatting> :
+                      <Chatting></Chatting>
+                  }
                 </ChattingContainer> :
                 activeMenu === 'AI Code Document' ?
                   <Document></Document>
