@@ -39,6 +39,7 @@ export const MarkdownContainer = styled.div`
   }
 
   pre {
+    backdrop-filter: blur(10px) brightness(50%);
     background: rgba(63, 63, 70, 0.5);
     padding: 1rem;
     border-radius: 0.5rem;

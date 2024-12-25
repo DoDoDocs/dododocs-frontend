@@ -183,7 +183,7 @@ const MainHeaderContent = styled.div`
   color: rgb(113 119 144 / 78%);
   border-bottom: 2px solid transparent;
   transition: 0.3s;
-    
+  cursor: pointer;
   &.active, &:hover {
       color: #f9fafb;
       border-bottom: 2px solid #f9fafb;

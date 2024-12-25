@@ -23,6 +23,17 @@ export const WelcomeFadeIn = keyframes`
   }
 `;
 
+const bounce = keyframes`
+  0%, 80%, 100% { 
+    transform: translateY(0);
+    opacity: 0.3;
+  }
+  40% { 
+    transform: translateY(-6px);
+    opacity: 1;
+  }
+`;
+
 // Styled Components
 export const ChatWrapper = styled.div`
   display: flex;
@@ -287,7 +298,7 @@ export const MessageBubble = styled.div`
   align-items: flex-start;
   gap: 12px;
   margin: ${(props) => (props.isUser ? '0 0 0 auto' : '0 auto 0 0')};
-  max-width: 70%;
+  max-width: calc(100% - 36px - 36px - 24px);
   animation: ${fadeIn} 0.3s ease-out;
 `;
 
@@ -306,6 +317,7 @@ export const Avatar = styled.div`
 `;
 
 export const Message = styled.div`
+  max-width: 100%;
   background: rgba(63, 63, 70, 0.8);
   padding: 14px 18px;
   border-radius: 16px;
@@ -313,7 +325,7 @@ export const Message = styled.div`
   font-size: 0.95rem;
   line-height: 1.5;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(20px) brightness(50%);
 
   ${(props) =>
     props.isUser &&
@@ -351,14 +363,15 @@ export const LoadingMessage = styled.div`
   align-items: center;
   gap: 12px;
   padding: 4px;
+  animation: ${fadeIn} 0.3s ease-out;
 `;
 
 export const LoadingText = styled.span`
   color: rgba(255, 255, 255, 0.7);
   font-size: 0.9rem;
   white-space: nowrap;
+  animation: ${fadeIn} 0.3s ease-out;
 `;
-
 export const InputContainer = styled.div`
   padding: 20px;
   background: rgba(255, 255, 255, 0.03);
@@ -449,23 +462,23 @@ export const LoadingDots = styled.div`
   padding: 4px;
 
   span {
-    width: 4px;
-    height: 4px;
+    width: 5px;
+    height: 5px;
     border-radius: 50%;
     background: #d923ff;
-    animation: ${shimmer} 1.5s infinite;
-    opacity: 0.7;
+    display: inline-block;
+    animation: ${bounce} 1.4s infinite ease-in-out both;
 
     &:nth-child(1) {
-      animation-delay: 0s;
+      animation-delay: -0.32s;
     }
 
     &:nth-child(2) {
-      animation-delay: 0.2s;
+      animation-delay: -0.16s;
     }
 
     &:nth-child(3) {
-      animation-delay: 0.4s;
+      animation-delay: 0s;
     }
   }
 `;
