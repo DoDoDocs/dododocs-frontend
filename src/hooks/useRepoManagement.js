@@ -6,40 +6,20 @@ import { useAddRepo } from './useAddRepo';
 import { registerAPI } from '../api/index.js';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
-import {
-  useAppModalStore,
-  useRepoStore,
-  useRegisteredRepoStore,
-} from '../store/store.js';
+import { useAppModalStore, useRegisteredRepoStore } from '../store/store.js';
 
-/**
- * 레포지토리 관리를 위한 통합 커스텀 훅
- */
 export const useRepoManagement = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  /** NOTE 로직 생각
-   * @desc 페이지 진입 시 레포지터리 데이터 받아오기
-   * @detail store에 setRegisteredRepositories
-   * @detail 각 레포별로 readmeComplete,chatbotComplete ,docsComplete를 각각 확인해서  로딩중인 레포지터리가 있는지 확인
-   */
+  // App Modal Store
+  const { openAppModal, closeAppModal, setAppRepo } = useAppModalStore();
 
-  //TODO 지울거 Store Actions
-  // const setSelectedCard = useRepoStore((state) => state.setSelectedCard);
-
-  //NOTE Store
+  // Registered Repo Store
   const { setActiveRepositoryId, setRepositoryToRemove, repositoryToRemove } =
     useRegisteredRepoStore();
 
-  /**
-   * @axios React Query를 사용한 레포지토리 데이터 페칭
-   * @axios registerAPI.getRegisteredRepoList
-   * @desc 레포지터리 등록한 리스트 목록 가져오기
-   * @desc 레포지토리 데이터를 스토어에 저장
-   */
-
-  // useState로 폴링 관련 상태 관리
+  // 폴링 관련 상태 관리
   const [pollingStartTime, setPollingStartTime] = useState(null);
   const [isPolling, setIsPolling] = useState(false);
 
@@ -47,10 +27,10 @@ export const useRepoManagement = () => {
   const checkPollingTimeout = useCallback(() => {
     if (!pollingStartTime) return false;
     const timeElapsed = Date.now() - pollingStartTime;
-    // return timeElapsed >= 5 * 60 * 1000; // 5분
-    return timeElapsed >= 1 * 60 * 1000; // 5분
+    return timeElapsed >= 5 * 60 * 1000; // 5분 ()
   }, [pollingStartTime]);
 
+  // React Query로 레포지토리 데이터 페칭
   const {
     data: registeredRepositoriesList,
     isError,
@@ -154,28 +134,20 @@ export const useRepoManagement = () => {
     staleTime: 0,
   });
 
-  //SECTION - App Modal 관리
-
-  // App Modal Store
-  const { isAppModalOpen, setOpenAppModal, setAppRepo, setCloseAppModal } =
-    useAppModalStore();
-
   // Modal Management
   const addRepoModal = useModal();
   const deleteRepoModal = useModal();
 
-  // Add Repository Form Management with success callback
-
+  // Loading 상태 관리
   const [extendedLoading, setExtendedLoading] = useState(false);
   useEffect(() => {
-    return () => {
-      setExtendedLoading(false);
-    };
+    return () => setExtendedLoading(false);
   }, []);
+
+  // useAddRepo 관련 로직
   const {
     formData,
     validationErrors,
-    // isLoading,
     isPending: isAddingRepoLoading,
     error: addRepoError,
     handleChange,
@@ -207,7 +179,10 @@ export const useRepoManagement = () => {
       console.log('✅ Repository added and list refreshed successfully:', newRepo);
 
       setExtendedLoading(false);
-      modalHandlers.addRepo.close();
+      // 5초 후에 모달 닫기
+      setTimeout(() => {
+        modalHandlers.addRepo.close();
+      }, 3000); // 5000ms = 5초
       // 모든 데이터 작업이 완료된 후 모달 닫기
     } catch (error) {
       console.error('Failed to refresh repository list:', error);
@@ -222,44 +197,20 @@ export const useRepoManagement = () => {
     app: {
       open: useCallback(
         (registeredRepoId) => {
-          console.log(registeredRepoId, registeredRepoId);
-          if (registeredRepoId === 'guide') {
-            setAppRepo({
-              registeredRepoId: 'guide',
-              repositoryName: 'guide',
-              branchName: 'main',
-              createdAt: '2024-12-18',
-              readmeComplete: true,
-              chatbotComplete: true,
-              docsComplete: true,
-            });
-
-            setOpenAppModal();
-
-            navigate(`/repositories/${`guide`}`);
-            return;
-          }
-          const repo = registeredRepositoriesList.find(
-            (repo) => repo.registeredRepoId === registeredRepoId,
-          );
+          console.log('Opening modal for repo:', registeredRepoId);
+          setActiveRepositoryId(registeredRepoId);
+          const repo = openAppModal(registeredRepoId, registeredRepositoriesList);
           if (repo) {
-            setAppRepo(repo);
-            setOpenAppModal();
-            navigate(`/repositories/${repo.repositoryName}`);
+            navigate(`/repositories/${repo.registeredRepoId}`);
           }
         },
-        [navigate, setOpenAppModal, setAppRepo, registeredRepositoriesList],
+        [openAppModal, setActiveRepositoryId, registeredRepositoriesList, navigate],
       ),
-
-      close: useCallback(() => {
-        setCloseAppModal();
-        navigate('/repositories');
-      }, [navigate, setCloseAppModal]),
     },
 
     addRepo: {
       open: useCallback(() => {
-        resetForm(); // 폼 초기화
+        resetForm();
         addRepoModal.openModal();
       }, [resetForm, addRepoModal]),
 
@@ -268,7 +219,6 @@ export const useRepoManagement = () => {
       }, [addRepoModal]),
     },
   };
-  //!SECTION - 모달관리
 
   /**
    * 이벤트 핸들러
@@ -276,14 +226,14 @@ export const useRepoManagement = () => {
   const eventHandlers = {
     handleCardClick: useCallback(
       (cardId) => {
-        console.log('useRepoManagement cardClick', cardId);
-        setActiveRepositoryId(cardId);
+        console.log('Card clicked:', cardId);
         modalHandlers.app.open(cardId);
       },
-      [setActiveRepositoryId, modalHandlers.app],
+      [modalHandlers.app],
     ),
   };
 
+  // Delete 핸들러
   const deleteRepoHandlers = {
     handleDeleteClick: useCallback(
       (e, repo) => {
@@ -339,16 +289,17 @@ export const useRepoManagement = () => {
   };
 
   return {
-    //RegisteredRepositories Data
     RegisteredRepositories: {
       registeredRepositoriesList,
+      isLoading,
+      isError,
+      error,
     },
 
-    // Modal States & Controls
     modals: {
       app: {
-        isOpen: isAppModalOpen,
         ...modalHandlers.app,
+        close: closeAppModal,
       },
       addRepo: {
         isOpen: addRepoModal.isOpen,
@@ -361,7 +312,6 @@ export const useRepoManagement = () => {
       },
     },
 
-    // Add Repository 관련 상태와 핸들러
     addRepoForm: {
       formData,
       validationErrors,
@@ -371,10 +321,8 @@ export const useRepoManagement = () => {
       handleSubmit,
       resetForm,
     },
-    // Delete Repository 관련 상태와 핸들러
-    deleteRepoHandlers,
 
-    // Event Handlers
+    deleteRepoHandlers,
     handlers: eventHandlers,
   };
 };

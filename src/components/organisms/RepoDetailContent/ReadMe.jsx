@@ -9,7 +9,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from "../../index.js"
 import { markdownText } from './markdownText.jsx';
 import { useReadme } from '../../../hooks/RepoDetailContent/useReadme.js';
-import { useRegisteredRepoStore, useAppModalStore } from "../../../store/store.js"
+import { useAppModalStore } from "../../../store/store.js"
 
 const Container = styled.div`
   display: flex;
@@ -329,7 +329,6 @@ const NavItem = ({
 
 
 const ReadMe = () => {
-  const { activeRepositoryId } = useRegisteredRepoStore();
   const { AppRepo } = useAppModalStore();
   const location = useLocation();
   const navigate = useNavigate();
@@ -340,7 +339,7 @@ const ReadMe = () => {
     isLoading,
     isError,
     error
-  } = useReadme(activeRepositoryId);
+  } = useReadme(AppRepo.registeredRepoId);
 
   useEffect(() => {
     console.log("😂😂 READ  ME : ", markdownText)

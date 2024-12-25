@@ -6,7 +6,10 @@ import {
   Image, Typo, Button, TextBox, Select,
 } from "../../index.js";
 
-import useAppModalStore from '../../../store/appModalStore.js';
+// import useAppModalStore from '../../../store/appModalStore.js';
+import { useAppModalStore } from '../../../store/store.js';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 
 import Modal from 'react-modal';
 
@@ -269,34 +272,61 @@ background-color : #10121b66;
 `
 
 // Main App Component
-const App = ({ onClose }) => {
+const App = ({ }) => {
 
-  const { isAppModalOpen, AppRepo } = useAppModalStore();
+  const { AppRepo, openAppModal, closeAppModal } = useAppModalStore();
+  const { repoTitle } = useParams();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
 
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   const [isImgMode, setIsImgMode] = useState(true);
   const [activeMenu, setActiveMenu] = useState('Read Me Maker');
+
+
+  const registeredReposList = queryClient.getQueryData(['registeredRepos']) || null;
+
+
+  // 모달 열기
   useEffect(() => {
-    if (isAppModalOpen) {
+    if (repoTitle) {
+      console.log("😇😇😇😇😇😇😇😇😇😇😇😇😇😇😇😇😇😇모달 열기 시 데이터 받아오기 ", repoTitle)
+      openAppModal(repoTitle, registeredReposList);
       document.body.style.overflow = 'hidden';
     }
+  }, [repoTitle, registeredReposList, openAppModal]);
 
+  // 모달 닫기 처리
+  const closeModalHandler = () => {
+    closeAppModal();
+    navigate('/repositories');  // URL 변경하면 자동으로 컴포넌트가 언마운트됨
+  };
+
+  // cleanup - 스크롤만 처리
+  useEffect(() => {
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [isAppModalOpen]);
+  }, []);
+
+
+
+
 
   const toggleFullscreen = () => {
     setIsFullscreen(prev => !prev);
   };
 
 
+
+  if (!repoTitle || !AppRepo) return null;
+
   return (
     <Modal
-      isOpen={isAppModalOpen}
-      onRequestClose={onClose}
+      isOpen={true}
+      onRequestClose={closeModalHandler}
       style={{
         ...modalStyles,
         content: {
@@ -314,7 +344,7 @@ const App = ({ onClose }) => {
         <AppContainer>
           <Header>
             <MenuCircleWrapper>
-              <MenuCircle type={'red'} onClick={onClose}></MenuCircle>
+              <MenuCircle type={'red'} onClick={closeModalHandler}></MenuCircle>
               <MenuCircle type={'yellow'}></MenuCircle>
               <MenuCircle type={'green'} onClick={toggleFullscreen}></MenuCircle>
               <AppRepoTitle>

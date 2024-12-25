@@ -7,7 +7,7 @@ import { Splitter } from "../../index.js"
 import { MarkdownRenderer, LoadingSpinner } from '../../index.js';
 import documentText from './documentText.jsx';
 import { useDocument } from '../../../hooks/RepoDetailContent/useDocument.js';
-import { useRegisteredRepoStore } from "../../../store/store.js"
+import { useRegisteredRepoStore, useAppModalStore } from "../../../store/store.js"
 
 const Container = styled.div`
   display: flex;
@@ -173,7 +173,7 @@ const NavItem = ({ onClick, icon: Icon, children, active }) => (
 
 const Document = () => {
   //SECTION Document 
-  const { activeRepositoryId } = useRegisteredRepoStore();
+  const { AppRepo } = useAppModalStore();
 
 
   const {
@@ -181,7 +181,7 @@ const Document = () => {
     isLoading,
     isError,
     error
-  } = useDocument(activeRepositoryId);
+  } = useDocument(AppRepo.registeredRepoId);
 
   useEffect(() => {
     console.log('docsData', docsData)
