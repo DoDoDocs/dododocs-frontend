@@ -123,7 +123,6 @@ const ReadMe = () => {
 
   useEffect(() => {
 
-    console.log("😂😂😂😂😂 READ  ME : ", markdownText)
 
     if (!markdownText) return; // Add this check
 
