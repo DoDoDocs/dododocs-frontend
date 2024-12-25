@@ -314,13 +314,49 @@ export const Message = styled.div`
   line-height: 1.5;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(10px);
+
   ${(props) =>
-    props.isUser
-      ? `
-    background: transparent;
-    border : 1px solid #a78bfa
-    `
-      : null}
+    props.isUser &&
+    css`
+      background: transparent;
+      border: 1px solid #a78bfa;
+    `}
+
+  ${(props) =>
+    props.$isError &&
+    css`
+      background: rgba(220, 38, 38, 0.1);
+      border: 1px solid rgba(220, 38, 38, 0.2);
+      color: #ef4444;
+    `}
+`;
+
+// 에러 메시지 배너
+export const ErrorBanner = styled.div`
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  color: #ef4444;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin: 8px 16px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: ${fadeIn} 0.3s ease-out;
+`;
+
+export const LoadingMessage = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px;
+`;
+
+export const LoadingText = styled.span`
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  white-space: nowrap;
 `;
 
 export const InputContainer = styled.div`
@@ -339,6 +375,14 @@ export const InputWrapper = styled.div`
   padding: 8px 16px;
   transition: all 0.2s ease;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative; // LoadingStatus의 absolute positioning을 위해 필요
+
+  ${(props) =>
+    props.$isLoading &&
+    css`
+      background: rgba(217, 35, 255, 0.05);
+      border-color: rgba(217, 35, 255, 0.2);
+    `}
 
   &:focus-within {
     background: rgba(255, 255, 255, 0.09);
@@ -385,12 +429,24 @@ export const ActionButton = styled.button`
     transform: scale(0.95);
   }
 `;
+export const LoadingStatus = styled.div`
+  position: absolute;
+  right: 100px; // Send 버튼과의 간격
+  opacity: ${(props) => (props.$isVisible ? 1 : 0)};
+  visibility: ${(props) => (props.$isVisible ? 'visible' : 'hidden')};
+  transform: ${(props) => (props.$isVisible ? 'translateY(0)' : 'translateY(5px)')};
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
 
+// LoadingDots 컴포넌트 (기존 스타일 수정)
 export const LoadingDots = styled.div`
   display: flex;
   gap: 4px;
   align-items: center;
-  padding: 4px 8px;
+  padding: 4px;
 
   span {
     width: 4px;
@@ -400,9 +456,14 @@ export const LoadingDots = styled.div`
     animation: ${shimmer} 1.5s infinite;
     opacity: 0.7;
 
+    &:nth-child(1) {
+      animation-delay: 0s;
+    }
+
     &:nth-child(2) {
       animation-delay: 0.2s;
     }
+
     &:nth-child(3) {
       animation-delay: 0.4s;
     }

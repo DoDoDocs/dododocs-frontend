@@ -178,11 +178,11 @@ export const useRepoManagement = () => {
 
       console.log('✅ Repository added and list refreshed successfully:', newRepo);
 
-      setExtendedLoading(false);
       // 5초 후에 모달 닫기
       setTimeout(() => {
         modalHandlers.addRepo.close();
-      }, 3000); // 5000ms = 5초
+        setExtendedLoading(false);
+      }, 10000); // 5000ms = 5초
       // 모든 데이터 작업이 완료된 후 모달 닫기
     } catch (error) {
       console.error('Failed to refresh repository list:', error);

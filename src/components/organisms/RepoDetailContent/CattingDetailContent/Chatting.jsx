@@ -22,7 +22,8 @@ import {
   Message,
   InputContainer, InputWrapper, Input,
   ActionButton,
-  LoadingDots
+  LoadingDots,
+  ErrorBanner, LoadingMessage, LoadingText, LoadingStatus,
 } from "./Chatting.styles.js"
 
 
@@ -30,22 +31,27 @@ const ChatbotUI = () => {
   const { activeRepositoryId } = useRegisteredRepoStore();
   const token = useAuthStore(state => state.token);
 
+  // === Chat History 관련 상태 (useChatbot) ===
   const {
     chatHistory,
-    isLoading: isChatLoading,
-    isError,
-    error,
-    sendMessage,
+    isLoading: isHistoryLoading, // 채팅 히스토리 로딩 상태
+    isError: isHistoryError, // 채팅 히스토리 에러 상태
+    error: historyError, // 채팅 히스토리 에러 메시지
     resetChat
   } = useChatbot(activeRepositoryId);
 
-  const [streamingResponse, setStreamingResponse] = useState('');
 
-  const [messages, setMessages] = useState([]);
-  const [inputText, setInputText] = useState('');
+  // === 실시간 채팅 관련 상태 ===
+  const [messages, setMessages] = useState([]); // 현재 화면에 표시되는 메시지들
+  const [inputText, setInputText] = useState(''); // 입력창 텍스트
+  const [isSending, setIsSending] = useState(false); // 메시지 전송 중 상태
+  const [sendError, setSendError] = useState(null); // 메시지 전송 에러
+  const [streamingResponse, setStreamingResponse] = useState(''); // 실시간 응답 데이터
+  const [accumulatedResponse, setAccumulatedResponse] = useState('');
+  // === UI 관련 상태 ===
   const messagesEndRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const menuRef = useRef(null);  // 메뉴 ref 생성
+  const menuRef = useRef(null);
 
 
   const [isTest, setIsTest] = useState(0);
@@ -53,56 +59,81 @@ const ChatbotUI = () => {
 
 
 
+
   // 채팅 히스토리 동기화
   useEffect(() => {
-    if (chatHistory) {
+    if (chatHistory && !isHistoryLoading && !isHistoryError) {
       const formattedMessages = chatHistory.flatMap(chat => [
         { id: `q-${chat.id}`, text: chat.question, isUser: true },
         { id: `a-${chat.id}`, text: chat.text, isUser: false }
       ]);
       setMessages(formattedMessages);
     }
-  }, [chatHistory]);
+  }, [chatHistory, isHistoryLoading, isHistoryError]);
 
-  // 스트리밍 응답이 업데이트될 때마다 메시지 업데이트
+
+
+  // 스트리밍 응답 처리 useEffect 수정
   useEffect(() => {
     if (streamingResponse) {
-      console.log("스트리밍 응답이 업데이트될 때마다 메시지 업데이트", streamingResponse)
-      const lastMessage = messages[messages.length - 1];
-      if (!lastMessage || lastMessage.isUser) {
-        // 새로운 AI 응답 메시지 추가
-        setMessages(prev => [...prev, {
-          id: `stream-${Date.now()}`,
-          text: streamingResponse,
-          isUser: false
-        }]);
-      } else {
-        // 기존 AI 응답 메시지 업데이트
+      try {
+        // 'data:' 부분 제거 및 JSON 파싱
+        const cleanedStr = streamingResponse.split('data:')[1] || streamingResponse;
+        const parsedResponse = JSON.parse(cleanedStr);
+        const answer = parsedResponse.answer;
+        console.log('parsedResponse', parsedResponse)
+        console.log('parsedResponse.answer', parsedResponse.answer)
+
+        console.log('answer', answer)
+        // 누적된 응답 업데이트
+        setAccumulatedResponse(prev => prev + answer);
+
+        // 메시지 업데이트
         setMessages(prev => {
+          const lastMessage = prev[prev.length - 1];
+
+          if (!lastMessage || lastMessage.isUser) {
+            // 새로운 AI 메시지 추가
+            return [...prev, {
+              id: `stream-${Date.now()}`,
+              text: accumulatedResponse + answer,
+              isUser: false
+            }];
+          }
+
+          // 기존 AI 메시지 업데이트 (누적된 응답 사용)
           const newMessages = [...prev];
           newMessages[newMessages.length - 1] = {
             ...newMessages[newMessages.length - 1],
-            text: streamingResponse
+            text: accumulatedResponse + answer
           };
           return newMessages;
         });
+      } catch (error) {
+        console.error('스트리밍 응답 파싱 에러:', error);
+        // setSendError('응답 처리 중 오류가 발생했습니다.');
       }
     }
   }, [streamingResponse]);
 
   // 메시지 전송 핸들러
   const handleSend = async () => {
-    if (!inputText.trim() || isChatLoading || !token || !activeRepositoryId) return;
+    if (!inputText.trim() || isSending || !token || !activeRepositoryId) return;
 
     const userMessageId = Date.now();
+    // 사용자 메시지 즉시 표시
     setMessages(prev => [...prev, {
       id: `q-${userMessageId}`,
       text: inputText,
       isUser: true
     }]);
 
+    // 상태 초기화
     setInputText('');
+    setIsSending(true);
+    setSendError(null);
     setStreamingResponse('');
+    setAccumulatedResponse(''); // 누적 응답 초기화
 
     try {
       const response = await fetch(
@@ -120,55 +151,61 @@ const ChatbotUI = () => {
       );
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`응답 오류: ${response.status}`);
       }
 
-      const result = await response.text();
-      console.log(result);
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
 
-      setMessages(prev => [...prev, {
-        id: `a-${userMessageId}`,
-        text: result,
-        isUser: false
-      }]);
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        setStreamingResponse(chunk);
+      }
 
     } catch (error) {
+      console.error('메시지 전송 에러:', error);
+      setSendError(error.message);
       setMessages(prev => [...prev, {
         id: `error-${userMessageId}`,
         text: "죄송합니다. 오류가 발생했습니다. 다시 시도해 주세요.",
         isUser: false,
         isError: true
       }]);
-      console.error('채팅 요청 에러:', error);
+    } finally {
+      setIsSending(false);
     }
   };
 
+
   // 대화 초기화 핸들러
   const handleReset = async () => {
-    await resetChat();
-    setMessages([]);
-    setStreamingResponse('');
-
+    try {
+      await resetChat(); // 서버 측 히스토리 초기화
+      setMessages([]); // 로컬 메시지 초기화
+      setStreamingResponse('');
+      setSendError(null);
+    } catch (error) {
+      console.error('대화 초기화 에러:', error);
+      setSendError('대화 초기화 중 오류가 발생했습니다.');
+    }
   };
 
 
 
   useClickAway(menuRef, () => {
-    if (isMenuOpen) {
-      setIsMenuOpen(false);
-    }
+    if (isMenuOpen) setIsMenuOpen(false);
   });
 
+  // 스크롤 핸들러
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   useEffect(() => {
     scrollToBottom();
-    console.log(messages)
   }, [messages]);
-
-
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -176,12 +213,28 @@ const ChatbotUI = () => {
       handleSend();
     }
   };
+
+
+  // 통합 로딩 상태 (히스토리 로딩 or 메시지 전송 중)
+  const isLoading = isHistoryLoading || isSending;
+
+  // 에러 메시지 우선순위
+  const displayError = sendError || (isHistoryError ? historyError : null);
+
+
+
   return (
     <ChatWrapper>
       <EllipsisMenuWrapper>
-        <EllipsisVerticalIcon className="ellipsis-menu" ref={menuRef} onClick={() => setIsMenuOpen(!isMenuOpen)}>
+        <EllipsisVerticalIcon
+          className="ellipsis-menu"
+          ref={menuRef}
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        >
           <EllipsisVertical size={'1rem'} />
-          <EllipsisMenu isOpen={isMenuOpen} $disabled={messages.length === 0}
+          <EllipsisMenu
+            isOpen={isMenuOpen}
+            $disabled={messages.length === 0}
           >
             <ul>
               <li
@@ -198,6 +251,12 @@ const ChatbotUI = () => {
 
 
       <ChatContainer>
+        {/* 에러 메시지 표시 */}
+        {displayError && (
+          <ErrorBanner>
+            {displayError}
+          </ErrorBanner>
+        )}
         <MessageContainer>
           {/* Welcome message */}
           <WelcomeTitle>
@@ -213,7 +272,7 @@ const ChatbotUI = () => {
             </Typo>
           </WelcomeTitle>
           {
-            messages.length === 0 ?
+            messages.length === 0 && !isHistoryLoading ?
               <WelcomeMessage>
                 <WelcomeMessageTitle>
                   <BotIcon>
@@ -243,39 +302,41 @@ const ChatbotUI = () => {
           }
 
           {/* Chat messages */}
+
           <ChatMessages>
             {messages.map(message => (
               <MessageBubble key={message.id} isUser={message.isUser}>
                 <Avatar isUser={message.isUser}>
                   {message.isUser ? <User size={18} /> : <Bot size={18} />}
                 </Avatar>
-                <Message isUser={message.isUser}>
-                  {
-                    message.isUser ?
-                      message.text
-                      :
-                      <TypingMarkdownRenderer
-                        content={message.text}
-                        // onComplete={() => handleMessageComplete(message.id)}
-                        onComplete={() => console.log('타이핑 완료')} // 필요한 경우에만 사용
-                      />
-                  }
-                  {/* <MarkdownRenderer content={message.text} /> */}
-                  {/* {message.text} */}
+                <Message isUser={message.isUser} $isError={message.isError}>
+                  {message.isUser ? (
+                    message.text
+                  ) : (
+                    <TypingMarkdownRenderer
+                      content={message.text}
+                      onComplete={() => console.log('타이핑 완료')}
+                    />
+                  )}
                 </Message>
               </MessageBubble>
             ))}
-            {isChatLoading && (
+            {isLoading && (
               <MessageBubble isUser={false}>
                 <Avatar isUser={false}>
                   <Bot size={18} />
                 </Avatar>
                 <Message isUser={false}>
-                  <LoadingDots>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                  </LoadingDots>
+                  <LoadingMessage>
+                    <LoadingDots>
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                    </LoadingDots>
+                    <LoadingText>
+                      {isHistoryLoading ? '채팅 내역을 불러오는 중...' : '답변 생성 중...'}
+                    </LoadingText>
+                  </LoadingMessage>
                 </Message>
               </MessageBubble>
             )}
@@ -284,25 +345,32 @@ const ChatbotUI = () => {
         </MessageContainer>
 
         <InputContainer>
-          <InputWrapper>
+          <InputWrapper $isLoading={isLoading}>
             <Input
               type="text"
-              placeholder="코드에 대해 궁금한 점을 물어보세요..."
+              placeholder={isLoading ? "잠시만 기다려주세요..." : "코드에 대해 궁금한 점을 물어보세요..."}
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
-              disabled={isChatLoading}
+              onKeyPress={handleKeyPress}
+              disabled={isLoading}
             />
+            <LoadingStatus $isVisible={isLoading}>
+              <LoadingDots>
+                <span></span>
+                <span></span>
+                <span></span>
+              </LoadingDots>
+            </LoadingStatus>
             <ActionButton
               onClick={handleReset}
               title="대화 새로 시작하기"
-              disabled={messages.length === 0}
+              disabled={messages.length === 0 || isLoading}
             >
               <RefreshCw size={18} />
             </ActionButton>
             <ActionButton
               onClick={handleSend}
-              disabled={!inputText.trim() || isChatLoading}
+              disabled={!inputText.trim() || isLoading}
             >
               <Send size={18} />
             </ActionButton>

@@ -98,12 +98,12 @@ const DocsContent = () => {
                 <ul>
                   <li>
                     <Check style={{ minWidth: '2rem' }} />
-                    Automated AI-powered tools to generate Code & Api documentation from your source code files
+                    사용자의 코드를 분석해, 코드와 API 문서를 자동으로 생성해줍니다.
                   </li>
 
                   <li>
                     <Check style={{ minWidth: '2rem' }} />
-                    Conditional Generative Models
+                    이를 통해 개발자는 코드에만 집중할 수 있게 됩니다.
                   </li>
                 </ul>
                 <Button btnType={"gradient"} size={'large'} style={{ fontWeight: '400', width: "50%", padding: "1.2rem 1.2rem" }}>

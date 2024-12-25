@@ -132,7 +132,7 @@ export const useChatbot = (registeredRepoId) => {
     isLoading: isLoading || isHistoryLoading,
     isError,
     error,
-    sendMessage: handleSendMessage,
+    // sendMessage: handleSendMessage,
     resetChat,
   };
 };
