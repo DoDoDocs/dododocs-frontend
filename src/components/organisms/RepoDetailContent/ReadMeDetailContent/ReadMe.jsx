@@ -1,5 +1,5 @@
 // src/components/organisms/RepoDetailContent/ReadMe.jsx
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Camera, Pencil, Video, Palette, Layout, Box, MoreVertical, GripVertical, Check, X, Plus } from 'lucide-react';
 import api from "../../../../api/axios.js";
 import { Splitter } from "../../../index.js"
@@ -85,8 +85,6 @@ const NavItem = ({
 
 const ReadMe = () => {
   const { AppRepo } = useAppModalStore();
-  const repoId = useMemo(() => AppRepo.registeredRepoId, [AppRepo.registeredRepoId]);
-
   const location = useLocation();
   const navigate = useNavigate();
   const mainContentRef = useRef(null);
@@ -96,8 +94,12 @@ const ReadMe = () => {
     isLoading,
     isError,
     error
-  } = useReadme(repoId);
+  } = useReadme(AppRepo.registeredRepoId);
 
+  useEffect(() => {
+    console.log("😂😂 READ  ME : ", [markdownText])
+
+  }, [markdownText])
 
 
   /**
@@ -121,6 +123,7 @@ const ReadMe = () => {
 
   useEffect(() => {
 
+    console.log("😂😂😂😂😂 READ  ME : ", markdownText)
 
     if (!markdownText) return; // Add this check
 
