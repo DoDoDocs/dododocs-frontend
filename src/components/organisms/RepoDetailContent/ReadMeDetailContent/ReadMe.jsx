@@ -251,7 +251,6 @@ const ReadMe = () => {
   }, [tableContent]);
 
 
-  if (isLoading) return <LoadingSpinner />;
 
   function hasLeadingEmoji(str) {
     if (!str) {
@@ -446,6 +445,8 @@ const ReadMe = () => {
     }
   };
 
+  if (isLoading) return <LoadingSpinner />;
+
 
   return (
     <Container >
@@ -489,8 +490,6 @@ const ReadMe = () => {
                     >
                       {withoutEmoji}
                     </NavItem>
-
-
                   );
                 })}
               {/* 제외된 섹션 목록 (커스텀 모드일 때만 표시)  */}
