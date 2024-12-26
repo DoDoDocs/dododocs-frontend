@@ -75,7 +75,7 @@ const HomeHeader = ({ role }) => {
                 <Col xs={4} sm={3} span={3} align={"center"}>
                   <Typo onClick={() => navigate("/")} fontFamily={'Roboto'} weight={100} size={'32px'} cursor={"pointer"} $isGradient>Dododocs</Typo>
                 </Col>
-                <Col xs={8} sm={9} md={8} lg={8} xl={8} xxl={8} span={8} justify={"space-evenly"} align={"center"}>
+                <Col xs={0} sm={9} md={8} lg={8} xl={8} xxl={8} span={8} justify={"space-evenly"} align={"center"}>
                   <CategoryBox onClick={() => navigate("/landing/docs")}>Code document</CategoryBox>
                   <CategoryBox onClick={() => navigate("/landing/chatting")} >Chatbot</CategoryBox>
                   <CategoryBox onClick={() => navigate("/landing/readme")} >Read Me Editor</CategoryBox>
