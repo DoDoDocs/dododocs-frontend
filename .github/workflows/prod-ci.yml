@@ -13,19 +13,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up AWS region
-        run: echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> $GITHUB_ENV
-
-      - name: Log in to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v1
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build and Tag Docker Image
+        env:
+          ECR_URI: ${{ secrets.ECR_URI }}
+          TAG: ${{ github.event.release.tag_name }}
         run: |
-          TAG=${{ github.event.release.tag_name }}
           echo "Using tag: $TAG"
-          docker build -t ${{ secrets.ECR_URI }}:$TAG .
+          docker build -t $ECR_URI:$TAG .
 
       - name: Push Docker Image to Amazon ECR
+        env:
+          ECR_URI: ${{ secrets.ECR_URI }}
+          TAG: ${{ github.event.release.tag_name }}
         run: |
-          TAG=${{ github.event.release.tag_name }}
-          docker push ${{ secrets.ECR_URI }}:$TAG
+          docker push $ECR_URI:$TAG
