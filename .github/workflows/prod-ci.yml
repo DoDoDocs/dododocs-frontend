@@ -21,8 +21,8 @@ jobs:
         run: |
           TAG=${{ github.event.release.tag_name }}
           echo $TAG
-          docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:$TAG .
+          docker build -t ${{ secrets.ECR_URI }}:$TAG .
 
       - name: Push Docker image to Amazon ECR
         run: |
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:${{ github.event.release.tag_name }}
+          docker push ${{ secrets.ECR_URI }}:${{ github.event.release.tag_name }}
