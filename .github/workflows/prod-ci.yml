@@ -1,4 +1,4 @@
-name: Build and Push to ECR on Release
+name: Prod CI on release
 
 on:
   release:
@@ -13,16 +13,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Set up AWS region
+        run: echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> $GITHUB_ENV
+
       - name: Log in to Amazon ECR
-        id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build Docker image
+      - name: Build and Tag Docker Image
         run: |
           TAG=${{ github.event.release.tag_name }}
-          echo $TAG
+          echo "Using tag: $TAG"
           docker build -t ${{ secrets.ECR_URI }}:$TAG .
 
-      - name: Push Docker image to Amazon ECR
+      - name: Push Docker Image to Amazon ECR
         run: |
-          docker push ${{ secrets.ECR_URI }}:${{ github.event.release.tag_name }}
+          TAG=${{ github.event.release.tag_name }}
+          docker push ${{ secrets.ECR_URI }}:$TAG
