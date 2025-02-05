@@ -5,9 +5,9 @@ import { Camera, Pencil, Video, Palette, Layout, Box, MoreVertical } from 'lucid
 import api from "../../../api/axios.js";
 import { Splitter } from "../../index.js"
 import { MarkdownRenderer, LoadingSpinner } from '../../index.js';
-import documentText from './documentText.jsx';
 import { useDocument } from '../../../hooks/RepoDetailContent/useDocument.js';
-import { useRegisteredRepoStore } from "../../../store/store.js"
+import { useRegisteredRepoStore, useAppModalStore } from "../../../store/store.js"
+import NoDocument from "./NoDocuDetailContent/NoDocument.jsx"
 
 const Container = styled.div`
   display: flex;
@@ -173,7 +173,7 @@ const NavItem = ({ onClick, icon: Icon, children, active }) => (
 
 const Document = () => {
   //SECTION Document 
-  const { activeRepositoryId } = useRegisteredRepoStore();
+  const { AppRepo } = useAppModalStore();
 
 
   const {
@@ -181,41 +181,11 @@ const Document = () => {
     isLoading,
     isError,
     error
-  } = useDocument(activeRepositoryId);
+  } = useDocument(AppRepo.registeredRepoId);
 
   useEffect(() => {
     console.log('docsData', docsData)
   }, [docsData])
-
-  const [selectedDoc, setSelectedDoc] = useState('AuthController'); // 선택된 문서 상태 추가
-  const [content, setContent] = useState(documentText[0]); // 현재 표시될 내용
-
-  // 문서 메뉴 데이터 정의
-  // const controllerDocs = [
-  //   { id: 'AuthController', fileName: 'AuthController.md', content: documentText[0] },
-  //   { id: 'KeywordController', fileName: 'KeywordController.md', content: documentText[1] },
-  //   { id: 'LiveInformationController', fileName: 'LiveInformationController.md', content: documentText[2] },
-  //   { id: 'MemberController', fileName: 'MemberController.md', content: documentText[0] },
-  //   { id: 'MemberLiveInformationController', fileName: 'MemberLiveInformationController.md', content: documentText[0] },
-  //   { id: 'PlannerController', fileName: 'PlannerController.md', content: documentText[0] },
-  //   { id: 'RecommendController', fileName: 'RecommendController.md', content: documentText[0] },
-  //   { id: 'TripController', fileName: 'TripController.md', content: documentText[0] },
-  //   { id: 'TripScheduleController', fileName: 'TripScheduleController.md', content: documentText[0] }
-  // ];
-
-
-
-
-  // 문서 선택 핸들러
-  // const handleDocSelect = (fileName) => {
-  //   setSelectedDoc(fileName);
-  //   const selectedContent = controllerDocs.find(doc => doc.fileName === fileName)?.content;
-  //   if (selectedContent) {
-  //     setContent(selectedContent);
-  //   }
-
-  // };
-
 
   // 선택된 파일명과 내용을 관리하는 상태
   const [selectedFileName, setSelectedFileName] = useState('');
@@ -228,18 +198,21 @@ const Document = () => {
   // docsData가 변경될 때마다 문서 목록 업데이트
   useEffect(() => {
     if (!docsData) return;
-
     // Controller 문서 필터링 (Test 파일 제외)
     const controllers = docsData.regularFiles
+    console.log('controllers', controllers)
 
     // Summary 문서 설정
     const summaries = docsData.summaryFiles || [];
 
     setControllerDocs(controllers);
     setSummaryDocs(summaries);
+    if (controllers.length === 0 && summaries.length === 0) {
+      console.log("둘다 ----0000")
+    }
 
     // 초기 선택된 문서 설정
-    if (controllers.length && !selectedFileName) {
+    if (controllers?.length && !selectedFileName) {
       setSelectedFileName(controllers[0].fileName);
       setCurrentContent(controllers[0].fileContents);
     }
@@ -253,6 +226,9 @@ const Document = () => {
 
   if (isLoading) return <LoadingSpinner />;
 
+  if (controllerDocs.length === 0 && summaryDocs.length === 0) {
+    return <NoDocument />;
+  }
 
 
   return (
@@ -267,7 +243,7 @@ const Document = () => {
           <Section flex={7} mb={1.5}>
             <SectionTitle>regular Docs</SectionTitle>
             <SectionContent>
-              {controllerDocs.map(doc => (
+              {controllerDocs?.map(doc => (
                 <NavItem
                   key={doc.fileName}
                   icon={Box}
@@ -299,7 +275,6 @@ const Document = () => {
         <MainContent>
           {isError ? (
             <MarkdownRenderer content={"Error fetching document: " + error.message} />
-
           ) : (
             <MarkdownRenderer content={currentContent} />
           )}

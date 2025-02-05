@@ -1,18 +1,21 @@
 // /src/router/index.jsx
 //TODO ProtectedRoute by role 
-import React, { Suspense, lazy } from 'react';
-import { Navigate, BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React, { useEffect, Suspense, lazy } from 'react';
+import { Navigate, BrowserRouter as Router, Routes, Route, useNavigate, useParams } from 'react-router-dom';
 
-// import { notification } from 'antd';
 import Home from './HomeRouter.jsx';
-import Docs from './DocsRouter.jsx';
 import Login from "./LoginRouter.jsx"
-import Chatting from "./ChattingRouter.jsx";
 import OAuthCallback from "./OAuthCallbackRouter.jsx"
 import Repo from "./RepoRouter.jsx"
+import Landing from "./LandingRouter.jsx"
 
 // 모달용 컴포넌트
 import { RepoDetailContent } from "../components"
+// 모달용 store import 추가
+import { useAppModalStore } from '../store/store.js';
+
+import Modal from 'react-modal';
+
 
 // const ProtectedRoute = ({ children, allowedRoles }) => {
 //   const role = useSelector(selectUserRole);
@@ -27,20 +30,31 @@ import { RepoDetailContent } from "../components"
 // };
 
 
+// Modal의 루트 엘리먼트 설정
+Modal.setAppElement('#root');
+
+
 function App() {
   return (
     <Router>
       {/* <Suspense fallback={<div>Loading...</div>}> */}
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/docs" element={<Docs />} />
+        <Route path="/landing" element={<Landing />} />
+        <Route path="/landing/:serviceTitle" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path='/callback/github' element={<OAuthCallback />} />
-        <Route path="/repositories" element={<Repo />} />
-        <Route path="/repositories/:repoTitle" element={<Repo />} />
-
-        <Route path="/chatting" element={<Chatting />} />
-        <Route path="/chatting/:chattingId" element={<Chatting />} />
+        <Route path="/repositories" element={<Repo />} >
+          <Route
+            path=":repoTitle"
+            element={<RepoDetailContent />}
+          />
+        </Route>
+        {/* <Route
+          path="/repositories/:repoTitle"
+          parentPath="/chatting"  // 모달이 닫힐 때 돌아갈 경로
+          element={<RepoDetailContent />}
+        /> */}
 
         {/* <Route path="/mypage" element={
           <ProtectedRoute allowedRoles={['USER', "GUEST"]}>

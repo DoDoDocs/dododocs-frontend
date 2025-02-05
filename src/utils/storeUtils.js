@@ -8,7 +8,7 @@ import {
 export const resetAllStores = () => {
   // 각 store의 초기화 함수 실행
   useAuthStore.getState().clearAuth();
-  useUserStore.getState().clearMemberInfo();
+  useUserStore.getState().clearUserInfo();
   useAppModalStore.getState().reset();
   useRepoStore.getState().reset();
 };

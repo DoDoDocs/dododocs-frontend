@@ -2,21 +2,21 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import bg_img from "../../../assets/images/bg_img.jpg"
 import { Moon, Sun } from 'lucide-react';
-import {
-  Image, Typo, Button, TextBox, Select,
-} from "../../index.js";
 
-import useAppModalStore from '../../../store/appModalStore.js';
+
+// import useAppModalStore from '../../../store/appModalStore.js';
+import { useAppModalStore } from '../../../store/store.js';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 
 import Modal from 'react-modal';
 
-import Chatting from "./Chatting.jsx"
+import Chatting from "./CattingDetailContent/Chatting.jsx"
 import Document from "./Document.jsx"
-import ReadMe from "./ReadMe.jsx"
-
+import ReadMe from "./ReadMeDetailContent/ReadMe.jsx"
+import GuideChatting from "./GuideChattingDetailContent/GuideChatting.jsx"
 
 // Styled Components
-
 const modalStyles = {
   content: {
     border: 'none',
@@ -60,7 +60,7 @@ const AppWrapper = styled.div`
       content: "";
       /* opacity: 0.5; */
       opacity: 1;
-       ${props => props.isImgMode ? `background-image: url(${bg_img});` : null} 
+      ${props => props.isImgMode ? `background-image: url(${bg_img});` : null} 
       background-size: cover;
       background-position: center; 
       position: absolute;
@@ -183,7 +183,7 @@ const MainHeaderContent = styled.div`
   color: rgb(113 119 144 / 78%);
   border-bottom: 2px solid transparent;
   transition: 0.3s;
-    
+  cursor: pointer;
   &.active, &:hover {
       color: #f9fafb;
       border-bottom: 2px solid #f9fafb;
@@ -269,34 +269,61 @@ background-color : #10121b66;
 `
 
 // Main App Component
-const App = ({ onClose }) => {
+const App = ({ }) => {
 
-  const { isAppModalOpen, AppRepo } = useAppModalStore();
+  const { AppRepo, openAppModal, closeAppModal } = useAppModalStore();
+  const { repoTitle } = useParams();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
 
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   const [isImgMode, setIsImgMode] = useState(true);
   const [activeMenu, setActiveMenu] = useState('Read Me Maker');
+
+
+  const registeredReposList = queryClient.getQueryData(['registeredRepos']) || null;
+
+
+  // 모달 열기
   useEffect(() => {
-    if (isAppModalOpen) {
+    if (repoTitle) {
+      console.log("😇😇😇😇😇😇😇😇😇😇😇😇😇😇😇😇😇😇모달 열기 시 데이터 받아오기 ", repoTitle)
+      openAppModal(repoTitle, registeredReposList);
       document.body.style.overflow = 'hidden';
     }
+  }, [repoTitle, registeredReposList, openAppModal]);
 
+  // 모달 닫기 처리
+  const closeModalHandler = () => {
+    closeAppModal();
+    navigate('/repositories');  // URL 변경하면 자동으로 컴포넌트가 언마운트됨
+  };
+
+  // cleanup - 스크롤만 처리
+  useEffect(() => {
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [isAppModalOpen]);
+  }, []);
+
+
+
+
 
   const toggleFullscreen = () => {
     setIsFullscreen(prev => !prev);
   };
 
 
+
+  if (!repoTitle || !AppRepo) return null;
+
   return (
     <Modal
-      isOpen={isAppModalOpen}
-      onRequestClose={onClose}
+      isOpen={true}
+      onRequestClose={closeModalHandler}
       style={{
         ...modalStyles,
         content: {
@@ -314,7 +341,7 @@ const App = ({ onClose }) => {
         <AppContainer>
           <Header>
             <MenuCircleWrapper>
-              <MenuCircle type={'red'} onClick={onClose}></MenuCircle>
+              <MenuCircle type={'red'} onClick={closeModalHandler}></MenuCircle>
               <MenuCircle type={'yellow'}></MenuCircle>
               <MenuCircle type={'green'} onClick={toggleFullscreen}></MenuCircle>
               <AppRepoTitle>
@@ -341,6 +368,7 @@ const App = ({ onClose }) => {
           {/* Add remaining content components here */}
           <MainHeader>
             <MainHeaderTitle >All Apps</MainHeaderTitle>
+
             {
               ['AI Code Document', 'AI Chatting', 'Read Me Maker'].map(menu => (
                 <MainHeaderContent
@@ -359,7 +387,11 @@ const App = ({ onClose }) => {
               //  Chatting 
               activeMenu === 'AI Chatting' ?
                 <ChattingContainer>
-                  <Chatting></Chatting>
+                  {
+                    repoTitle === 'guide' ?
+                      <GuideChatting></GuideChatting> :
+                      <Chatting></Chatting>
+                  }
                 </ChattingContainer> :
                 activeMenu === 'AI Code Document' ?
                   <Document></Document>

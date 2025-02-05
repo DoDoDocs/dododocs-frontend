@@ -207,6 +207,7 @@ const AddRepo = ({ isOpen, onClose,
   resetForm,
 }) => {
   // const isAddingRepoLoading = true;
+  console.log('🥹🥹🥹addRepoError', addRepoError, isAddingRepoLoading)
   const { repoListRefetch, isUserDataLoading } = useUser();
 
   const { repositories } = useUserStore();
@@ -229,7 +230,8 @@ const AddRepo = ({ isOpen, onClose,
   const loadingMessages = [
     '레포지토리 연결 중...',
     '코드를 분석하는 중입니다...',
-    'AI가 코드를 이해하는 중입니다...'
+    'AI가 코드를 이해하는 중입니다...',
+
   ];
 
   const [messageIndex, setMessageIndex] = useState(0);

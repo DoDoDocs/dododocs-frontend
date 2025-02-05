@@ -1,7 +1,5 @@
 // src/utils/jwtUtils.js
 import { jwtDecode } from 'jwt-decode';
-import { notification } from 'antd';
-
 const TOKEN_KEY = 'golla-golla';
 
 const jwtUtils = {
@@ -60,11 +58,11 @@ const jwtUtils = {
 
     localStorage.removeItem(TOKEN_KEY);
 
-    notification.error({
-      message: '로그인에 실패하였습니다.',
-      description: '다시 시도해주세요',
-      duration: 2,
-    });
+    // notification.error({
+    //   message: '로그인에 실패하였습니다.',
+    //   description: '다시 시도해주세요',
+    //   duration: 2,
+    // });
   },
 };
 

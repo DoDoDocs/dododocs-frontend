@@ -30,7 +30,7 @@ const ProjectBoard = ({
   const transformedData = dataSource.map(item => ({
     Action: "delete",
     Branch: item.branchName,
-    Repository: item.repositoryName,
+    repositoryName: item.repositoryName,
     Status: "Code Imported",
     registeredRepoId: item.registeredRepoId,
     projectsStatus: [
@@ -151,9 +151,9 @@ const ProjectBoard = ({
             <CardContent isExpanded={expandedStates[project.registeredRepoId]}>
               <CardHeader isExpanded={expandedStates[project.registeredRepoId]}>
                 <ProjectIcon isExpanded={expandedStates[project.registeredRepoId]}>
-                  {project.Repository.charAt(0)}
+                  {project.repositoryName.charAt(0)}
                 </ProjectIcon>
-                <CardTitle>{project.Repository}</CardTitle>
+                <CardTitle>{project.repositoryName}</CardTitle>
               </CardHeader>
               <CardBody isExpanded={expandedStates[project.registeredRepoId]}>
                 <BranchContainer>

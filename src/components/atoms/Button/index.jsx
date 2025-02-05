@@ -21,7 +21,7 @@ const SIZE_STYLES = {
 const BUTTON_VARIANTS = {
   gradient: css`
     background:${({ theme }) => theme.gradients.values.primary};
-    /* background : linear-gradient(to right, #a25cff, #d923ff); */
+    /* background : linear-gradient(to right, rgb(162, 92, 255), #d923ff); */
     border: 0 solid transparent;
     border-radius: 8px;
     color: #FFFFFF;

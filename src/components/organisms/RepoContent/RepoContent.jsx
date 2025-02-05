@@ -6,9 +6,8 @@ import bgShapeFour from "../../../assets/images/bg-shape-four.png";
 import { Search, Plus } from 'lucide-react';
 import { useRepoStore, useRegisteredRepoStore, useUserStore } from '../../../store/store.js'
 import { useRepoManagement } from '../../../hooks/useRepoManagement'
-
-import BoardTest from './RepoBoard/RepoBoard.jsx';
-import Board from './Board.jsx';
+import RepositoryGuide from './RepositoryGuide.jsx';
+import RepoBoard from './RepoBoard/RepoBoard.jsx';
 
 import {
   BgShape,
@@ -137,21 +136,11 @@ const RepoContent = () => {
               </Button>
             </ButtonWrapper>
 
-            <Divider />
+            <RepositoryGuide
+              onCardClick={handlers.handleCardClick}
+            />
 
-            <SearchTextWrapper>
-              <SearchInput>
-                <TextBox
-                  value={searchValue}
-                  onChange={(e) => setSearchValue(e.target.value)}
-                  placeholder="Search repositories..."
-                  plane={true}
-                />
-                <Search />
-              </SearchInput>
-            </SearchTextWrapper>
-
-            <BoardTest
+            <RepoBoard
               dataSource={registeredRepositoriesList}
               onCardClick={handlers.handleCardClick}
               selectedCard={activeRepository}
@@ -160,14 +149,7 @@ const RepoContent = () => {
               onAddClick={addRepo.open}
             />
 
-            <Board
-              dataSource={repos}
-              onCardClick={handlers.handleCardClick}
-              selectedCard={selectedCard}
-              handleDeleteClick={deleteRepoHandlers.handleDeleteClick}
-              MAX_PROJECTS={3}
-              onAddClick={addRepo.open}
-            />
+
 
 
 

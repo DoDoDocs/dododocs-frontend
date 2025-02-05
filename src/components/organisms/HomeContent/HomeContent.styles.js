@@ -48,6 +48,7 @@ export const HomeLayout = styled.div`
   &::before {
     opacity: 0.1;
     background-color: #000;
+    pointer-events: none;
     content: '';
     position: absolute;
     top: 0;
@@ -176,12 +177,14 @@ export const FeatureContentText = styled.div`
   }
 
   ul {
+    padding-left: 0;
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
 
   li {
+    color: rgb(233, 213, 255);
     display: flex;
     align-items: center;
     gap: 1rem;

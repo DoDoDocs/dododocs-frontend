@@ -1,52 +1,25 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { MarkdownRenderer } from '../../index.js';
 
-const TypewriterContainer = styled.div`
+const RendererContainer = styled.div`
   min-height: 20px;
 `;
 
-const TypingMarkdownRenderer = ({ content, onComplete }) => {
-  const [displayedContent, setDisplayedContent] = useState('');
-  const [isTyping, setIsTyping] = useState(true);
-  const intervalRef = useRef(null);
-  const currentIndexRef = useRef(0);
-
-  useEffect(() => {
-    if (!content) return;
-
-    // 타이핑 시작 시 초기화
-    setDisplayedContent('');
-    currentIndexRef.current = 0;
-    setIsTyping(true);
-
-    intervalRef.current = setInterval(() => {
-      if (currentIndexRef.current < content.length) {
-        setDisplayedContent(prev => prev + content[currentIndexRef.current]);
-        currentIndexRef.current++;
-      } else {
-        clearInterval(intervalRef.current);
-        setIsTyping(false);
-        onComplete && onComplete();
-      }
-    }, 10); // 타이핑 속도 조절
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
+// 스트리밍 응답을 바로 렌더링하는 단순화된 컴포넌트
+const StreamingMarkdownRenderer = ({ content, onComplete }) => {
+  // 컴포넌트가 마운트되면 onComplete 호출
+  React.useEffect(() => {
+    if (onComplete) {
+      onComplete();
+    }
   }, [content]);
 
   return (
-    <TypewriterContainer>
-      {isTyping ? (
-        <MarkdownRenderer content={displayedContent} />
-      ) : (
-        <MarkdownRenderer content={content} />
-      )}
-    </TypewriterContainer>
+    <RendererContainer>
+      <MarkdownRenderer content={content} />
+    </RendererContainer>
   );
 };
 
-export default TypingMarkdownRenderer;
+export default StreamingMarkdownRenderer;
